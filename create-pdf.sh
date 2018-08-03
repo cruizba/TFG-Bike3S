@@ -1,8 +1,1 @@
-pandoc memory.md \
--V geometry:margin=1in \
---bibliography bibliography.bib \
---csl ieee.csl \
---toc \
---include-in-header titlesec.tex \
---number-sections \
--o memory.pdf \
+pandoc ./document/memory.md -V geometry:margin=1.25in -V fontsize=11pt --bibliography ./document/bibliography.bib --csl ./document/ieee.csl --toc --include-in-header ./document/titlesec.tex --number-sections -o ./document/memory.pdf
