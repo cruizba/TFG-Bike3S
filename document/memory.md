@@ -53,6 +53,73 @@ Adicionalmente, no debería ser un simulador único e invariable, sino que debe 
 
 Para definir las diferentes partes de nuestro simulador, es necesario tener una visión general del sistema de bicis en la realidad.
 
+
+![Sistema de bicis compartidas](images/real_system_v2.jpg "Sistema de bicis compartidas"){#fig:1}
+
+
+Podemos distinguir claramente en la [Figura 1](#fig:1) tres partes principales dentro del sistema de bicis compartidas:
+
+- Infraestructura física con estaciones y bicis (Amarillo).
+- Usuarios con Smartphone y App del sistema (Rojo).
+- Sistema de recomendaciones y gestión del sistema (Azul).
+
+Estas tres partes diferenciadas constituyen tres partes importantes dentro del desarrollo del simulador. El **núcleo**, que incluirá la infraestructura y como deben los usuarios interactuar con el sistema, las implementaciones de los **usuarios** que implementarán distintas formas de actuar dentro del sistema, y el **sistema de recomendaciones** que podrá influir en el comportamiento de los usuarios.
+
+Los usuarios hacen uso de la infraestructura cuando cogen o dejan una bici y también hacen uso del sistema de recomendaciones a través de la App, para reservar una bici o un hueco, ver el estado de una estación, o quizás hacer caso a alguna de las sugerencias de la App.
+
+Vemos que hay una interacción continua entre usuarios e infraestructura. El sistema de recomendaciones puede influenciar en las decisiones finales del usuario.
+ 
+En el desarrollo de este simulador hemos participado varias personas hasta la fecha de publicación de esta memoria, las cuales han realizado diferentes partes, aunque parte de este desarrollo ha sido realizado de forma conjunta debido a la necesidad de tener una base común, que serían el núcleo y algunos estándares definidos.
+
+Con esta visión global del sistema se especifica una serie de objetivos que se detallan a continuación.
+
+## Objetivos
+
+Antes de plantear que objetivos perseguir, hay que analizar que necesidades va a tener el simulador en el futuro y con que fín se va a utilizar en términos globales. Podríamos distinguir varios objetivos si hablamos de la totalidad del simulador:
+
+- Probar algoritmos de balanceo y predicción de demanda en un sistema de bicicletas compartido.
+- Implementar sistemas de recomendaciones e incentivos para optimizar la demanda.
+- Plantear nuevas distribuciones de estaciones sobre una ciudad.
+
+Basado en estos objetivos globales se derivan los siguientes objetivos más concretos para el desarrollo:
+
+- Recrear infraestructuras reales en ciudades reales.
+- Generar usuarios en cualquier punto de la ciudad.
+- Generación de usuarios versátil y que puedan seguir distribuciones (Poisson).
+- Poder definir qué tipos de usuarios queremos en nuestro sistema y parametrizarlos para que puedan tener comportamientos variados.
+- Poder definir qué tipos de usuarios queremos en nuestro sistema y parametrizarlos para que puedan tener comportamientos variados.
+- Facilidad para crear configuraciones (GUI).
+- Creación de distintos tipos de usuario, con diferentes comportamientos que respondan de forma distinta a las situaciones dadas y las recomendaciones.
+- Simulación realista.
+- Análisis de los datos para probar los diferentes algoritmos.
+
+En general el simulador tiene que ser capaz de recrear situaciones reales basadas en entornos reales, con infraestructuras existentes o que puedan existir en el mundo real. Es decir, uno de los objetivos básicos es dotar al simulador de mecanismos ágiles para poder crear configuraciones de diferentes situaciones.
+
+Además estas configuraciones tienen que poder ser generadas con cierta independencia del simulador, añadiendo la posibilidad de que nuevos desarrolladores puedan crear sus propias herramientas que generen casos para la simulación y ofreciendo una interfaz agradable para la realización de simulaciones.
+
+En el contexto global del desarrollo, la parte que ha correspondido al tema de este trabajo que se presenta en mayor detalle es:
+
+- Configuración.
+- Interfaz de usuario.
+- Desarrollo ágil de nuevos usuarios, sistemas de recomendación, generación de usuarios...
+- Extensibilidad.
+
+## Metodología
+
+Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían nuestros tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la [Figura 2](#fig:2)
+
+![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg "Ciclo iterativo e incremental"){#fig:2 .class }
+
+En este modelo, primero se realiza un análisis de los requisitos que se van a necesitar para cada iteración. Después del desarrollo de estos, se hacen pruebas y para finalizar se integra con el resto del sitema.
+
+Cada 2 semanas realizamos una iteración donde se realizan todos los pasos comentados anteriormente, donde todo el equipo de desarrollo decide qué requisitos son más críticos e importantes, bugs y releases. En base a estas decisiones y utilizando herramientas online como Trello[^3], se gestiona que tareas debe realizar cada uno.
+
+[^3]: Es un tablero online donde se pueden crear, asignar y clasificar tareas, de tal modo que todo el equipo tiene una visión global del estado actual de desarrollo que se está creando.
+
+Un desarrollo iterativo e incremental ofrece varias ventajas con respecto a otras metodologías como puede ser el desarrollo en cascada. Una de las ventajas que ofrece es la entrega de software usable a mitad de desarrollo, mientras que en el modelo en cascada cada fase del proceso debe ser finalizada (firmada) para pasar a la siguiente fase. El desarrollo de software no es lineal y esto crea dificultades si se utiliza una metodología en cascada[@bib2].
+
+Cada cierto tiempo realizamos una release. Utilizamos un formato de versiones semántico[@bib3] del tipo X.Y.Z donde, X, Y y Z son números enteros mayores que 0.
+
 # Test
 
 Prueba de referencia[@item1]
