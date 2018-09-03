@@ -2,9 +2,10 @@
 title: Arquitectura, diseño, y configuración de un simulador de bicis compartidas 
 author: Carlos Ruiz Ballesteros
 date: 02 de Agosto de 2018
+
+
+
 ---
-
-
 
 # Resumen {-}
 
@@ -21,15 +22,17 @@ En eso se centra este trabajo, en la implementación de un simulador capaz de re
 >
 
 # Introducción
+
 En este capítulo se darán a conocer las motivaciones que llevaron a la realización de este proyecto, el contexto del mismo y los objetivos planteados.
 
 ## Motivación
+
 El proyecto consiste en la realización de un simulador de sistemas de bicis compartidas en entornos urbanos, como por ejemplo BiciMad[^1] en Madrid, o Vèlib[^2] en Francia.
 
 [^1]: BiciMad: [https://bicimad.com/](https://bicimad.com/).
 [^2]: Vèlib: [https://www.velib-metropole.fr/](https://www.velib-metropole.fr/).
 
-La necesidad de alentar a las personas a utilizar vías alternativas de transporte a las comúnmente usadas es cada vez más necesario. El aumento de la población en las grandes ciudades, el aumento de CO<sup>2</sup> son hechos que nos obligan a pensar como cambiar y/o mejorar nuestros medios de transporte público.
+La necesidad de alentar a las personas a utilizar vías alternativas de transporte a las comúnmente usadas es cada vez más necesario. El aumento de la población en las grandes ciudades, el aumento de CO<sup>2</sup> son hechos que nos obligan a pensar como cambiar y/o mejorar los medios de transporte público.
 
 Los sistemas de bicis compartidas instaladas en las grandes ciudades son una muy buena opción a la hora de buscar alternativas de movilidad. Estos sistemas permiten a los ciudadanos moverse por distintos puntos de la ciudad alquilando una bici de cualquiera de las estaciones disponibles y devolviéndola en otra estación diferente.
 
@@ -51,11 +54,9 @@ Adicionalmente, no debería ser un simulador único e invariable, sino que debe 
 
 ## Contexto
 
-Para definir las diferentes partes de nuestro simulador, es necesario tener una visión general del sistema de bicis en la realidad.
+Para definir las diferentes partes de el simulador, es necesario tener una visión general del sistema de bicis en la realidad.
 
-
-![Sistema de bicis compartidas](images/real_system_v2.jpg "Sistema de bicis compartidas"){#fig:1}
-
+![Sistema de bicis compartidas](images/real_system_v2.jpg){#fig:1}
 
 Podemos distinguir claramente en la [Figura 1](#fig:1) tres partes principales dentro del sistema de bicis compartidas:
 
@@ -68,7 +69,7 @@ Estas tres partes diferenciadas constituyen tres partes importantes dentro del d
 Los usuarios hacen uso de la infraestructura cuando cogen o dejan una bici y también hacen uso del sistema de recomendaciones a través de la App, para reservar una bici o un hueco, ver el estado de una estación, o quizás hacer caso a alguna de las sugerencias de la App.
 
 Vemos que hay una interacción continua entre usuarios e infraestructura. El sistema de recomendaciones puede influenciar en las decisiones finales del usuario.
- 
+
 En el desarrollo de este simulador hemos participado varias personas hasta la fecha de publicación de esta memoria, las cuales han realizado diferentes partes, aunque parte de este desarrollo ha sido realizado de forma conjunta debido a la necesidad de tener una base común, que serían el núcleo y algunos estándares definidos.
 
 Con esta visión global del sistema se especifica una serie de objetivos que se detallan a continuación.
@@ -86,8 +87,8 @@ Basado en estos objetivos globales se derivan los siguientes objetivos más conc
 - Recrear infraestructuras reales en ciudades reales.
 - Generar usuarios en cualquier punto de la ciudad.
 - Generación de usuarios versátil y que puedan seguir distribuciones (Poisson).
-- Poder definir qué tipos de usuarios queremos en nuestro sistema y parametrizarlos para que puedan tener comportamientos variados.
-- Poder definir qué tipos de usuarios queremos en nuestro sistema y parametrizarlos para que puedan tener comportamientos variados.
+- Poder definir qué tipos de usuarios queremos en el sistema y parametrizarlos para que puedan tener comportamientos variados.
+- Poder definir qué tipos de usuarios queremos en el sistema y parametrizarlos para que puedan tener comportamientos variados.
 - Facilidad para crear configuraciones (GUI).
 - Creación de distintos tipos de usuario, con diferentes comportamientos que respondan de forma distinta a las situaciones dadas y las recomendaciones.
 - Simulación realista.
@@ -108,7 +109,7 @@ En el contexto global del desarrollo, la parte que ha correspondido al tema de e
 
 Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían nuestros tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la [Figura 2](#fig:2)
 
-![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg "Ciclo iterativo e incremental"){#fig:2 .class }
+![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2 }
 
 En este modelo, primero se realiza un análisis de los requisitos que se van a necesitar para cada iteración. Después del desarrollo de estos, se hacen pruebas y para finalizar se integra con el resto del sitema.
 
@@ -120,8 +121,160 @@ Un desarrollo iterativo e incremental ofrece varias ventajas con respecto a otra
 
 Cada cierto tiempo realizamos una release. Utilizamos un formato de versiones semántico[@bib3] del tipo X.Y.Z donde, X, Y y Z son números enteros mayores que 0.
 
+X se corresponde a la version mayor (cambios grandes que modifican parte o gran parte de la funcionalidad). Y se corresponde a la version menor(pequeños cambios, correción de bugs) y Z, que son micro versiones (parches, pequeños bugs criticos...)
+
+# Descripción informática
+
+El presente capítulo aborda toda la fase de desarrollo del proyecto, desde la especificación de requisitos, el diseño y la implementación del mismo, contextualizando el trabajo realizado por todos en el simulador y explicando con más detalle nuestra parte correspondiente.
+
+## Especificación de requisitos
+
+Antes de comenzar las iteraciones y primeros prototipos de nuestro proyecto, es necesario crear una especificación de requisitos clara y concisa. Vamos a seguir algunas de las recomendaciones del estándar IEEE830[@bib6] para ello. En un desarrollo iterativo e incremental ágil debemos tener muy en cuenta que los requisitos puedan ser lo más modificables posibles.
+
+### Perspectiva general del producto
+
+Para examinar y definir en detalle las distintas especificaciones de nuestro simulador, debemos introducir un poco las necesidades globales del simulador en general.
+
+Necesitamos un software que sea capaz a partir de un estado inicial de simular situaciones reales y debe permitir visualizar y dar una serie de datos correspondientes de la simulación. El simulador tiene que mostrar estos datos a través de un histórico que posteriormente se utilizará para analizar los resultados del sistema de recomendaciones y los algoritmos implementados.
+
+En resumen, el simulador tiene que ser capaz de a partir de unos datos de configuración iniciales, generar un histórico con los resultados de la simulacion para comprobar el comportamiento de los distintos algoritmos de balanceo implementados.
+
+Este TFG se centrará en dos partes:
+
+- Configuración: Sera diseñado con el objetivo de inicializar el simulador utilzando la ubicación de una ciudad real, poder generar usuarios en zonas especificas, parametrizar valores globales de la simulación, ubicar estaciones en cualquier punto y parametrizar también que tipos de usuarios se van a utilizar en la simulaciones, en que zonas y con qué distribución aparecerán.
+
+- Participación en el desarrollo global, que incluye la separación del simulador en módulos, la aplicación de ciertos patrones de diseño y la implementación de la parte gráfica de configuración y simulación.
+
+### Definción de acrónimos y abreviaturas
+
+En esta sección se describen los términos y abreviaturas utilizados para la especificación de requisitos:
+
+- Sistema de bicis compartidas (SBC): Infraestructura (estaciones, bicis).
+
+- Sistema de recomendaciones (SDR): Parte del simulador encargado de recomendar a los usuarios estacionescon la finalidad de balancear el sitema.
+
+- Usuario simulado (US): Agente simulado que interactua dentro del sistena de bicis compartidas y que pueden hacer uso del sistema de recomendaciones y el sistema de bicis compartidas.
+
+- Alquiler: Acción que realizan los usuarios simulados al coger una bici.
+
+- Reservar: Acción que realizan los usuarios al reservar un hueco o una bici antes de llegar a una estación.
+
+- Histórico: Resultado de una simulación.
+
+- Interfaz de usuario (GUI).
+
+### Tipos de usuario:
+
+Solo tendríamos un tipo de usuario, que serían los investigadores, profesores o cualquier persona que quiera hacer uso de nuestro simulador. Podrán o no tener conocimientos de programación, pero los usuarios con conocimientos de desarrollo podrán modificar y crear suarios de una forma mucho más precisa dentro del código fuente.
+
+### Requisitos funcionales
+
+En esta sección se expondrán a grandes rasgos los requisitos funcionales del sistema. Nótese que estos requisitos han ido cambiando a lo largo del desarrollo iterativo e incremental
+
+**Requisito funcional 1**
+
+_Fichero de configuración global del SBC_: La simulación deberá partir de una serie de parámetros globales en un fichero de texto. Partiremos de las siguientes necesidades, aunque pueden cambiar, quitarse o añadirse según el progreso y uso del simulador. El fichero de configuración deberá especificar:
+
+- Un parametro (semilla) para la generación de sucesos aleatorios. Esta semilla permite que los sucesos aleatorios sean los mismos en el momento en que se ejecuten.
+
+- Parametro de tiempo total de simulación
+
+- Un área donde sucederá la simulación.
+
+***Requisito funcional 2**
+
+_Fichero de configuración de estaciones_. Se podrá mediante un fichero de configuración, disponer para la simulación de un conjunto finito  de estaciones. El  archivo de configuración deberá especificar:
+
+- Las bicis disponibles en las estaciones.
+
+- Número total de huecos en cada estación.
+
+- Punto geográfico de su ubicación real o ficticia.
+
+**Requisito funcional 3.1**
+
+_Finhero de configuración para los US_: La configuración deberá proporcionar un mecanismo con el cual se puedan generar usuarios en distintos puntos geográficos. De momento los mñas importantes son:
+
+- Distribución exponencial (Poisson).
+
+- Único US.
+
+
+
+### Generación de puntos aleatorios en un circulo de la superficie de una esfera
+
+En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional con puntos cartesianos. 
+
+![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:3}
+
+En la [figura 3](#fig:3), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es una valor aleatorio entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a la siguiente formula.
+
+$$
+d = rand(0, R);  \; \;
+\theta = rand(0, 2\pi)\;\;\;\;\;\;\;\;(1)
+$$
+
+Sin embaro esto nos va a dar como resultado más cantidad de puntos en zonas cercanas al centro de la circunferencia. Esto se debe a que a que a medida que el radio aumenta, la superficie en la que se puede representar el punto es mucho mayor. Debemos tener en consideración este dato a la hora de generar $d$ aleatoriamente.
+
+Por lo tanto lo que haremos es generar $d$ en base a la siguiente formula para el radio [@bib4].
+
+$$
+d = R*\sqrt(rand(0, 1))\;\;\;\;\;\;\;\;(2)
+$$
+
+Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la [figura 4](#fig:4) se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
+
+![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:4}
+
+En segundo lugar tenemos que trasladar esta solución a la superficie de la tierra. Los puntos geográficos en la tierra, no se comportan como puntos cartesianos en un plando bidimensional. Supongamos los siguientes puntos geográficos, siendo $x1, x2, x3$ y $x4$ latitudes y $y1, y2, y3$ y $y4$ longitudes:
+
+$$
+p1 = (x1,y1); \; \;
+p2 = (x2, y2); \; \;
+t1 = (x3, y3); \; \;
+t2 = (x4, y4); \;\;\;\;\;\;\;\;(3)
+$$
+
+Supongamos ahora que los puntos p1 y p2 se encuentran cercanos al ecuador, y los puntos t1 y t2 se encuentran cercanos a los polos. Además supongamos tambien que: 
+
+$$
+x2 - x1 = x4 - x3; \; \;
+y2 - y1 = y4 - y3 \;\;\;\;\;\;\;\;(4)
+$$
+
+Si consideramos los puntos p1, p2, t1 y t2 como puntos cartesiandos, la distancia sería la misma, pero como son puntos geométricos, al ser la tierra elipsoidal, son distancias diferentes. 
+
+Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular un nuevo punto geográfico. Tenemos como punto inicial $\varphi_1$"(latitud) y $\lambda_1$(longitud), un angulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos tambien conocer la distancia angular, que sería $\delta$ = d / R, donde R es erl radio de la tierra.
+
+Aplicando la siguiente fórmula[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
+
+$$
+\varphi_2 = asin(sin\;\varphi_1 * cos\;\delta + cos\;\varphi_1*sin\;\delta \;*cos\;\theta) \;\;\;\;\;\;\;\;(5)
+$$
+
+$$
+\lambda_2 = \lambda_1 + atan2(sin\;\theta*sin\;\delta*cos\;\varphi_1,\;cos\;\delta - sin\;\varphi_1*sin\;\varphi_2) \;\;\;\;\;\;\;\;(6)
+$$
+
+
+
+Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
+Es posible que esta solución parezca innecesaria, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos de la forma más precisa posible, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 5](#fig:5) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
+
+![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:5}
+
+
+
 # Test
 
 Prueba de referencia[@item1]
 
 # Referencias
+
+
+
+
+
+
+
+
