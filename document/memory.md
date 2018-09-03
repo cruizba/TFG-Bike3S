@@ -5,6 +5,7 @@ date: 02 de Agosto de 2018
 
 
 
+
 ---
 
 # Resumen {-}
@@ -199,6 +200,58 @@ _Finhero de configuración para los US_: La configuración deberá proporcionar 
 
 - Único US.
 
+**Requisito funcional 3.2**
+
+_Configuración de usuarios independiente:_ La configuración de entrada de los US en el SBC debe ser independiente del simulador, es decir, deberá generar un fichero con los usuarios que van a aparecer en la simulación. Por lo tanto, habrá dos ficheros de configuración:
+
+- Fichero de configuración con puntos de entrada y distribuciones.
+
+- Ficheros de configuración con usuarios generados según el fichero con puntos de entrada.
+
+Los US podrán o no tener parámetros de configuración que modifiquen su comportamiento de facto. Los parámetros dependerán del tipo de US que se quiera.
+
+**Requisito funcional 3.3**
+
+_Generador de usuarios_: Del requisito anterior podemos deducir que deberña haber un generador de US que reciba el fichero de configuración con puntos de entrada y distribuciones y nos genere un fichero de configuración con US siguiendo dichas distribuciones o reglas definidas.
+
+**Requisito funcional 4**
+
+_Procesador de la configuración_: En el simulador deberá haber un procesador para la configuración para las configuraciones descritas que sea capaz de preparar todo el sistema para su correspondiente ejecución.
+
+**Requisito funcional 5**
+
+_Gestor de rutas_: Los US deberán tomar rutas reales y decisiones basándose en el mapa y la situación del SBC, Estas rutas serán posterior,emte guardadas en el histórico para su visualización.
+
+**Requisito funcional 6**
+
+_Herramientas GUI_: La GUI deberá proporcionar las siguientes herramientas:
+
+- Crear y cargar configuraciones
+
+- Visualizar históricos
+
+- Analizar y exportar datos.
+
+Además debe permitir crear y cargar configuraciones en la GUI, deberá poder crear configuraciones a través de un mapa. Los elementos de la configuración que se vayan añadiendo, deberán verse en un mapa y en una vista en forma de árbol para que sea accesible.
+
+### Requisitos no funcionales
+
+**Requisito no funcional 1**
+
+Interfaz de usuario dinámica: Al añadir o quitar parámetros de configuración a los usuarios, añadir o quitar tipos de usuarios, los formularios de la GUI para configurar la simulación deben ser lo más dinámicos posibles, para agilizar el desarrollo.
+
+**Requisito no funcional 2**
+
+El simulador debe ser multiplataforma, pudiendo así ser utilizado y desarrollarlo en las plataformas GNU/Linux, Windows y MacOS.
+
+**Requisito no funcional 3**
+
+El diseño del simulador y el código debe ser lo más sencillo posible y aportar facilidades a la hora de añadir, modificar o alterar implementaciones de usuarios y de parámetros de configuración, así como de métodos de generación de usuarios.
+
+**Requisito no funcional 4**
+
+Tanto el formato de los ficheros de configuración como el del histórico deben ser independientes, es decir, la configuración podrá ser creada y el histórico leído.
+
 
 
 ### Generación de puntos aleatorios en un circulo de la superficie de una esfera
@@ -256,8 +309,6 @@ $$
 \lambda_2 = \lambda_1 + atan2(sin\;\theta*sin\;\delta*cos\;\varphi_1,\;cos\;\delta - sin\;\varphi_1*sin\;\varphi_2) \;\;\;\;\;\;\;\;(6)
 $$
 
-
-
 Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
 Es posible que esta solución parezca innecesaria, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos de la forma más precisa posible, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 5](#fig:5) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
 
@@ -265,16 +316,7 @@ Es posible que esta solución parezca innecesaria, pero no es así. Esta generac
 
 
 
-# Test
 
 Prueba de referencia[@item1]
 
 # Referencias
-
-
-
-
-
-
-
-
