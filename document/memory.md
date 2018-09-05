@@ -6,6 +6,7 @@ date: 02 de Agosto de 2018
 
 
 
+
 ---
 
 # Resumen {-}
@@ -110,7 +111,7 @@ En el contexto global del desarrollo, la parte que ha correspondido al tema de e
 
 Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían nuestros tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la [Figura 2](#fig:2)
 
-![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2 }
+![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2}
 
 En este modelo, primero se realiza un análisis de los requisitos que se van a necesitar para cada iteración. Después del desarrollo de estos, se hacen pruebas y para finalizar se integra con el resto del sitema.
 
@@ -170,7 +171,7 @@ Solo tendríamos un tipo de usuario, que serían los investigadores, profesores 
 
 ### Requisitos funcionales
 
-En esta sección se expondrán a grandes rasgos los requisitos funcionales del sistema. Nótese que estos requisitos han ido cambiando a lo largo del desarrollo iterativo e incremental
+En esta sección se expondrán los requisitos de mi parte dentro de este proyecto. Nótese que estos requisitos han ido cambiando a lo largo del desarrollo iterativo e incremental
 
 **Requisito funcional 1**
 
@@ -182,7 +183,7 @@ _Fichero de configuración global del SBC_: La simulación deberá partir de una
 
 - Un área donde sucederá la simulación.
 
-***Requisito funcional 2**
+**Requisito funcional 2**
 
 _Fichero de configuración de estaciones_. Se podrá mediante un fichero de configuración, disponer para la simulación de un conjunto finito  de estaciones. El  archivo de configuración deberá especificar:
 
@@ -250,17 +251,41 @@ El diseño del simulador y el código debe ser lo más sencillo posible y aporta
 
 **Requisito no funcional 4**
 
-Tanto el formato de los ficheros de configuración como el del histórico deben ser independientes, es decir, la configuración podrá ser creada y el histórico leído.
+Tanto el formato de los ficheros de configuración como el del histórico deben ser independientes, es decir, la configuración podrá ser creada y el histórico leído por otro sofware independientemente del simulador. Se utilizará el formato JSON y deberá contar de un sistema para la verificación de datos.
 
+## Análisis
 
+Para ir formando las partes de nuestro simulador, vamos a partir de lo siguiente:
+
+1. En el sistema de bicis sólo se pueden realizar ciertas **acciones**.
+
+2. Los usuarios pueden elegir entre esas acciones posibles dependiendo de su **estado**, que tipo de usuario sea, y el sistema de recomendaciones.
+
+3. El sistema de bicis se encuentra en un lugar en específico y, si se tienen datos anteriores del sistema, se pueden deducir distribuciones de aparación de los usuarios en el sistema. Por lo cual contamos con un **estado inicial**
+
+4. Cada persona que utiliza el sistema es distinta, el uso del SBC es diferente para cada tipo de usuario.
+
+5. Cada simulación debe producir un histórico, y con este histórico se debe poder **visualizar la simulación** y **analizar los datos resultantes**.
+
+Partiendo de esta pequeña analogía, con los puntos anteriormente citados vamos a ir mencionando las distintas partes de nuestro simulador que se corresponden con cada punto anterior en el SBC real.
+
+### Núcleo
+
+En el núcleo definiremos como se ejecutarán las acciones de las entidades en el simulador. Para definir como se van a ejecutar estas acciones vamos a plantear un diagrama de flujo de las posibles acciones del usuario dentro del sistema.
+
+Este flujo de decisiones deberá seguir cualquier usuario del sistema. Las decisiones que tomará el usuario para realizar unas acciones u otras vendrán determinadas por el estado del SBC y por las implementaciones concretas de los usuarios implementados.
+
+En la siguiente figura se puede ver el flujo de decisiones de un usuario dentro del sistema. 
+
+![Flujo de decisiones de un Usuario Simulado](images/flow_events.png){#fig:3}
 
 ### Generación de puntos aleatorios en un circulo de la superficie de una esfera
 
 En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional con puntos cartesianos. 
 
-![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:3}
+![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:40}
 
-En la [figura 3](#fig:3), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es una valor aleatorio entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a la siguiente formula.
+En la [figura 40](#fig:40), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es una valor aleatorio entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a la siguiente formula.
 
 $$
 d = rand(0, R);  \; \;
@@ -275,9 +300,9 @@ $$
 d = R*\sqrt(rand(0, 1))\;\;\;\;\;\;\;\;(2)
 $$
 
-Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la [figura 4](#fig:4) se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
+Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la [figura 50](#fig:50) se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
 
-![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:4}
+![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:50}
 
 En segundo lugar tenemos que trasladar esta solución a la superficie de la tierra. Los puntos geográficos en la tierra, no se comportan como puntos cartesianos en un plando bidimensional. Supongamos los siguientes puntos geográficos, siendo $x1, x2, x3$ y $x4$ latitudes y $y1, y2, y3$ y $y4$ longitudes:
 
@@ -310,12 +335,9 @@ $$
 $$
 
 Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
-Es posible que esta solución parezca innecesaria, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos de la forma más precisa posible, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 5](#fig:5) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
+Es posible que esta solución parezca innecesaria, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos de la forma más precisa posible, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 60](#fig:60) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
 
-![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:5}
-
-
-
+![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:60}
 
 Prueba de referencia[@item1]
 
