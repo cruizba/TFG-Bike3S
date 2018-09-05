@@ -145,13 +145,13 @@ Este TFG se centrará en dos partes:
 
 - Participación en el desarrollo global, que incluye la separación del simulador en módulos, la aplicación de ciertos patrones de diseño y la implementación de la parte gráfica de configuración y simulación.
 
-### Definción de acrónimos y abreviaturas
+### Definición de acrónimos y abreviaturas
 
 En esta sección se describen los términos y abreviaturas utilizados para la especificación de requisitos:
 
 - Sistema de bicis compartidas (SBC): Infraestructura (estaciones, bicis).
 
-- Sistema de recomendaciones (SDR): Parte del simulador encargado de recomendar a los usuarios estacionescon la finalidad de balancear el sitema.
+- Sistema de recomendaciones (SDR): Parte del simulador encargado de recomendar a los usuarios estacionescon la finalidad de balancear el sistema.
 
 - Usuario simulado (US): Agente simulado que interactua dentro del sistena de bicis compartidas y que pueden hacer uso del sistema de recomendaciones y el sistema de bicis compartidas.
 
@@ -193,7 +193,7 @@ _Fichero de configuración de estaciones_. Se podrá mediante un fichero de conf
 
 **Requisito funcional 3.1**
 
-_Finhero de configuración para los US_: La configuración deberá proporcionar un mecanismo con el cual se puedan generar usuarios en distintos puntos geográficos. De momento los mñas importantes son:
+_Fichero de configuración para los US_: La configuración deberá proporcionar un mecanismo con el cual se puedan generar usuarios en distintos puntos geográficos. De momento los más importantes son:
 
 - Distribución exponencial (Poisson).
 
@@ -242,7 +242,7 @@ x2 - x1 = x4 - x3; \; \;
 y2 - y1 = y4 - y3 \;\;\;\;\;\;\;\;(4)
 $$
 
-Si consideramos los puntos p1, p2, t1 y t2 como puntos cartesiandos, la distancia sería la misma, pero como son puntos geométricos, al ser la tierra elipsoidal, son distancias diferentes. 
+Si consideramos los puntos p1, p2, t1 y t2 como puntos cartesianos, la distancia sería la misma, pero como son puntos geométricos, al ser la tierra elipsoidal, son distancias diferentes. 
 
 Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular un nuevo punto geográfico. Tenemos como punto inicial $\varphi_1$"(latitud) y $\lambda_1$(longitud), un angulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos tambien conocer la distancia angular, que sería $\delta$ = d / R, donde R es erl radio de la tierra.
 
