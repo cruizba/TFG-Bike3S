@@ -7,6 +7,7 @@ date: 02 de Agosto de 2018
 
 
 
+
 ---
 
 # Resumen {-}
@@ -273,26 +274,104 @@ Partiendo de esta pequeña analogía, con los puntos anteriormente citados vamos
 
 En el núcleo definiremos como se ejecutarán las acciones de las entidades en el simulador. Para definir como se van a ejecutar estas acciones vamos a plantear un diagrama de flujo de las posibles acciones del usuario dentro del sistema.
 
-Este flujo de decisiones deberá seguir cualquier usuario del sistema. Las decisiones que tomará el usuario para realizar unas acciones u otras vendrán determinadas por el estado del SBC y por las implementaciones concretas de los usuarios implementados.
+Estas decisiones que tomará el usuario para realizar unas acciones u otras vendrán determinadas por el estado del SBC y por las implementaciones concretas de los usuarios implementados. En la sección <!-- TODO --> veremos que toda esta lógica será implementada como un simulador basado en eventos discretos.
 
-En la siguiente figura se puede ver el flujo de decisiones de un usuario dentro del sistema. 
+Si analizamos el comportamiento de un usuario en el sistema de bicis real, se pueden identificar la siguiente secuencia de acciones y decisiones:
+
+- Cuando un usuario aparece en el sistema elegirá primero a que estación quiere ir y posteriormente si reservar o no una bicicleta. Si hay bicicletas disponibles en dicha estación, podrá reservar una de ellas, aunque puede suceder que la reserva expire (ya que las reservas podrán contar con un tiempo límite de expiración). Si esto ocurre podrá decidir entre:
+
+  - Abandonar el sistema.
+
+  - Continuar hacia la estación sin reserva para coger una bici si está disponible.
+
+  - Repetir el proceso y decidir a que otra estación ir y si reservar o no.
+
+- Si el usuario llega a la estación sin reserva y no hay bicis disponibles, puede tomar la decisión de abandonar el sistema o decidir si ir a otra estación y repetir el mismo proceso.
+
+- Una vez el usuario ha conseguido una bicicleta, deberá decidor si ir directamente a la estación para devolverla, o dar una vuelta por la ciudad para posteriormente, devolverla en una estación.
+
+- Si el usuario reserva un anclaje y hay disponibles, podrá devolver la bici sin problemas y abandonar el sistema. Las reservas de anclajes también pueden expirar por lo que si la reserva expira, tendrá que decidir entre:
+
+  - Continuar hacia la estación y devolvera si hay anclajes disponibles.
+
+  - Repetir el proceso y decir a que otra estación ir para devolver la bici y si reservar o no.
+
+- Si el usuario llega a la estación sin reserva de anclaje, puede suceder que no haya anclajes libres. En tal caso tendrá que volver a decidir a que estación ir para devolvera y si reservar o no. El proceso se repite hasta que el usuario consigue devolver la bicicleta.
+
+En la [Figura 3](#fig:3) se puede ver el flujo de decisiones del usuario con más detalle.
 
 ![Flujo de decisiones de un Usuario Simulado](images/flow_events.png){#fig:3}
 
-### Generación de puntos aleatorios en un circulo de la superficie de una esfera
+### Usuarios y sistema de recomendaciones
 
-En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional con puntos cartesianos. 
+Los US interactuan con el SBC en el núcleo, pero ¿en base a que tomarán decisiones? Si nos fijamos en el flujo de decisiones, muchos de los posibles estados por los que puede pasar un US dependen de si reserva, no reserva, si decide volver a intentarlo después de un intento fallido, a que estación ir...
+
+Si pensamos en una persona utilizando el SBC en la realidad, vemos que su información del sistema es limitada sin el uso de un dispositivo smartphone. Pero si el usuario dispusiera de uno y de una aplicación que le proporcione información, puede tener un amplio conocimiento del SBC en ese momento, además de poder seguir consejos, recomendaciones, etc.
+
+Los US podrán obtener información del estado actual de las estaciones, o recomendaciones a traves de distintas interfaces que proporcionará el simulador a los usuarios. Por ejemplo, una interfaz para la información de la infraestructura (estaciones y bicis) y otra para las recomendaciones. Podríamos considerar estas interfaces como las "apps" que utilizan los usuarios en el sitema real, y cada usuario, según su implementación, podrá o no hacer uso de ellas.
+
+En la [Figura 4](#fig:4) vemos un diagrama en el que se explica cómo los US podrían consultar al SBC.
+
+![Usuarios simulados utilizando la información del sistema de recomendaciones y la infraestructura](images/How Users use Recomendation System.jpg){#fig:4}
+
+El simulador podrá disponer en un futuro de mas de un sistema de recomendaciones, pero de momento se ha incluído uno, el cual ha sido implementado por otra desarrolladora del simulador (Sandra Timón [@bib7]).
+
+La diferencia entre la interfaz de infraestructura y el sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el de recomendaciones, los criterios que aplica para realizarlas responden a los intereses del sistema (para rebalancear).
+
+### Configuración
+
+Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuraciones que deberán poder ser legibles y modificables a nivel de texto, por lo que utilzaremos la notación JSON.
+
+Los ficheros serían los siguientes:
+
+- Fichero de configuración de estaciones.
+
+- Fichero de configuración global
+
+- Fichero de puntos de entrada de generación de usuarios.
+
+- Ficheros de US independientes, proveniente del fichero anterior.
+
+Como se puede ver tenemos dos ficheros para los usuarios, uno de puntos de entrada y otro de usuarios independientes. Esto se debe a la necesidad de usar datos reales en vez de generados por el simulador, o usuarios generados de forma externa por otro programa. Por lo tanto, se proporcionará un módulo dentro del simulador, capaz de generar los usuarios a partir del fichero de puntos de entrada.
+
+El contenido del archivo de **configuración de las estaciones** contiene:
+
+- Capacidad: Número de anclajes disponibles.
+
+- Cantidad de bicis
+
+- Posición geográfica.
+
+Antes de que pueda dar comienzo la simulación, hemos definido las siguientes 4 fases:
+
+- Lectura de ficheros.
+
+- Inicialización Infraestructura.
+
+- Inicialización: Se cargará la infraestructura y las diferentes partes necesarias para la ejecución de la simulación. Estos módulos son:
+
+  - Generador de rutas con puntos geográficos.
+
+  - Sistema de recomendaciones e información.
+
+- Ejecutar la simulación.
+
+
+
+### Generación de usuarios dentro de un punto geográfico y un radio.
+
+En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional-
 
 ![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:40}
 
-En la [figura 40](#fig:40), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es una valor aleatorio entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a la siguiente formula.
+En la [figura 40](#fig:40), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es  aleatorio uniforme entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a las siguientes formulas.
 
 $$
-d = rand(0, R);  \; \;
-\theta = rand(0, 2\pi)\;\;\;\;\;\;\;\;(1)
+d = random(0, R);  \; \;
+\theta = random(0, 2\pi)\;\;\;\;\;\;\;\;(1)
 $$
 
-Sin embaro esto nos va a dar como resultado más cantidad de puntos en zonas cercanas al centro de la circunferencia. Esto se debe a que a que a medida que el radio aumenta, la superficie en la que se puede representar el punto es mucho mayor. Debemos tener en consideración este dato a la hora de generar $d$ aleatoriamente.
+Sin embargo esto nos va a dar como resultado más cantidad de puntos en zonas cercanas al centro de la circunferencia. Esto se debe a que a que a medida que el radio aumenta, la superficie en la que se puede representar el punto es mucho mayor. Debemos tener en consideración este dato a la hora de generar $d$ aleatoriamente.
 
 Por lo tanto lo que haremos es generar $d$ en base a la siguiente formula para el radio [@bib4].
 
@@ -320,11 +399,11 @@ x2 - x1 = x4 - x3; \; \;
 y2 - y1 = y4 - y3 \;\;\;\;\;\;\;\;(4)
 $$
 
-Si consideramos los puntos p1, p2, t1 y t2 como puntos cartesianos, la distancia sería la misma, pero como son puntos geométricos, al ser la tierra elipsoidal, son distancias diferentes. 
+Si consideramos los puntos p1, p2, t1 y t2 como puntos en un plano bidimensional, las distancia entre p1 y p2, y la distancia entre t1 y t2 sería la misma, pero como son coordenadas geográficas, al ser la tierra elipsoidal, son distancias diferentes. 
 
-Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular un nuevo punto geográfico. Tenemos como punto inicial $\varphi_1$"(latitud) y $\lambda_1$(longitud), un angulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos tambien conocer la distancia angular, que sería $\delta$ = d / R, donde R es erl radio de la tierra.
+Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular una nueva coordenada geográfica. Tenemos como punto inicial $\varphi_1$(latitud) y $\lambda_1$(longitud), un angulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos tambien conocer la distancia angular, que sería $\delta$ = d / R, donde R es el radio de la tierra.
 
-Aplicando la siguiente fórmula[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
+Aplicando las siguiente fórmulas[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
 
 $$
 \varphi_2 = asin(sin\;\varphi_1 * cos\;\delta + cos\;\varphi_1*sin\;\delta \;*cos\;\theta) \;\;\;\;\;\;\;\;(5)
@@ -335,7 +414,7 @@ $$
 $$
 
 Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
-Es posible que esta solución parezca innecesaria, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos de la forma más precisa posible, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 60](#fig:60) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
+Es posible que esta solución carezca de sentido por que el error puede parecer mínimo si se representan las coordenadas sobre un plano bidimensional, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos sobre una superficie esférica, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 60](#fig:60) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
 
 ![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:60}
 
