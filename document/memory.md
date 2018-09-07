@@ -8,6 +8,8 @@ date: 02 de Agosto de 2018
 
 
 
+
+
 ---
 
 # Resumen {-}
@@ -274,7 +276,7 @@ Partiendo de esta pequeña analogía, con los puntos anteriormente citados vamos
 
 En el núcleo definiremos como se ejecutarán las acciones de las entidades en el simulador. Para definir como se van a ejecutar estas acciones vamos a plantear un diagrama de flujo de las posibles acciones del usuario dentro del sistema.
 
-Estas decisiones que tomará el usuario para realizar unas acciones u otras vendrán determinadas por el estado del SBC y por las implementaciones concretas de los usuarios implementados. En la sección <!-- TODO --> veremos que toda esta lógica será implementada como un simulador basado en eventos discretos.
+Estas decisiones que tomará el usuario para realizar unas acciones u otras vendrán determinadas por el estado del SBC y por las implementaciones concretas de los usuarios implementados. En la sección <!-- TODO --> veremos que toda esta lógica será implementada como un **simulador basado en eventos discretos**.
 
 Si analizamos el comportamiento de un usuario en el sistema de bicis real, se pueden identificar la siguiente secuencia de acciones y decisiones:
 
@@ -320,21 +322,13 @@ La diferencia entre la interfaz de infraestructura y el sistema de recomendacion
 
 ### Configuración
 
-Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuraciones que deberán poder ser legibles y modificables a nivel de texto, por lo que utilzaremos la notación JSON.
+Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuraciones que deberán poder ser legibles y modificables a nivel de texto, por lo que utilzaremos la notación JSON, aunque como veremos en la sección <!-- TODO -->, proporcionaremos una interfaz de usuario para facilitar la creación de simulaciones. Además deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simualción.
 
-Los ficheros serían los siguientes:
+#### Configuración de la infraestrucutra
 
-- Fichero de configuración de estaciones.
+Para que nuestros usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga está información.
 
-- Fichero de configuración global
-
-- Fichero de puntos de entrada de generación de usuarios.
-
-- Ficheros de US independientes, proveniente del fichero anterior.
-
-Como se puede ver tenemos dos ficheros para los usuarios, uno de puntos de entrada y otro de usuarios independientes. Esto se debe a la necesidad de usar datos reales en vez de generados por el simulador, o usuarios generados de forma externa por otro programa. Por lo tanto, se proporcionará un módulo dentro del simulador, capaz de generar los usuarios a partir del fichero de puntos de entrada.
-
-El contenido del archivo de **configuración de las estaciones** contiene:
+El contenido del archivo de configuración de las estaciones contiene:
 
 - Capacidad: Número de anclajes disponibles.
 
@@ -342,19 +336,47 @@ El contenido del archivo de **configuración de las estaciones** contiene:
 
 - Posición geográfica.
 
-Antes de que pueda dar comienzo la simulación, hemos definido las siguientes 4 fases:
+Con esta información aportada al simulador, se podrán realizar simulaciones en cualquier SBC del mundo, simplemente proporcionando la información necesaria al archivo de configuración.
 
-- Lectura de ficheros.
+#### Configuración global de la simulación.
 
-- Inicialización Infraestructura.
+Por otro lado, el contenido del archivo de configuración de parámetros globales contendrá lo siguiente:
 
-- Inicialización: Se cargará la infraestructura y las diferentes partes necesarias para la ejecución de la simulación. Estos módulos son:
+- Tiempo máximo de reservas.
 
-  - Generador de rutas con puntos geográficos.
+- Tiempo total de la simulación
 
-  - Sistema de recomendaciones e información.
+- Semilla (Para generar los mismos eventos aleatorios)
 
-- Ejecutar la simulación.
+- Cuadro delimitador (Para delimitar la zona de la simulación).
+
+- Directorio del histórico: Dónde se van a guardar los resultados de la simulación.
+
+Sobre todos estos parámetros, hay que destacar la semilla. Los sucesos aleatorios que suceden dentro del simulador son en realidad “pseudoaleatorios” ya que parten de un primer valor (semilla), a través del cual una secuencia de números aleatorios es la misma siempre que partan de ese mismo valor. Esta **semilla** es una parte importante de nuestra configuración ya que de ella depende que, se puedan obtener la misma aleatoriedad de una simulación a otra para poder realizar pruebas.
+
+#### Configuración para la aparición de usuarios.
+
+Para configurarlos usuarios es necesario representar mediante unos datos iniciales cómo van a aparecer. Habrá dos posibles formas de realizar esto:
+
+- Crear un fichero de configuración con el instante exacto en el que aparece un usuario.
+
+- Crear un fichero con puntos de entrada de usuarios (Entry Points).
+
+**¿Qué es un Entry Point?**
+
+Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener cualquier tipo de propiedades, y puede aparecer utilizando distribucion.
+
+En nuestro caso en particular nos interesa que los usuarios sean generados en puntos geográficos concretos por una distribución de Poisson[^4] y que estén distribuidos dado un radio de forma uniforme en el área abarcado por éste. Un Entry Point de estas características podría tener las siguientes propiedades:
+
+[^4]: Es una distribución de probabilidad discreta que dado una frecuencia de ocurrencia media, expresa la probabilidad de que ocurra un determinado número de eventos durante cierto período de tiempo.
+
+- Una posición geográfica y un radio, con los que establecer un área de aparición para los usuarios. 
+
+- Parámetro lambda: La función de Poisson se caracteriza por un único parámetro lambda.
+
+- Instante inicial y final: Rango de tiempo en el que se quiere que aparezcan los usuarios.
+
+- Tipo de usuario: Tipo de usuario simulado que aparecera. Recordemos que cada tipo de usuario tendrá un comportamiento diferente.
 
 
 
