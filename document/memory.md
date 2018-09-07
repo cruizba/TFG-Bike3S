@@ -10,6 +10,7 @@ date: 02 de Agosto de 2018
 
 
 
+
 ---
 
 # Resumen {-}
@@ -322,7 +323,7 @@ La diferencia entre la interfaz de infraestructura y el sistema de recomendacion
 
 ### Configuración
 
-Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuraciones que deberán poder ser legibles y modificables a nivel de texto, por lo que utilzaremos la notación JSON, aunque como veremos en la sección <!-- TODO -->, proporcionaremos una interfaz de usuario para facilitar la creación de simulaciones. Además deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simualción.
+Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables a nivel de texto, por lo que utilzaremos la notación JSON, aunque como veremos en la sección <!-- TODO -->, proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Además deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simualción.
 
 #### Configuración de la infraestrucutra
 
@@ -352,11 +353,11 @@ Por otro lado, el contenido del archivo de configuración de parámetros globale
 
 - Directorio del histórico: Dónde se van a guardar los resultados de la simulación.
 
-Sobre todos estos parámetros, hay que destacar la semilla. Los sucesos aleatorios que suceden dentro del simulador son en realidad “pseudoaleatorios” ya que parten de un primer valor (semilla), a través del cual una secuencia de números aleatorios es la misma siempre que partan de ese mismo valor. Esta **semilla** es una parte importante de nuestra configuración ya que de ella depende que, se puedan obtener la misma aleatoriedad de una simulación a otra para poder realizar pruebas.
+Sobre todos estos parámetros, hay que destacar la semilla. Los sucesos aleatorios que suceden dentro del simulador son en realidad “pseudoaleatorios” ya que parten de un primer valor (semilla), a través del cual una secuencia de números aleatorios es la misma siempre que partan de ese mismo valor. Esta **semilla** es una parte importante de nuestra configuración ya que de ella depende que se pueda obtener la misma aleatoriedad de una simulación a otra, permitiendo así poder repetir pruebas y compartir simulaciones con otras personas que utilicen el simulador.
 
 #### Configuración para la aparición de usuarios.
 
-Para configurarlos usuarios es necesario representar mediante unos datos iniciales cómo van a aparecer. Habrá dos posibles formas de realizar esto:
+Para configurar los usuarios es necesario representar mediante unos datos iniciales cómo van a aparecer. Habrá dos posibles formas de realizar esto:
 
 - Crear un fichero de configuración con el instante exacto en el que aparece un usuario.
 
@@ -364,11 +365,9 @@ Para configurarlos usuarios es necesario representar mediante unos datos inicial
 
 **¿Qué es un Entry Point?**
 
-Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener cualquier tipo de propiedades, y puede aparecer utilizando distribucion.
+Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener cualquier tipo de propiedades, y puede aparecer utilizando una distribucion.
 
-En nuestro caso en particular nos interesa que los usuarios sean generados en puntos geográficos concretos por una distribución de Poisson[^4] y que estén distribuidos dado un radio de forma uniforme en el área abarcado por éste. Un Entry Point de estas características podría tener las siguientes propiedades:
-
-[^4]: Es una distribución de probabilidad discreta que dado una frecuencia de ocurrencia media, expresa la probabilidad de que ocurra un determinado número de eventos durante cierto período de tiempo.
+En nuestro caso en particular nos interesa que los usuarios sean generados en puntos geográficos concretos por una distribución de Poisson y que estén distribuidos dado un radio de forma uniforme en el área abarcado por éste. Un Entry Point de estas características podría tener las siguientes propiedades:
 
 - Una posición geográfica y un radio, con los que establecer un área de aparición para los usuarios. 
 
@@ -378,11 +377,35 @@ En nuestro caso en particular nos interesa que los usuarios sean generados en pu
 
 - Tipo de usuario: Tipo de usuario simulado que aparecera. Recordemos que cada tipo de usuario tendrá un comportamiento diferente.
 
+También nos puede interesar un usuario único en un determinado instante de tiempo que podría  tener las siguientes las siguientes propiedades:
 
+- Posición geográfica
+
+- Instante de aparición: Momento exacto en el que el usuario aparece.
+
+- Tipo de usuario
+
+En definitia, un **Entry Point** es un concepto genérico de entrada al simulador y pueden variar sus parámetros. Ahora la pregunta es, ¿cómo y de que forma generaremos los puntos en una distribución de Poisson? 
+
+#### Generación de usuarios en una distribución de Poisson
+
+Con respecto a la generación de usuarios, la distribución que más se acerca a como los usuarios aparecen en el sistema es la distribución de Poisson, la cual es una distribución de probabilidad discreta que dada una frecuencia de ocurrencia media, expresa la probabilidad de que ocurra un determinado número de eventos durante cierto período de tiempo. Estos eventos que ocurren son las apariciones de usuario y para simularlo tendremos que resolver primero dos problemas:
+
+1. Necesitamos computar de alguna manera los instantes de aparición de cada usuario de forma aleatoria.
+
+2. Situar las apariciones de forma aleatoria uniforme dado un punto geográfico y un radio (dentro de una circunferencia)
+
+Las soluciones a estos dos problemas se resuelven en los siguientes dos subapartados.
+
+**1. Generación de valores de tiempo aleatorio siguiendo una distribución de poisson**
+
+El objetivo de este subapartado es definir un algoritmo que genere dado un valor $\lambda$, un tiempo total y un número máximo de usuarios, una secuencia de tiempos de aparición para los usuarios. 
+
+Para ello primero debemos recordar como es una función exponencial. La distribución de Poisson y la distribución exponencial se utilizan ambas para el mismo tipo de sucesos. <!-- aq --> En las distribuciones exponenciales tenemos la siguiente función de distribución de probabilidad.
 
 ### Generación de usuarios dentro de un punto geográfico y un radio.
 
-En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional-
+En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional.
 
 ![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:40}
 
