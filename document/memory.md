@@ -3,14 +3,6 @@ title: Arquitectura, diseño, y configuración de un simulador de bicis comparti
 author: Carlos Ruiz Ballesteros
 date: 02 de Agosto de 2018
 
-
-
-
-
-
-
-
-
 ---
 
 # Resumen {-}
@@ -201,7 +193,7 @@ _Fichero de configuración de estaciones_. Se podrá mediante un fichero de conf
 
 _Fichero de configuración para los US_: La configuración deberá proporcionar un mecanismo con el cual se puedan generar usuarios en distintos puntos geográficos. De momento los más importantes son:
 
-- Distribución exponencial (Poisson).
+- Distribución exponencial siguiendo un proceso de Poisson.
 
 - Único US.
 
@@ -367,11 +359,11 @@ Para configurar los usuarios es necesario representar mediante unos datos inicia
 
 Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener cualquier tipo de propiedades, y puede aparecer utilizando una distribucion.
 
-En nuestro caso en particular nos interesa que los usuarios sean generados en puntos geográficos concretos por una distribución de Poisson y que estén distribuidos dado un radio de forma uniforme en el área abarcado por éste. Un Entry Point de estas características podría tener las siguientes propiedades:
+En nuestro caso en particular nos interesa que los usuarios sean generados en puntos geográficos concretos siguiendo un proceso de Poisson y que estén distribuidos dado un radio de forma uniforme en el área abarcado por éste. Un Entry Point de estas características podría tener las siguientes propiedades:
 
 - Una posición geográfica y un radio, con los que establecer un área de aparición para los usuarios. 
 
-- Parámetro lambda: La función de Poisson se caracteriza por un único parámetro lambda.
+- Parámetro lambda: Un proceso de Poisson se caracteriza por un único parámetro lambda.
 
 - Instante inicial y final: Rango de tiempo en el que se quiere que aparezcan los usuarios.
 
@@ -385,31 +377,114 @@ También nos puede interesar un usuario único en un determinado instante de tie
 
 - Tipo de usuario
 
-En definitia, un **Entry Point** es un concepto genérico de entrada al simulador y pueden variar sus parámetros. Ahora la pregunta es, ¿cómo y de que forma generaremos los puntos en una distribución de Poisson? 
+En definitia, un **Entry Point** es un concepto genérico de entrada al simulador y pueden variar sus parámetros. Ahora la pregunta es, ¿cómo y de que forma generaremos los usuarios siguiendo un proceso de Poisson? 
 
-#### Generación de usuarios en una distribución de Poisson
+#### Generación de usuarios siguiendo un proceso Poisson
 
-Con respecto a la generación de usuarios, la distribución que más se acerca a como los usuarios aparecen en el sistema es la distribución de Poisson, la cual es una distribución de probabilidad discreta que dada una frecuencia de ocurrencia media, expresa la probabilidad de que ocurra un determinado número de eventos durante cierto período de tiempo. Estos eventos que ocurren son las apariciones de usuario y para simularlo tendremos que resolver primero dos problemas:
+Con respecto a la generación de usuarios, la distribución que más se acerca a como los usuarios aparecen es la distribución exponencial que se aplica en procesos de Poisson. La distribución exponencial podemos considerarla como el modelo más adecuado para la probabilidad del tiempo de espera entre dos eventos que sigan un proceso de Poisson. Estos eventos que ocurren son las apariciones de usuario y para simularlo tendremos que resolver primero dos problemas:
 
-1. Necesitamos computar de alguna manera los instantes de aparición de cada usuario de forma aleatoria.
+1. Necesitamos computar de alguna manera los instantes de aparición de cada usuario siguiendo una distribución exponencial.
 
-2. Situar las apariciones de forma aleatoria uniforme dado un punto geográfico y un radio (dentro de una circunferencia)
+2. Situar las apariciones de forma aleatoria uniforme dado un punto geográfico y un radio (dentro de una circunferencia).
 
 Las soluciones a estos dos problemas se resuelven en los siguientes dos subapartados.
 
-**1. Generación de valores de tiempo aleatorio siguiendo una distribución de poisson**
+**1. Calcular variables aleatorias de una distribución exponencial**
 
-El objetivo de este subapartado es definir un algoritmo que genere dado un valor $\lambda$, un tiempo total y un número máximo de usuarios, una secuencia de tiempos de aparición para los usuarios. 
+El objetivo de este subapartado es definir un algoritmo que genere dado un valor $\lambda$, un tiempo total y un número máximo de usuarios, una secuencia de tiempos de aparición para los usuarios. Para ello primero debemos recordar como es la funcion de distribucion de probabilidad exponencial:
 
-Para ello primero debemos recordar como es una función exponencial. La distribución de Poisson y la distribución exponencial se utilizan ambas para el mismo tipo de sucesos. <!-- aq --> En las distribuciones exponenciales tenemos la siguiente función de distribución de probabilidad.
+$$
+f(x)=1 - e^{-\lambda x}\;\;\;\;\;\;\;\;\;(1)
+$$
 
-### Generación de usuarios dentro de un punto geográfico y un radio.
+Donde $\lambda$ es la cantidad de usuarios que aparecen por cada unidad de tiempo.
+
+Con esta función lo que obtendríamos es la probabilidad de que un usuario aparezca dado un instante de tiempo $x$, pero no es suficiente para nuestro problema. Donald Knuth describe una forma de generar variables aleatorias siguiendo está distribución utilizando la formula antes mencionada[@bib8] [@bib9]. Según explica Knuth, siempre que tengamos una distribución continua y su función de distribución de probabilidad cumpla que:
+
+$$
+f(x1) \leq f(x2), si \; x1 < x2 \;\;\;\;\; (2)
+$$
+
+$$
+f(-\infty) = 0 ,f(+\infty)=1\;\;\;\;\;(3)
+$$
+
+Entonces si $f(x)$ es continua y estrictamente creciente (2), como todos los valores de $f(x)$ estan dentro del rango del cero al uno (3), existirá una función inversa $f^{-1}(y)$ donde 0 < y < 1.
+
+Con esta función inversa, podríamos calcular un valor aleatorio $X$ por medio de una variable aleatoria de distribución uniforme $u = U(0,1)$.
+
+$$
+X = f^{-1}(u)\;\;\;\;\;(4)
+$$
+
+Si hacemos la inversa de la distribución de probabilidad exponencial, obtenemos un posible valor de la distribución:
+
+$$
+X = \frac{-ln(u)}{\lambda} \;\;\;\;\; (5)
+$$
+
+Donde X serían los segundos que quedan para que aparezca de nuevo un evento, que en nuestro caso sería la aparición de un usuario nuevo.
+
+Lo que estamos haciendo es a partir del valor de $u$ (que como hemos mencionado anteriormente, es una variable aleatoria uniforme entre 0 y 1) aplicando la formula vista en (5) obtenemos X que sería el tiempo que falta para el siguiente suceso.
+
+Por ejemplo, si el valor de $u$ es 0.42 el valor que devolverá es de 2,64 segundos para un $\lambda=1/5$
+
+![La función inversa (5) nos permite generar variables aleatorias a partir de un valor aleatorio entre 0 y 1](images/exponential_function.PNG){#fig:5}
+
+>
+
+Ya solo nos quedaría definir el algoritmo para la generación de usuarios siguiendo una distribución de Poisson.
+
+Las variables de entrada de nuestro algoritmo son las siguientes:
+
+- $p$ = Punto geográfica de los entry points.
+
+- $r$ = Radio de aparición de los usuarios.
+
+- $e$ = Tiempo total de generación de usuarios.
+
+- $m$ = Número máximo de usuarios a generar.
+
+- $ut$ = Tipo de usuario. (Usuarios con distinto comportamiento)
+
+- $\lambda$ = Valor lambda de la distribución de Poisson.
+
+Si no se recibe $r$, todos los usuarios serán generados en el punto $p$
+
+\LinesNumbered
+\begin{algorithm}[H]
+    let L be a new List\;
+    $ct \leftarrow 0$ // current time\;
+    $uc \leftarrow 0$ // users counter\;
+    \While{ $ct < e$ {\bf and} $uc < m$}{
+    $uc \leftarrow uc + 1$\;
+    \eIf{$ r > 0$}{
+        $up \leftarrow$ RandomPositionInCircle($p, r$) // User position\;
+    }{
+        $up \leftarrow p$\;
+    }
+    $t \leftarrow -ln(Random(0,1))$ // Apparition time \;
+    $ct \leftarrow ct + t$\;
+    $u \leftarrow$ NewUser($up, ut, ct$)\;
+    L.add(u)\;
+ }
+ \Return L\;
+ \caption{How to write algorithms}
+\end{algorithm}
+
+En la línea 10 aplicamos la fórmula deducida en (5). Por cada iteración del bucle se calcula un instante de aparición.
+
+El algoritmo implementado en el proyecto es mucho más completo ya que aquí no se tienen en cuenta muchos más parámetros que puede recibir un Entry Point. De hecho, este algoritmo sería fácilmente parametrizable, como por ejemplo añadir rangos de tiempo de aparición para que un tipo de usuario aparezca a determinadas horas del día en la simulación.
+
+En el siguiente apartado veremos como implementar la función $RandomPositionInCircle$ de la linea 7
+
+**2. Generación de usuarios dentro de un punto geográfico y un radio**
 
 En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional.
 
-![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:40}
+![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:6}
 
-En la [figura 40](#fig:40), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es  aleatorio uniforme entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a las siguientes formulas.
+En la [figura 6](#fig:6), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es  aleatorio uniforme entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a las siguientes formulas.
 
 $$
 d = random(0, R);  \; \;
@@ -424,9 +499,9 @@ $$
 d = R*\sqrt(rand(0, 1))\;\;\;\;\;\;\;\;(2)
 $$
 
-Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la [figura 50](#fig:50) se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
+Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la [figura 7](#fig:7) se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
 
-![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:50}
+![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:7}
 
 En segundo lugar tenemos que trasladar esta solución a la superficie de la tierra. Los puntos geográficos en la tierra, no se comportan como puntos cartesianos en un plando bidimensional. Supongamos los siguientes puntos geográficos, siendo $x1, x2, x3$ y $x4$ latitudes y $y1, y2, y3$ y $y4$ longitudes:
 
@@ -446,9 +521,9 @@ $$
 
 Si consideramos los puntos p1, p2, t1 y t2 como puntos en un plano bidimensional, las distancia entre p1 y p2, y la distancia entre t1 y t2 sería la misma, pero como son coordenadas geográficas, al ser la tierra elipsoidal, son distancias diferentes. 
 
-Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular una nueva coordenada geográfica. Tenemos como punto inicial $\varphi_1$(latitud) y $\lambda_1$(longitud), un angulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos tambien conocer la distancia angular, que sería $\delta$ = d / R, donde R es el radio de la tierra.
+Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular una nueva coordenada geográfica. Tenemos como punto inicial $\varphi_1$(latitud) y $\lambda_1$(longitud), un angulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos tambien conocer la distancia angular, que sería $\delta = d / R$, donde $R$ es el radio de la tierra.
 
-Aplicando las siguiente fórmulas[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
+Aplicando las siguiente fórmula[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
 
 $$
 \varphi_2 = asin(sin\;\varphi_1 * cos\;\delta + cos\;\varphi_1*sin\;\delta \;*cos\;\theta) \;\;\;\;\;\;\;\;(5)
@@ -459,10 +534,18 @@ $$
 $$
 
 Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
-Es posible que esta solución carezca de sentido por que el error puede parecer mínimo si se representan las coordenadas sobre un plano bidimensional, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos sobre una superficie esférica, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 60](#fig:60) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
+Es posible que esta solución carezca de sentido para muchos lectores por que el error puede parecer mínimo si se representan las coordenadas sobre un plano bidimensional, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos sobre una superficie esférica, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 8](#fig:8) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
 
-![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:60}
+![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:8}
 
-Prueba de referencia[@item1]
+## Diseño
+
+A fin de explicar el diseño final obtenido vamos a partir desde un concepto básico y se irán añadiendo partes a la arquitectura analizando las necesidades y objetivos del software en cuestión en cada una de las partes de ésta.
+
+### Arquitectura general
+
+Con este apartado se pretende dar una visión global de la arquitectura antes de ir detallando las distintas partes más a fondo.
+
+Una primera vista de la arquitectura sería la siguiente:
 
 # Referencias
