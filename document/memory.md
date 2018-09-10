@@ -3,6 +3,7 @@ title: Arquitectura, diseño, y configuración de un simulador de bicis comparti
 author: Carlos Ruiz Ballesteros
 date: 02 de Agosto de 2018
 
+
 ---
 
 # Resumen {-}
@@ -547,5 +548,56 @@ A fin de explicar el diseño final obtenido vamos a partir desde un concepto bá
 Con este apartado se pretende dar una visión global de la arquitectura antes de ir detallando las distintas partes más a fondo.
 
 Una primera vista de la arquitectura sería la siguiente:
+
+![Vista básica del simulador](images/Arquitecture_1_v2.jpg){#fig:9}
+
+A un nivel muy básico necesitamos tener estas tres partes diferenciadas:
+
+- Archivos de configuración, que como hemos comentado en el análisis serán:
+    - Estaciones: Puntos geográficos de las estaciones, número de bicis, capacidad.
+    - Entry Points: Puntos de entrada de los usuarios.
+    - Parametros globales: Tiempo total de la simulación, semilla...
+- Simulador: De momento contendrá toda la lógica del simulador y sus interfaces de comunicación con el SDR (sistema de recomendaciones) y la infraestructura.
+- Histórico: Resultado de las simulaciones que posteriormente se analizarán.
+
+Para examinar la arquitectura más en detalle, en los siguientes apartados vamos a ir desglosando esta arquitectura en partes más complejas.
+
+### Simulador basado en eventos
+
+Existen dos tipos de simuladores: 
+
+- Simulador basado en eventos discretos.
+- Simulador de tiempo continuo.
+
+En un simulador de tiempo continuo el estado del sistema cambia en cada instante de tiempo, mientras que, en un simulador basado en eventos, el tiempo varía en el instante en el que se ha producido dicho evento.
+
+En nuestro desarrollo vamos a utilizar la lógica de un simulador basado en eventos. Este tipo de simuladores definen un conjunto finito de eventos. Estos eventos ocurren cada vez que hay un cambio en el sistema y pueden originar nuevos eventos. 
+
+Para la ejecución de un simulador basado en eventos es necesario una cola de prioridad ordenada en función del instante de tiempo, en la que se irán insertando los eventos que tienen que ejecutarse. El primer elemento será siempre el siguiente cambio de estado en la simulación.
+
+![Simulador basado en eventos](images/event_based_simulator.png){#fig:10}
+
+En la [Figura 10](#fig:10) vemos una ejecución básica del motor de nuestro simulador. El primer evento en ejecutarse es el primero de la cola. Cada evento al ejecutarse puede generar nuevos eventos y estos son insertados en la cola.
+
+Para definir el comportamiento de nuestro simulador, hemos definido el siguiente conjunto de eventos a partir del flujo de eventos de la [Figura 3](#fig:3): 
+
+- Usuario aparece
+- Usuario llega a la estación con reserva
+- Usuario llega a la estación sin reserva
+- Timeout[^4] de reserva de bici.
+- Timeout de reserva de hueco.
+- Usuario finaliza vuelta en bici
+- Usuario llega a la estación para dejar bici con reserva.
+- Usuario llega a la estación para dejar bici sin reserva. 
+
+[^4]: Momento en el que una reserva pierde su validez debido a un tiempo máximo alcanzado.
+
+Se puede encontrar una explicación más detallada del diseño e implementación del simulador en el TFG de Sandra Timón Mayo[@bib7].
+
+### Arquitectura detallada
+
+Dentro de todo el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la siguiente figura:
+
+![Vista basica del simulador](images/test.jpg)
 
 # Referencias
