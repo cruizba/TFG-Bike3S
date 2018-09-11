@@ -4,6 +4,9 @@ author: Carlos Ruiz Ballesteros
 date: 02 de Agosto de 2018
 
 
+
+
+
 ---
 
 # Resumen {-}
@@ -106,7 +109,7 @@ En el contexto global del desarrollo, la parte que ha correspondido al tema de e
 
 ## Metodología
 
-Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían nuestros tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la [Figura 2](#fig:2)
+Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la [Figura 2](#fig:2)
 
 ![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2}
 
@@ -128,11 +131,11 @@ El presente capítulo aborda toda la fase de desarrollo del proyecto, desde la e
 
 ## Especificación de requisitos
 
-Antes de comenzar las iteraciones y primeros prototipos de nuestro proyecto, es necesario crear una especificación de requisitos clara y concisa. Vamos a seguir algunas de las recomendaciones del estándar IEEE830[@bib6] para ello. En un desarrollo iterativo e incremental ágil debemos tener muy en cuenta que los requisitos puedan ser lo más modificables posibles.
+Antes de comenzar las iteraciones y primeros prototipos de el proyecto, es necesario crear una especificación de requisitos clara y concisa. Vamos a seguir algunas de las recomendaciones del estándar IEEE830[@bib6] para ello. En un desarrollo iterativo e incremental ágil debemos tener muy en cuenta que los requisitos puedan ser lo más modificables posibles.
 
 ### Perspectiva general del producto
 
-Para examinar y definir en detalle las distintas especificaciones de nuestro simulador, debemos introducir un poco las necesidades globales del simulador en general.
+Para examinar y definir en detalle las distintas especificaciones de el simulador, debemos introducir un poco las necesidades globales del simulador en general.
 
 Necesitamos un software que sea capaz a partir de un estado inicial de simular situaciones reales y debe permitir visualizar y dar una serie de datos correspondientes de la simulación. El simulador tiene que mostrar estos datos a través de un histórico que posteriormente se utilizará para analizar los resultados del sistema de recomendaciones y los algoritmos implementados.
 
@@ -164,7 +167,7 @@ En esta sección se describen los términos y abreviaturas utilizados para la es
 
 ### Tipos de usuario:
 
-Solo tendríamos un tipo de usuario, que serían los investigadores, profesores o cualquier persona que quiera hacer uso de nuestro simulador. Podrán o no tener conocimientos de programación, pero los usuarios con conocimientos de desarrollo podrán modificar y crear suarios de una forma mucho más precisa dentro del código fuente.
+Solo tendríamos un tipo de usuario, que serían los investigadores, profesores o cualquier persona que quiera hacer uso de el simulador. Podrán o no tener conocimientos de programación, pero los usuarios con conocimientos de desarrollo podrán modificar y crear suarios de una forma mucho más precisa dentro del código fuente.
 
 ### Requisitos funcionales
 
@@ -252,7 +255,7 @@ Tanto el formato de los ficheros de configuración como el del histórico deben 
 
 ## Análisis
 
-Para ir formando las partes de nuestro simulador, vamos a partir de lo siguiente:
+Para ir formando las partes de el simulador, vamos a partir de lo siguiente:
 
 1. En el sistema de bicis sólo se pueden realizar ciertas **acciones**.
 
@@ -264,7 +267,7 @@ Para ir formando las partes de nuestro simulador, vamos a partir de lo siguiente
 
 5. Cada simulación debe producir un histórico, y con este histórico se debe poder **visualizar la simulación** y **analizar los datos resultantes**.
 
-Partiendo de esta pequeña analogía, con los puntos anteriormente citados vamos a ir mencionando las distintas partes de nuestro simulador que se corresponden con cada punto anterior en el SBC real.
+Partiendo de esta pequeña analogía, con los puntos anteriormente citados vamos a ir mencionando las distintas partes de el simulador que se corresponden con cada punto anterior en el SBC real.
 
 ### Núcleo
 
@@ -320,7 +323,7 @@ Para comenzar una simulación, será necesario establecer una serie de parámetr
 
 #### Configuración de la infraestrucutra
 
-Para que nuestros usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga está información.
+Para que los usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga está información.
 
 El contenido del archivo de configuración de las estaciones contiene:
 
@@ -549,14 +552,14 @@ Con este apartado se pretende dar una visión global de la arquitectura antes de
 
 Una primera vista de la arquitectura sería la siguiente:
 
-![Vista básica del simulador](images/Arquitecture_1_v2.jpg){#fig:9}
+![Vista básica del simulador](images/Arquitecture_1_v3.jpg){#fig:9}
 
 A un nivel muy básico necesitamos tener estas tres partes diferenciadas:
 
 - Archivos de configuración, que como hemos comentado en el análisis serán:
-    - Estaciones: Puntos geográficos de las estaciones, número de bicis, capacidad.
-    - Entry Points: Puntos de entrada de los usuarios.
-    - Parametros globales: Tiempo total de la simulación, semilla...
+  - Estaciones: Puntos geográficos de las estaciones, número de bicis, capacidad.
+  - Entry Points: Puntos de entrada de los usuarios.
+  - Parametros globales: Tiempo total de la simulación, semilla...
 - Simulador: De momento contendrá toda la lógica del simulador y sus interfaces de comunicación con el SDR (sistema de recomendaciones) y la infraestructura.
 - Histórico: Resultado de las simulaciones que posteriormente se analizarán.
 
@@ -594,10 +597,122 @@ Para definir el comportamiento de nuestro simulador, hemos definido el siguiente
 
 Se puede encontrar una explicación más detallada del diseño e implementación del simulador en el TFG de Sandra Timón Mayo[@bib7].
 
-### Arquitectura detallada
+### Arquitectura detallada
 
-Dentro de todo el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la siguiente figura:
+A partir de la [Figura 9](#fig:9), a continuación se desarrolla los detalles de la arquitectura del sistema incluyendo las decisiones que se han tomado que han llevado a un desarrollo evolutivo. 
 
-![Vista basica del simulador](images/test.jpg)
+Dentro de todo el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la [Figura 11](#fig:11). 
+
+![Vista basica del simulador](images/Arquitecture_2_v3.jpg){#fig:11}
+
+Esta figura muestra una parte importante de nuestra arquitectura y es el cargador de configuración. Éste se encargará de convertir los datos expresados en los archivos a objetos serializados en el simulador para que puedan ser utilizados por éste.
+
+Se puede apreciar como la configuración, además de serializar los datos para la lógica del simulador, inicializa dos servicios que tendrán acceso a ciertos datos de la configuración y del estado de la infraestructura, que serviran como interfaz de comunicación para los usuarios simulados con el sistema de bicis. Cabe mencionar también el generador de historicos, que por cada Evento escribira en un fichero de texto todos los cambios que se han producido por evento, dando lugar a un histórico final, con el cual, podremos visualizar la simulación y calcular datos sobre esta.
+
+En la parte lógica del simulador estaría toda la parte relacionada con las interacciones de los usuarios y como estos actúan con la infraestructura y con el sistema de recomendaciones y de información. Esta lógica de simulador es la siguiente que vamos a desglosar en nuestra arquitectura. 
+
+![Simulador con arquitectura interna de la lógica desglosada](images/Arquitecture_3_v3.jpg){#fig:12}
+
+En la [Figura 12](#fig:12) se puede ver con más detalle el comportamiento de la **lógica del simulador**. Como podemos ver lo que hace el **cargador de configuración** es interpretar los datos de los archivos de configuración para hacer funcionar nuestro simulador basado en eventos. El **simulador basado en eventos** se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos **usuarios generados(US)** interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del **sistema de recomendaciones.**
+
+La arquitectura de la  [Figura 12](#fig:12) iba a ser la arquitectura principal de nuestro proyecto, sin embargo, surgió la necesidad de añadir un pequeño módulo externo que se encargue de generar los usuarios.
+
+En un principio los archivos de configuración que íbamos a utilizar fueron los siguientes:
+
+- Parámetros globales
+
+- Estaciones
+
+- Entry Points
+
+![Primera idea para la configuración](images/configuration_1.png){#fig:13}
+
+Parece apropiado pensar que esos tres ficheros de configuración son suficientes, sin embargo, surgió la necesidad de independizar la generación de usuarios. Si sólo utilizamos un archivo de configuración con los **entry points**, nuestro simulador depende del concepto de **entry point**, por lo que hacemos al simulador dependiente de éste. ¿Y si un tercero quiere generar los usuarios a su modo de forma individual? Tendría que estudiar cómo funciona un Entry Point, y crearlos en base a este concepto. Eso limita de algún modo los usuarios que podemos definir para el sistema. Un Entry Point nos ayuda a definir apariciones de usuarios de una forma más cómoda, pero puede darse el caso de que un desarrollador o investigador quiera generar los usuarios de otra manera.
+
+Imaginemos por un momento que el simulador dispone sólo de esos tres archivos de configuración en el sistema. En ese caso, el simulador antes de arrancar deberá generar los usuarios y después arrancar la simulación. Es en este punto es donde surge la necesidad de definir un nuevo módulo en nuestra arquitectura, un **generador de usuarios**. En la [Figura 14](#fig:14) se puede ver el modelo final de la configuración.
+
+¿Qué ganamos con separar la generación de usuarios del simulador?
+
+1. Un tercero puede desarrollar un software cualquiera independiente, que genere estos usuarios en cualquier lenguaje.
+
+2. Nuestro simulador se centra exclusivamente en tratar las acciones de los usuarios y no su generación.
+
+3. Más modularidad y menos dependencia del simulador.
+
+![Cargador de configuración con generador de usuarios](images/configuration_2.png){#fig:14}
+
+Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el **generador de históricos**. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido.
+
+En general este módulo se encargará de escuchar cada evento del simulador y escribir el resultado en uno o varios ficheros[@bib10].
+
+A fin de cumplir con los requisitos de interfaz de usuario número 5.1, 5.2 y 5.3 necesitamos también disponer de una interfaz de usuario que nos permita crear simulaciones de una forma interactiva sin necesidad de escribir los archivos de configuración en un archivo de texto.
+
+Por ello tenemos que añadir a nuestra arquitectura una parte más con la que llamar a nuestro simulador para:
+
+- Crear / Cargar configuraciones.
+
+- Simular a partir de los archivos de configuración creados.
+
+- Visualizar históricos.
+
+- Hacer análisis en base a los históricos.
+
+En la [Figura 15](#fig:15) que se ve a continuación se añaden a la arquitectura los módulos encargados de esta tarea dentro de la interfaz de usuario.
+
+![Arquitectura final con interfaz de usuario](images/Arquitecture_4_v3.jpg){#fig:15}
+
+## Implementación
+
+En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes a mi TFG, que se centran principalmente la configuración, el uso de patrones de diseño y modularización que le den flexibilidad a nuestro código y la interfaz de usuario. Además utilizaremos  un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis.
+
+### Tecnologías
+
+Uno de los objetivos que hemos tenido como desarrolladores es crear un simulador donde cada una de las partes sea lo más independiente posible. Permitiendo así que, si un módulo no cumple las características deseadas, o la interfaz no se adapta a las necesidades del proyecto, esta se pueda reemplazar, adaptar, cambiar de tecnología, etc…
+
+En la [Figura 16](#fig:16) hemos separado los distintos proyectos y tecnologías por colores. En color naranja tenemos el simulador, y en color azul la interfaz de usuario (**backend-simulator y frontend-simulator** respectivamente a partir de este apartado)
+
+El frontend y el backend van a tener este rol a nivel de implementación. Son proyectos en lenguajes diferentes y solo tienen en común los datos que comparten, que serían los archivos de configuración y los históricos. Además, el frontend se encarga de hacer las llamadas al backend para realizar las simulaciones.
+
+Uno de los requisitos de nuestro proyecto es que sea multiplataforma. Es por ello por lo que en el backend hemos utilizado **Java** y para el frontend **Electron** y **TypeScript**.
+
+Por un lado, Java es un lenguaje ya muy maduro que lleva muchos años en la cúspide de los mejores lenguajes empresariales. Un lenguaje muy conocido, demandando, potente y multiplataforma. Su comunidad es muy grande y hay una gran cantidad de librerías y frameworks disponibles.
+
+Por otro lado, en el frontend hemos utilizado Electron, una tecnología que permite desarrollar aplicaciones de escritorio con tecnologías web. Teniendo en cuenta la cantidad de herramienta de visualizaciones que hay para visualizar datos, mapas, crear interfaces de ususario atractivas, pensamos que ésta era la mejor opción.
+
+Electron es una combinación de HTML5, CSS y JavaScript para aplicaciones de escritorio. Es bien sabido que JavaScript no escala muy bien y debido a su naturaleza dinámica, a veces es complicado mantener un orden y estándar que otros desarrolladores puedan entender. Con el fin de crear un proyecto maduro y escalable decidimos utilizar TypeScript, que utilizado de la forma correcta tiene un aspecto similar a Java por lo que no es difícil incorporar a desarrolladores nuevos en el proyecto si tienene conocimiento de Java.
+
+TypeScript no deja de ser JavaScript, solo que añadiéndole tipado estático y la posibilidad de crear clases y objetos. Como framework para la visualización hemos decidido utilizar Angular (no confundir con AngularJS), que es una tecnología bastante conocida para la creación de aplicaciones web.
+
+A esta arquitectura hay que añadir dos herramientas más. **Un generador de esquemas** y un **validador de archivos** JSON. Con el **generador de esquemas** definiremos la estructura de los datos. Los esquemas los utilizaremos para la validación de los archivos JSON con el **validador.**
+
+Estos dos módulos son difíciles de representar en la arquitectura presentada, ya que son muy independientes del proyecto. El validador de archivos JSON es utilizado por el backend y el simulador de usuarios.
+
+![Arquitectura final con tecnologías](images/Arquitecture_5_v3.jpg){#fig:16}
+
+### Lógica del simulador (Backend)
+
+En un principio, enfocamos el proyecto con una estructura monolítica, donde cada módulo era un paquete. Pensamos que este punto de partida era el correcto, pero en medio del desarrollo surgió la necesidad de implementar un generador de usuarios externos.
+
+Entonces surgió la idea de implementar nuestro proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en nuestro código. A esto hay que añadir la necesidad de que el simulador no generase internamente los usuarios, si no que los reciba de forma externa en un fichero. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
+
+En la [Figura 16](#fig:16) se pueden ver los diferentes módulos del backend.
+
+![Modulos backend-simulator](images/module_system.png){#fig:17}
+
+A primera vista puede parecer muy diferente con lo definido en la arquitectura de la  [Figura 16](#fig:16), pero eso se debe a que está arquitectura sólo define como se organizan y comunican las partes de nuestro simulador.
+
+A continuación, vamos a explicar todos los módulos de uno en uno:
+
+- Común: Este módulo incluye todas las utilidades e interfaces necesarias para la comunicación entre los módulos. Algunas de las utilidades interesantes implementadas que merece la pena mencionar son las siguientes:
+
+  - GeoPoint: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos.
+
+  - GraphManager, GraphHopperIntegration y GeoRoute: Véase la sección <!-- TODO --> para su descripción 
+
+  - Debug Logger: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción con máyor detalle se puede ver en la sección <!-- TODO --> .
+- Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la [Figura 19](#fig:19). La clase EventUser contiene los métodos necesarios para la realización de reservas. El evento EventUserAppears es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Veáse [Figura 10](#fig:10)). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
+- Generador de usuarios: Este módulo contiene las clases con los entry points definidos. Para facilitar la implementación de nuevos entry points, se ha utilizado el patrón factoría, como se puede ver en la [Figura 18](#fig:18).
+
+
 
 # Referencias
