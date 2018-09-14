@@ -641,7 +641,7 @@ Imaginemos por un momento que el simulador dispone sólo de esos tres archivos d
 
 ![Cargador de configuración con generador de usuarios](images/configuration_2.png){#fig:14}
 
-Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el **generador de históricos**. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido.
+Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el **generador de históricos**. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido[@bib10].
 
 En general este módulo se encargará de escuchar cada evento del simulador y escribir el resultado en uno o varios ficheros[@bib10].
 
@@ -687,6 +687,8 @@ A esta arquitectura hay que añadir dos herramientas más. **Un generador de esq
 
 Estos dos módulos son difíciles de representar en la arquitectura presentada, ya que son muy independientes del proyecto. El validador de archivos JSON es utilizado por el backend y el simulador de usuarios.
 
+En cuanto a control de versiones hemos utilizado Git y la plataforma GitHub como repositorio remoto. Hemos utilizado la mayoría de herramientas que ofrece Github también para notificar errores y comentar mejoras en línea. 
+
 ![Arquitectura final con tecnologías](images/Arquitecture_5_v3.jpg){#fig:16}
 
 ### Lógica del simulador (Backend)
@@ -705,13 +707,98 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
 - Común: Este módulo incluye todas las utilidades e interfaces necesarias para la comunicación entre los módulos. Algunas de las utilidades interesantes implementadas que merece la pena mencionar son las siguientes:
 
-  - GeoPoint: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos.
+    - `GeoPoint`: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos.
 
-  - GraphManager, GraphHopperIntegration y GeoRoute: Véase la sección <!-- TODO --> para su descripción 
+    - `GraphManager`, `GraphHopperIntegration` y `GeoRoute`: Véase la sección <!-- TODO --> para su descripción 
 
-  - Debug Logger: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción con máyor detalle se puede ver en la sección <!-- TODO --> .
-- Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la [Figura 19](#fig:19). La clase EventUser contiene los métodos necesarios para la realización de reservas. El evento EventUserAppears es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Veáse [Figura 10](#fig:10)). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
+    - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción con máyor detalle se puede ver en la sección <!-- TODO --> .
+
+- Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la [Figura 19](#fig:19). La clase `EventUser` contiene los métodos necesarios para la realización de reservas. El evento `EventUserAppears` es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Veáse [Figura 10](#fig:10)). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
+
 - Generador de usuarios: Este módulo contiene las clases con los entry points definidos. Para facilitar la implementación de nuevos entry points, se ha utilizado el patrón factoría, como se puede ver en la [Figura 18](#fig:18).
+En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^5] es una librería que nos permite convertir los archivos JSON en instancias de clases definidas con los mismos datos que el fichero. Utilizamos esta flexibilidad que nos proporciona Gson para crear una factoría de Entry Points.
+
+    La clase abstracta `EntryPoint` define el método `generateUsers()`, la cual deben heredar todas las implementaciones de puntos de entrada en el sistema. Estos usuarios son de tipo `SingleUser` los cuales tienen como propiedad el instante de tiempo en el que aparecen y podrán ser insertados posteriormente en un evento de aparición en ese mismo instante de tiempo.
+
+    En el anexo 3<!-- TODO -->, se puede ver como implementar un Entry Point.
+
+
+![Entry Points Factory](images/EntryPointFactory.png){#fig:18}
+
+[^5]: Gson - https://github.com/google/gson
+
+![Jerarquía de clases de los eventos](images/Core_diagram.png){#fig:19 .class height=90%}
+
+> 
+
+- History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe los resultados que se han realizado expresando los cambios en cada evento, lo cual hace que los históricos no sean tan pesados. Los instantes son almacenados en diferentes archivos JSON de 100 en 100, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos en el trabajo final de Tao Cumplido[@bib10].
+
+- Entidades e infraestructura: En este módulo se definen todas las entidades de la simulación. Consideramos como entidad los objetos que cambian por cada evento que sucede. Entidades en nuestro sistema son: usuarios, estaciones, reservas y bicis. Una reserva es una entidad ya que puede cambiar su estado, al igual que una estación cuando un usuario coge o deja una bici. En la [Figura 20](#fig:20) se muestra el diagrama de clases de las entidades. 
+
+    ![Diagrama UML de entidades e infraestructura](images/Entity_Diagram.png){#fig:20}
+
+    Aquí también están definidas las implementaciones de cada usuario. Al igual que con los Entry Points, tenemos una factoría definida que nos facilita la implementación de nuevos usuarios [(Figura 21)](#fig:21). Estos usuarios heredan todos de una clase abstracta `User`, que define todos los métodos abstractos que debe tener un usuario al interactuar con el simulador. Es así como se definen los nuevos US (Usuarios simulados). Además, estos pueden tener parámetros que influyan en sus decisiones. Todo está a disposición del implementador que desee programar un usuario en concreto. 
+
+    ![Factoría de usuarios](images/User_factory.png){#fig:21}
+
+    Los diferentes métodos que deben implementar los usuarios simulados son:
+    - `determineStationToRentBike(): Station` y `determineStationToReturnBike(): Station`
+
+        El usuario elige a que estación ir para alquilar o para devolver una bici. El implementador deberá hacer uso de los servicios a los que puede acceder el usuario para determinar a que estación ir. Este método devuelve una estación.
+    
+    - `determineRoute(): GeoRoute`
+        En este método debera hallarse una ruta hasta el destino del usuario. Cualquier gestor de rutas podrá ser usado, pero la ruta que devuelva debe ser un objeto de la clase GeoRoute para que pueda ser usada por el núcleo. Por defecto se puede usar el servicio `graph` que utilizará GraphHopper para calcular las rutas.
+
+    - `decidesNextPoint(): GeoPoint`
+        El usuario decide a que lugar de la ciudad quiere ir a dar una vuelta.
+    
+    - `decidesToLeaveSystemAfterTimeout(): boolean`
+        El usuario decide si abandona el sistema tras una expiración de reserva.
+    
+    - `decidesToLeaveSystemAffterFailedReservation(): boolean`
+        Tras un intento fallido de reserva de bici o de hueco, decide si abandonar el sistema o no. Es importante destacar que el usuario tiene acceso a un objeto llamado `memory` el cual contiene información acerca de las acciones que ha realizado el usuario simulado, para poder tomar decisiones e implementar algoritmos más avanzados que puedan tomar referencia de las acciones pasadas.
+
+    - `decidesToLeaveSystemWhenBikesUnavailable(): boolean`
+        El usuario decide si abandonar el sistema cuando no hay bicis disponibles en la estación. 
+
+    - `decidesToReserveBikeAtSameStationAfterTimeout(): boolean`
+        El usuario decide si quiere volver a intentar reservar en la misma estación donde había hecho la reserva que acaba de expirar.
+    
+    - `decidesToReserveBikeAtNewDecidedStation(): boolean`
+        El usuario decide si reservar en la estación que ha escogido como destino.
+        
+    - `decidesToReserveSlotAtSameStationAfterTimeout(): boolean`
+        Tras haber reservado un slot en una estación y haber expirado la reserva, el usuario decide si volver a reservar en esa estación.
+
+    - `decidesToReturnBike(): boolean`
+        El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el metodo `decidesNextPoint()`, el cual devolverá un punto al que el usuario ira a dar una vuelta con la bicicleta.
+
+    - `decidesToDetermineOtherStationAfterTimeout(): boolean`
+        Tras la expiración de una reserva, el usuario decide si elegir una nueva estación.
+
+    - `decidesToDetermineOtherStationAfterFailedReservation(): boolean`
+        Tras un intento de reserva fallido, el usuario decide si elegir una nueva estación.
+
+    Además en las implementaciones de estos métodos se podrá acceder a los siguientes atributos, que contienen información del usuario:
+    - `id: integer` - Identificador del usuario.
+    - `position: GeoPoint` - Posición actual del usuario.
+    - `walkingVelocity: double` - Velocidad caminando.
+    - `cyclingVelocity: double` - Velocidad en bici.
+    - `destinationStation: Station` - Estación a la que el usuario quiere ir para coger o devolver una bici.
+    - `destinationPoint: GeoPoint`- Punto al que el usuario quiere ir en bici para dar una vuelta.
+    - `route : GeoRoute` - Ruta actual del usuario.
+    - `bike: Bike` - Bici que tiene el usuario.
+    - `reservedBike: boolean` - `true` si tiene bici reservada, `false` en caso contrario.
+    - `reservedSlot: boolean` - `true` si tiene un slot reservado, `false` en caso contrario.
+    - `reservation: Reservation` - Reserva actual del usuario.
+    - `memory: UserMemory` - Contiene atributos que registran los hechos sucedidos hasta el momento actual de la simulación
+    
+    Si los usuarios simulados quieren consultar algún tipo de información o quieren consultar alguna de las recomendaciones del sistema, lo hará a través de ciertos servicios que implementarán una interfaz para realizar estas consultas. Estos servicios serán ofrecidos por la clase abstracta `User` a modo de atributos, por lo tanto cualquier clase que herede de User, tendrá acceso a estos servicios, que podrán ser usados en todos los métodos. Como se inicializan estos servicios se puede ver en la sección <!-- TODO -->. Los servicios de los que disponen los usuarios son: 
+    - `infraestrucutre: InfraestructureManager`: Información acerca del estado de las estaciones, su ubicación, etc.
+    - `recomendationSystem: RecomendationSystem`: Sistema de recomendaciones al que el usuario puede consultar.
+    - `graph: GraphManager`: Gestor de rutas por defecto. Hemos utilizado GraphHopper como veremos en el apartado <!-- TODO -->
+
+    De momento se ha implementado un sistema de recomendaciones muy básico. La idea es crear implementaciones con funcionalidades más complejas para evaluar diferentes modelos  de equilibrio del uso de las bicicletas. Estas nuevas implementaciones se podrían añadir como nuevos servicios a los que el resto de usuarios podrán acceder, pudiendose usar uno o más sistemas de recomendaciones.
 
 
 
