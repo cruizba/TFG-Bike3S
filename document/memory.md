@@ -800,6 +800,41 @@ En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^
 
     De momento se ha implementado un sistema de recomendaciones muy básico. La idea es crear implementaciones con funcionalidades más complejas para evaluar diferentes modelos  de equilibrio del uso de las bicicletas. Estas nuevas implementaciones se podrían añadir como nuevos servicios a los que el resto de usuarios podrán acceder, pudiendose usar uno o más sistemas de recomendaciones.
 
+### Carga de mapas y cálculo de rutas
+Algo interesante a implementar es la posibilidad a de crear simulaciones en ciudades reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso por lo que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
 
+Para hacer que nuestro simulador no dependa directamente de dicha librería, decidimos crear una interfaz (Graph Manager) y un formato de rutas propio (GeoRoute), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los metodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase GeoRoute. De esta forma si necesitamos nosotros crear nuestra propia utilidad o utilizar otra librería no sería dificil implementarla en el sistema.
+
+A continuación explicaremos cada una de las clases referentes al gestor de rutas:
+
+- `GraphManager`: Es una interfaz creada con la intención de crear un estándar para que el usuario simulado en su implementación utilice siempre los mismos métodos, pero no es estrictamente obligatorio utilizarla. Los métodos de esta interfaz son:
+
+    - `obtainAllRoutesBetween(originPoint: GeoPoint, destination: GeoPoint): GeoRoute[]` - Las clases que implementen este método deberán devolver una lista con todos los caminos posibles desde un punto de origen y un punto de destino.
+    - `obtainShortestRouteBeteween(originPoint: GeoPoint, destination: GeoPoint): GeoRoute` - Deberá devolver la ruta mas corta desde el punto origen al punto de destino.
+    - `hasAlternativesRoutes(startPosition: GeoPoint, endPosition: GeoPoint) : boolean` - Deverá devolver si desde un punto origen a un punto destino hay más de una ruta.
+
+[^6]: https://github.com/graphhopper/graphhopper
+
+- `GraphHopperImplementation`: Esta clase implementa la interfaz GraphManager. GraphHopper es un motor de rutas rápido y eficiente en memoria. Aunque existían otras alternativas como OSMR, GraphHopper está implementado en Java por lo que nos facilita bastante su integración en el sistema, al contrario que OSMR que está implementado en C++.
+
+    GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizandolo a modo de librería. Decidí optar por integrar el motor en el simulador, para que las simulaciones se ejecutarán con mayor rapidez y consumiera menos recursos el simulador. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
+
+    Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. El código es el siguiente:
+
+    ```{.java .numberLines}
+    public GraphHopperIntegration(GraphProperties properties) 
+    throws IOException {
+        FileUtils.deleteDirectory(new File(GRAPHHOPPER_DIR));
+        this.hopper = new GraphHopperOSM().forServer();
+        hopper.setDataReaderFile(properties.mapDir);
+        hopper.setGraphHopperLocation(GRAPHHOPPER_DIR);
+        hopper.setEncodingManager(new EncodingManager("foot"));
+        hopper.importOrLoad();
+    }
+    ```
+
+    `GRAPHHOPPER_DIR` es el directorio temporal donde se guardan los ficheros que el gestor de rutas utiliza para el calculo de rutas. En la línea 5, le pasamos el directorio del mapa, y en la línea 7 le indicamos que tipos de ruta queremos. Le hemos indicado rutas a pie, para que 
+
+[^7]: https://github.com/graphhopper/graphhopper
 
 # Referencias
