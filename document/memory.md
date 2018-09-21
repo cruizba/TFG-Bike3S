@@ -351,7 +351,7 @@ Por otro lado, el contenido del archivo de configuración de parámetros globale
 
 Sobre todos estos parámetros, hay que destacar la semilla. Los sucesos aleatorios que suceden dentro del simulador son en realidad “pseudoaleatorios” ya que parten de un primer valor (semilla), a través del cual una secuencia de números aleatorios es la misma siempre que partan de ese mismo valor. Esta **semilla** es una parte importante de nuestra configuración ya que de ella depende que se pueda obtener la misma aleatoriedad de una simulación a otra, permitiendo así poder repetir pruebas y compartir simulaciones con otras personas que utilicen el simulador.
 
-#### Configuración para la aparición de usuarios.
+#### Configuración para la aparición de usuarios {#sec:confusu}
 
 Para configurar los usuarios es necesario representar mediante unos datos iniciales cómo van a aparecer. Habrá dos posibles formas de realizar esto:
 
@@ -542,7 +542,7 @@ Es posible que esta solución carezca de sentido para muchos lectores por que el
 
 ![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:8}
 
-## Diseño
+## Diseño {#sec:diseno}
 
 A fin de explicar el diseño final obtenido vamos a partir desde un concepto básico y se irán añadiendo partes a la arquitectura analizando las necesidades y objetivos del software en cuestión en cada una de las partes de ésta.
 
@@ -663,7 +663,7 @@ En la [Figura 15](#fig:15) que se ve a continuación se añaden a la arquitectur
 
 ## Implementación
 
-En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes a mi TFG, que se centran principalmente la configuración, el uso de patrones de diseño y modularización que le den flexibilidad a nuestro código y la interfaz de usuario. Además utilizaremos  un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis.
+En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes a mi TFG, que se centran principalmente la configuración, el uso de patrones de diseño y modularización que le den flexibilidad a nuestro código y la interfaz de usuario. Además utilizaremos  un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis. También explicaremos como hemos implementado un pequeño inyector de dependencias para que los usuarios puedan hacer uso de multiples servicios facilmente y como hemos implementado un sistema de logs para comprobar que el comportamiento de los usuarios indivualmente en el desarrollo de los mismos. Crearemos utilizando técnicas de reflexión factorías que faciliten la implementación de nuevos usuarios y puntos de entrada junto. Por otra parte también veremos como hemos implementado la interfaz gráfica para la configuración, la estructura de ésta junto con la creación de formularios dinámicos para los usuarios.
 
 ### Tecnologías
 
@@ -695,7 +695,7 @@ En cuanto a control de versiones hemos utilizado Git y la plataforma GitHub como
 
 En un principio, enfocamos el proyecto con una estructura monolítica, donde cada módulo era un paquete. Pensamos que este punto de partida era el correcto, pero en medio del desarrollo surgió la necesidad de implementar un generador de usuarios externos.
 
-Entonces surgió la idea de implementar nuestro proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en nuestro código. A esto hay que añadir la necesidad de que el simulador no generase internamente los usuarios, si no que los reciba de forma externa en un fichero. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
+Se decidió entonces implementar nuestro proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en nuestro código. A esto hay que añadir la necesidad de que el simulador no generase internamente los usuarios, si no que los reciba de forma externa en un fichero. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
 
 En la [Figura 16](#fig:16) se pueden ver los diferentes módulos del backend.
 
@@ -799,13 +799,99 @@ En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^
     - `graph: GraphManager`: Gestor de rutas por defecto. Hemos utilizado GraphHopper como veremos en el apartado <!-- TODO -->
 
     De momento se ha implementado un sistema de recomendaciones muy básico. La idea es crear implementaciones con funcionalidades más complejas para evaluar diferentes modelos  de equilibrio del uso de las bicicletas. Estas nuevas implementaciones se podrían añadir como nuevos servicios a los que el resto de usuarios podrán acceder, pudiendose usar uno o más sistemas de recomendaciones.
+    
+    Por otro lado el simulador debe ofrecer la posibilidad de implementar usuarios facilmente, pero además es importante poder depurarlos. Al haber una gran cantidad de usuarios decidí implementar un "logger" que en cada ejecución generase por cada usuario un fichero con las trazas de su ejecución. Para ello simplemente hemos creado una clase llamada `DebugLogger`, la cual ofrece los métodos necesarios para poder escribir automáticamente las acciones del usuario, escribiendo una simple instrucción cuando queramos crear una traza en un archivo log. Podemos escribir un log de dos formas diferentes:
+    
+    - `debugLog()`: Escribe la información del evento, junto con información del Evento y parámetros del usuario.
+    - `debugLog("Message to log")``: Igual que ``debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
+    
+    Cada usuario tendrá su propio fichero de log, por lo que el usuario con $id = 5$ tendrá un fichero log llamado `User5.txt`. La implementación de esta clase Logger es una simple clase estática que es llamada en los eventos de la simulación.
+    
+### Inicialización y ejecución del simulador
+
+El simulador tiene dos modos de ejecución principales, uno para la generación de usuarios y otro para ejecutar una simulación. El simulador como tal, no necesita los entry points para empezar a simular, como comentamos en la sección \secref{sec:confusu}, sino que se le pasa un archivo de configuración con todos los usuarios generados. Para crear este fichero de configuración ofrecemos un generador de usuarios que recibe el archivo de configuración de los entry points. Una vez generados los usuarios, se podrá ejecutar el simulador. Las fases por las que pasa el simulador para inicializarse son las siguientes:
+
+1. Lectura de ficheros y deserialización.
+2. Inicialización de las factorías e inyector de dependencias. En esta parte mediante reflexión se descubren y guardan las clases correspondientes a las implementaciones de usuario, gestores de rutas y sistemas de recomendación. Esto se explica con mayor detalle en la sección \secref{sec:reflex}
+3. Inicialización de Servicios. Estos servicios serán posteriormente utilizados por los usuarios.
+4. Creación de eventos de aparición. Se introducen en la cola del simulador todos los eventos de simulación, incluyendo en estos los usuarios ya inicializados y preparados para ser simulados.
+
+Con respecto al punto 3 utilizamos un patrón de inyección de dependencias que consiste en permitir que al crear un objeto, no sea necesario que ese mismo objeto se encargue de crear o inicializar los objetos de los que hace uso o que posee como atributos. En nuestro caso, por ejemplo, los usuarios pueden hacer uso de un gestor de rutas, de un recomendador, o pueden ver la información actual del sistema de bicis. Cada uno de estos servicios es inicializado al comienzo de la simulación y se pasa como parámetro al constructor de todos los tipos de `User`. La clase principal `User` tiene acceso entonces a este servicio, y los usuarios implementados que heredan de ésta clase, pueden acceder a todos los servicios en sus métodos. 
+
+Una vez todo está inicializado, el motor de simulación (implementado en `SimulationEngine`, dentro del módulo `Core`), se encargará de ejecutar todos los eventos que se han introducido en la cola del simulador, que por envento irá generando los históricos hasta que la coda quede vacía.
+
+### Aplicando reflexión para una mejor extensibilidad {#sec:reflex}
+
+En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de muchas formas de entrada de los usuarios al sistema (entry points), además de múltiples servicios que los usuarios podrán durante las simulaciones. s por esto que necesitamos de un método que nos permita de la manera más eficiente posible implementar nuevas características, y para ello hemos utilizado la Java Reflection API. En la configuración de los entry points y los usuarios debemos indicar que tipo de usuario queremos generar. Cada tipo de usuario lo vamos a identificar con una cadena de texto. Así si quiero crear un usuario de la clase `UserRandom`, en la configuración ponemos el tipo `"USER_RANDOM"`. En el Anexo 1, en el ejemplo de configuración de usuarios y entry points, podemos ver como se especifica el tipo de usuario en la configuración. Como hemos dicho con anterioridad, para crear los usuarios utilizamos una factoría. Para crear un usuario debemos escribir la siguiente instrucción en nuestro código Java:
+
+```{.java .numberLines}
+    UserFactory userFactory = new UserFactory();
+    User user = userFactory.createUser(userType, services);
+```
+
+En éste código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. Ahora bien, ¿cómo sabe el simulador que clase se corresponde con el tipo de usuario `userType`? Especificando mediante anotaciones que clases son implementaciones de usuario y como se identifica en la configuración.
+Por ejemplo si quisieramos crear un usuario, deberíamos hacerlo de la siguiente forma:
+
+```{.java .numberLines}
+    @UserType("USER_RANDOM")
+    public class UserRandom extends User {
+
+    @UserParameters
+    public class Parameters {
+        private int parameter1;
+        private double parameter2;
+        ...
+    }
+    
+    ...
+```
+
+En la notación `@UserType` ponemos con que cadena de texto se identifica a este usuario y en `@UserParameters` definimos que parámetros concretos tiene este.
+Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, despues se llamará al método `userFactory.createUser("USER_RANDOM", services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoria y la utilización de la API de reflexión se encuentra en el módulo `world-entities` en la clase `UserFactory`.
+
+Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos y identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que ira junto con el tipo de entry point. De esta forma si quisieramos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
+
+```{.java .numberLines}
+@EntryPointType("POISSON")
+public class EntryPointPoisson extends EntryPoint {
+    ...
+    @Override
+    public List<SingleUser> generateUsers() {
+    ...
+    }
+}
+```
+
+Al igual que los usuarios, hemos implementado una factoría de entry points que sigue la misma lógica que la factoría de usuarios. La implementación concreta de este entry point se encuentra en el módulo `usersgenerator` en la clase `EntryPointPoisson` y la implementación de la factoría en `EntryPointFactory`. 
+
+Pero no solo en las factorías va a ser una muy buena herramienta la reflexión computacional. Como hemos mencionado con anterioridad en la parte de Diseño \secref{sec:diseno}, los usuarios harán uso de servicios para consultar información y recomendaciones. Para no hacer dependientes las implementaciones de los usuarios hemos utilizado una inyección de dependencias, dejando responsable de la creación e inicialización de estos servicios a la clase `SimulationServices`. La clase SimulationServices se hará cargo de inicializar el gestor de rutas y el sistema de recomendaciones. Se pueden crear varios tipos de gestores de rutas y sistemas de recomendaciones por lo que hemos decidido emplear la misma lógica de reflexión utilizada para los entry points y los usuarios en estos servicios. En primer lugar se especifica en en el archivo de configuración global que gestor de rutas y que sistema de recomendaciones queremos utilizar:
+```
+    ...
+    "recommendationSystemType": "AVAILABLE_RESOURCES_RATIO",
+    "graphManagerType": "GRAPH_HOPPER"
+    ...
+```
+
+Las implementaciones de los gestores de rutas deberán tener la anotación `@GraphManagerType()` con el tipo correspondiente y `@GraphManagerParameters` para los parámetros necesarios de inicialización. Por otro lado las implementaciones de sistemas de recomendaciones deberán tener la anotación `@RecommendationSystemType()` con el tipo y `@RecommendationSystemParameters` para los parámetros. La clase `SimulationService` se encargará de, según la configuración, inicializar e inyectar dichas dependencias en los usuarios.
 
 ### Carga de mapas y cálculo de rutas
-Algo interesante a implementar es la posibilidad a de crear simulaciones en ciudades reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso por lo que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
+Algo interesante a implementar es la posibilidad a de crear simulaciones en ciudades reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
 
-Para hacer que nuestro simulador no dependa directamente de dicha librería, decidimos crear una interfaz (Graph Manager) y un formato de rutas propio (GeoRoute), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los metodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase GeoRoute. De esta forma si necesitamos nosotros crear nuestra propia utilidad o utilizar otra librería no sería dificil implementarla en el sistema.
+Para hacer que nuestro simulador no dependa directamente de dicha librería, decidimos crear una interfaz (`GraphManager`) y un formato de rutas propio (`GeoRoute`), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los metodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase `GeoRoute`. De esta forma si necesitamos nosotros crear nuestra propia utilidad o utilizar otra librería no sería dificil implementarla en el sistema. 
 
 A continuación explicaremos cada una de las clases referentes al gestor de rutas:
+
+[^6]: https://github.com/graphhopper/graphhopper
+
+- `GeoRoute`: Es la clase que representa una ruta en el simulador. Cualquier gestor de rutas implementado en el sistema debe devolver un objeto de esta clase para poder ser utilizado por el nucleo del simulador. Esta clase está compuesta de los siguientes atributos junto con los correspondientes métodos para obtenerlos:
+    - `points: GeoPoint[] ` - Contiene una lista de `GeoPoint` con los puntos de la ruta.
+    - `totalDistance: double` - Distancia total de la ruta.
+    - `intermediateDistance: Double[]` - Contiene una lista de las distancias entre cada punto dentro de la ruta.
+
+- `GeoPoint`: Representa un punto geográfico. Dispone de los siguientes métodos:
+    - `distanceTo(point: GeoPoint)` Distancia el punto geográfico del objeto y un punto dado, utilizando la formula de haversine[^7]
+    - `bearing(GeoPoint point): double` - Devuelve el angulo formado por dos puntos dado el eje del norte.
+    - `reachedPoint(distance: double, destination: GeoPoint): GeoPoint` - Devuelve el punto alcanzado tras partir del punto del objeto y dirigirse al punto `destination` tras haber recorrido una distancia.
 
 - `GraphManager`: Es una interfaz creada con la intención de crear un estándar para que el usuario simulado en su implementación utilice siempre los mismos métodos, pero no es estrictamente obligatorio utilizarla. Los métodos de esta interfaz son:
 
@@ -813,28 +899,50 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
     - `obtainShortestRouteBeteween(originPoint: GeoPoint, destination: GeoPoint): GeoRoute` - Deberá devolver la ruta mas corta desde el punto origen al punto de destino.
     - `hasAlternativesRoutes(startPosition: GeoPoint, endPosition: GeoPoint) : boolean` - Deverá devolver si desde un punto origen a un punto destino hay más de una ruta.
 
-[^6]: https://github.com/graphhopper/graphhopper
+[^7]: http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
 
-- `GraphHopperImplementation`: Esta clase implementa la interfaz GraphManager. GraphHopper es un motor de rutas rápido y eficiente en memoria. Aunque existían otras alternativas como OSMR, GraphHopper está implementado en Java por lo que nos facilita bastante su integración en el sistema, al contrario que OSMR que está implementado en C++.
+- `GraphHopperImplementation`: Esta clase implementa la interfaz GraphManager. GraphHopper es un motor de rutas rápido y eficiente en memoria. Aunque existían otras alternativas como OSMR, GraphHopper[^8] está implementado en Java por lo que nos facilita bastante su integración en el sistema, al contrario que OSMR que está implementado en C++.
+
+    [^8]: https://github.com/graphhopper/graphhopper
 
     GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizandolo a modo de librería. Decidí optar por integrar el motor en el simulador, para que las simulaciones se ejecutarán con mayor rapidez y consumiera menos recursos el simulador. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
-
-    Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. El código es el siguiente:
+    
+    Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. Posteriormente la librería crea una serie de ficheros con información que utilizará para calcular las rutas. El código del constructor del servicio de rutas es el siguiente:
 
     ```{.java .numberLines}
-    public GraphHopperIntegration(GraphProperties properties) 
-    throws IOException {
-        FileUtils.deleteDirectory(new File(GRAPHHOPPER_DIR));
+    public GraphHopperIntegration(GraphProperties properties) throws IOException {
+        //Check the last map loaded
+        boolean sameMap;
+        try {
+            CheckSum csum = new CheckSum();
+            sameMap = csum.md5CheckSum(new File(properties.mapDir));
+        }
+        catch (Exception e) {
+            sameMap = false;
+        }
+
+        //If it is not the same map, we remove the latest temporary files
+        if(!sameMap) {
+            FileUtils.deleteDirectory(new File(GRAPHHOPPER_DIR));
+        }
         this.hopper = new GraphHopperOSM().forServer();
         hopper.setDataReaderFile(properties.mapDir);
         hopper.setGraphHopperLocation(GRAPHHOPPER_DIR);
-        hopper.setEncodingManager(new EncodingManager("foot"));
+        hopper.setEncodingManager(new EncodingManager("foot, bike"));
         hopper.importOrLoad();
     }
     ```
 
-    `GRAPHHOPPER_DIR` es el directorio temporal donde se guardan los ficheros que el gestor de rutas utiliza para el calculo de rutas. En la línea 5, le pasamos el directorio del mapa, y en la línea 7 le indicamos que tipos de ruta queremos. Le hemos indicado rutas a pie, para que 
+    GraphHopper internamente genera unos ficheros a partir del mapa en formato osm, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En nuestro caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
+    
+### Interfaz de usuario del simulador (Frontend)
 
-[^7]: https://github.com/graphhopper/graphhopper
+Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano, cómo están implementados nuestros usuarios, es tener un visualizador con el que observar toda la simulación.
+
+Como hemos comentado en la sección 2.4.1, vamos a utilizar para la interfaz de usuario Electron.
+
+Electron al ejecutarse ejecuta dos procesos:
+- Main: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript
+- Renderer
 
 # Referencias
