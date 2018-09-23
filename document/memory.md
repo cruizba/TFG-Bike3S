@@ -941,8 +941,26 @@ Crear las configuraciones para cada simulación puede ser algo tedioso, debido a
 
 Como hemos comentado en la sección 2.4.1, vamos a utilizar para la interfaz de usuario Electron.
 
-Electron al ejecutarse ejecuta dos procesos:
-- Main: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript
-- Renderer
+Electron al ejecutarse ejecuta dos procesos, *Main* y *Renderer*:
+
+- *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
+
+    - `Configuration`: En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos. 
+    - `Controllers`: Contiene todos las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
+    - `DataAnalysis`: Contiene toda la lógica para analizar los históricos.
+    - `Entities`: Clases utilizadas por `DataAnalysis`.
+    - `Util`: Utilidades necesarias por otros módulos, que pueden ser de utilidad general. 
+
+    Al ejecutar el frontend, éste debe ejecutar los módulos en Java del backend tanto para crear usuarios como para simular. Estos dos módulos son dos ejecutables java con extensión ".jar" disponibles en la ruta de la aplicación cuando es compilada. Simplemente hay que crear un proceso hijo que los ejecute. El proceso *Main* tendrá que poder ejecutar estos dos procesos:
+
+        - `java -jar bikesurbanfleets-config-usersgenerator-1.0.jar <parameters>`
+        - `java -jar bikesurbanfleets-core-1.0.jar <parameters>`
+
+    En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
+
+- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular, utilizando el framework de Angular y está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario. Los componentes se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Angular está basado en componentes. Cada parte visual es un componente que a su vez pueden estar formados de más componentes. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código. Los distintos módulos son:
+
+    - App: Contiene todos los componentes de la aplicación. Los principales son:
+        
 
 # Referencias
