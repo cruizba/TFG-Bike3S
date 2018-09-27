@@ -958,9 +958,16 @@ Electron al ejecutarse ejecuta dos procesos, *Main* y *Renderer*:
 
     En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
 
-- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular, utilizando el framework de Angular y está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario. Los componentes se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Angular está basado en componentes. Cada parte visual es un componente que a su vez pueden estar formados de más componentes. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código. Los distintos módulos son:
+- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular, utilizando el framework de Angular y está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario. Los componentes se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Angular está basado en componentes. Cada parte visual es un componente que a su vez pueden estar formados de más componentes. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser utilizado por otros componentes. Los distintos módulos son:
 
     - App: Contiene todos los componentes de la aplicación. Los principales son:
         
+        `configuration-component`: Componente encargado de la creación de configuraciones para el simulador.
+        `simulate-component`: Permite cargar los ficheros de configuración para poder simular 
+        `visualization-component`: Permite visualizar como los usuarios interactúan en un mapa real tras realizar una simulación, cargando el histórico de ésta. Permite depurar los usuarios y además facilita la comprensión de los datos históricos arrojados por el simulador.
+        `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
+    - Ajax: Es el módulo encargado de comunicarse con el *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc. Se puede ver a grandes rasgos en la [Figura 21](#fig:21) como se comunica el backend y el frontend.
+
+    ![Ejemplo comunicación en la ejecución de una simulación entre el backend y el frontend del simulador](images/test.jpg)
 
 # Referencias
