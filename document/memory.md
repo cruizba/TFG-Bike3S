@@ -727,7 +727,7 @@ En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^
 
 [^5]: Gson - https://github.com/google/gson
 
-![Jerarquía de clases de los eventos](images/Core_diagram.png){#fig:19 .class height=90%}
+![Jerarquía de clases de los eventos](images/Core_diagram.png){#fig:19 .class height=21cm}
 
 > 
 
@@ -849,7 +849,7 @@ Por ejemplo si quisieramos crear un usuario, deberíamos hacerlo de la siguiente
 En la notación `@UserType` ponemos con que cadena de texto se identifica a este usuario y en `@UserParameters` definimos que parámetros concretos tiene este.
 Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, despues se llamará al método `userFactory.createUser("USER_RANDOM", services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoria y la utilización de la API de reflexión se encuentra en el módulo `world-entities` en la clase `UserFactory`.
 
-Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos y identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que ira junto con el tipo de entry point. De esta forma si quisieramos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
+Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos y identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que ira junto con el tipo de entry point. De esta forma si queremos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
 
 ```{.java .numberLines}
 @EntryPointType("POISSON")
@@ -933,21 +933,20 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
     }
     ```
 
-    GraphHopper internamente genera unos ficheros a partir del mapa en formato osm, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En nuestro caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
+    GraphHopper internamente genera unos ficheros a partir del mapa OSM, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En nuestro caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
     
 ### Interfaz de usuario del simulador (Frontend)
 
-Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano, cómo están implementados nuestros usuarios, es tener un visualizador con el que observar toda la simulación.
+Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano cómo están implementados nuestros usuarios, es tener un visualizador con el que observar toda la simulación. En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. 
 
-Como hemos comentado en la sección 2.4.1, vamos a utilizar para la interfaz de usuario Electron.
-
-Electron al ejecutarse ejecuta dos procesos, *Main* y *Renderer*:
+La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUI. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección 2.4.1, vamos a utilizar para la interfaz de usuario Electron, que al ejecutarse crea dos procesos, un proceso que llamaremos *Main* y otro proceso que denominaremos *Renderer*:
 
 - *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
 
-    - `Configuration`: En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos. 
+    - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos. Esto es explicado en más detalle en el apartado \secref{sec:dinform}
+
     - `Controllers`: Contiene todos las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
-    - `DataAnalysis`: Contiene toda la lógica para analizar los históricos.
+    - `DataAnalysis`: Contiene toda la lógica para analizar los históricos[@bib7].
     - `Entities`: Clases utilizadas por `DataAnalysis`.
     - `Util`: Utilidades necesarias por otros módulos, que pueden ser de utilidad general. 
 
@@ -958,7 +957,7 @@ Electron al ejecutarse ejecuta dos procesos, *Main* y *Renderer*:
 
     En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
 
-- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular, utilizando el framework de Angular y está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario. Los componentes se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Angular está basado en componentes. Cada parte visual es un componente que a su vez pueden estar formados de más componentes. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser utilizado por otros componentes. Los distintos módulos son:
+- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formados de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
 
     - App: Contiene todos los componentes de la aplicación. Los principales son:
         
@@ -966,8 +965,36 @@ Electron al ejecutarse ejecuta dos procesos, *Main* y *Renderer*:
         `simulate-component`: Permite cargar los ficheros de configuración para poder simular 
         `visualization-component`: Permite visualizar como los usuarios interactúan en un mapa real tras realizar una simulación, cargando el histórico de ésta. Permite depurar los usuarios y además facilita la comprensión de los datos históricos arrojados por el simulador.
         `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
-    - Ajax: Es el módulo encargado de comunicarse con el *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc. Se puede ver a grandes rasgos en la [Figura 21](#fig:21) como se comunica el backend y el frontend.
+    - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
 
-    ![Ejemplo comunicación en la ejecución de una simulación entre el backend y el frontend del simulador](images/test.jpg)
+En resumidas cuentas, para realizar una simulación hay una comunicación de 3 niveles:
+
+1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración.
+2. Los datos con las rutas de los ficheros de configuración son enviados al proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios (Ruta de los ficheros de configuración).
+3. El simulador envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
+
+### Formularios dinámicos en las configuraciones {#sec:dinform}
+
+Al tener que introducir datos en la configuración y ser estos variables surgió la necesidad de que la interfaz gráfica fuera capaz de detectar los campos de todos los datos a introducir y generar los formularios de forma dinámica. 
+
+Como ya hemos mencionado, el simulador dispone de dos códigos base principales, el del Backend(Java) y el del Frontend(Typescript, Angular y Electron). Por cada usuario que creemos, tenemos que modificar ambos códigos. No muchos desarrolladores conocen TypeScript, por lo que se dificultaría en gran medida la implementación de nuevos usuarios, ya que habría que modificar el código del Frontend. Con un generador de formularios dinámicos podríamos modificar sólo el código del Backend y los esquemas para crear nuevos usuarios y mantener la interfaz de usuario actualizada con los nuevos usuarios que se pueden crear, facilitando la tarea de añadir o quitar nuevos parámetros en las configuraciones. Por lo tanto se obtienen bastantes ventajas de esta funcionalidad:
+
+- No es necesario implementar formularios por cada tipo de usuario, se generan en tiempo de ejecución.
+- No hay que cambiar el código de la GUI para añadir, modificar o quitar una implementación de usuario, solo cambiar los esquemas.
+- Se facilita el desarrollo.
+
+En el siguiente diagrama se muestra el funcionamiento básico de los formularios dinámicos. 
+
+![Sistema de bicis compartidas](images/schema_form_generator.png){#fig:1}
+
+# Evaluación
+
+En este apartado se presentan las distintas partes de la interfaz de usuario además de los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018[^9]
+
+[^9]: https://www.paams.net/
+
+A continuación se muestran capturas de las distintas partes del simulador:
+
+- Menu: Las opciones disponibles son: crear configuración, simular, ver simulador y analizar datos.
 
 # Referencias
