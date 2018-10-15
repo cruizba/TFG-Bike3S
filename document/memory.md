@@ -939,7 +939,7 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
 Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano cómo están implementados nuestros usuarios, es tener un visualizador con el que observar toda la simulación. En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. 
 
-La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUI. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección 2.4.1, vamos a utilizar para la interfaz de usuario Electron, que al ejecutarse crea dos procesos, un proceso que llamaremos *Main* y otro proceso que denominaremos *Renderer*:
+La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUI. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección [TODO], vamos a utilizar para la interfaz de usuario Electron, que al ejecutarse crea dos procesos, un proceso que llamaremos *Main* y otro proceso que denominaremos *Renderer*:
 
 - *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
 
@@ -967,11 +967,13 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
         `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
     - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
 
-En resumidas cuentas, para realizar una simulación hay una comunicación de 3 niveles:
+En la [Figura 22](#fig:22) se muestra la arquitectura a grandes rasgos del frontend. Se puede observar que para iniciar una simulación la comunicación es de 3 niveles:
 
-1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración.
-2. Los datos con las rutas de los ficheros de configuración son enviados al proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios (Ruta de los ficheros de configuración).
-3. El simulador envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
+1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración y este pasa dicha información al proceso *Main*.
+2. Los datos con las rutas de los ficheros de configuración son recibidos por el proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios.
+3. El simulador se ejecuta y envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
+
+![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22} 
 
 ### Formularios dinámicos en las configuraciones {#sec:dinform}
 
@@ -985,7 +987,7 @@ Como ya hemos mencionado, el simulador dispone de dos códigos base principales,
 
 En el siguiente diagrama se muestra el funcionamiento básico de los formularios dinámicos. 
 
-![Sistema de bicis compartidas](images/schema_form_generator.png){#fig:1}
+![Sistema de bicis compartidas](images/schema_form_generator.png){#fig:23}
 
 # Evaluación
 
