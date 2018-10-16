@@ -60,7 +60,7 @@ Para definir las diferentes partes de el simulador, es necesario tener una visi�
 
 ![Sistema de bicis compartidas](images/real_system_v2.jpg){#fig:1}
 
-Podemos distinguir claramente en la [Figura 1](#fig:1) tres partes principales dentro del sistema de bicis compartidas:
+Podemos distinguir claramente en la Figura \ref{fig:1} tres partes principales dentro del sistema de bicis compartidas:
 
 - Infraestructura física con estaciones y bicis (Amarillo).
 - Usuarios con Smartphone y App del sistema (Rojo).
@@ -109,7 +109,7 @@ En el contexto global del desarrollo, la parte que ha correspondido al tema de e
 
 ## Metodología
 
-Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la [Figura 2](#fig:2)
+Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... no obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la Figura \ref{fig:2}
 
 ![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2}
 
@@ -297,7 +297,7 @@ Si analizamos el comportamiento de un usuario en el sistema de bicis real, se pu
 
 - Si el usuario llega a la estación sin reserva de anclaje, puede suceder que no haya anclajes libres. En tal caso tendrá que volver a decidir a que estación ir para devolvera y si reservar o no. El proceso se repite hasta que el usuario consigue devolver la bicicleta.
 
-En la [Figura 3](#fig:3) se puede ver el flujo de decisiones del usuario con más detalle.
+En la figura \ref{fig:3} se puede ver el flujo de decisiones del usuario con más detalle.
 
 ![Flujo de decisiones de un Usuario Simulado](images/flow_events.png){#fig:3}
 
@@ -309,7 +309,7 @@ Si pensamos en una persona utilizando el SBC en la realidad, vemos que su inform
 
 Los US podrán obtener información del estado actual de las estaciones, o recomendaciones a traves de distintas interfaces que proporcionará el simulador a los usuarios. Por ejemplo, una interfaz para la información de la infraestructura (estaciones y bicis) y otra para las recomendaciones. Podríamos considerar estas interfaces como las "apps" que utilizan los usuarios en el sitema real, y cada usuario, según su implementación, podrá o no hacer uso de ellas.
 
-En la [Figura 4](#fig:4) vemos un diagrama en el que se explica cómo los US podrían consultar al SBC.
+En la figura \ref{fig:4} vemos un diagrama en el que se explica cómo los US podrían consultar al SBC.
 
 ![Usuarios simulados utilizando la información del sistema de recomendaciones y la infraestructura](images/How Users use Recomendation System.jpg){#fig:4}
 
@@ -488,7 +488,7 @@ En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento 
 
 ![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:6}
 
-En la [figura 6](#fig:6), R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es  aleatorio uniforme entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a las siguientes formulas.
+En la figura \ref{fig:6}, R es el radio del circulo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un angulo cuyo valor es  aleatorio uniforme entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a las siguientes formulas.
 
 $$
 d = random(0, R);  \; \;
@@ -503,7 +503,7 @@ $$
 d = R*\sqrt(rand(0, 1))\;\;\;\;\;\;\;\;(2)
 $$
 
-Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la [figura 7](#fig:7) se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
+Donde rand(0, 1) es un funcion que devuelve un valor uniforme entre 0 y 1, y R es el radio del circulo. En la figura \ref{fig:7} se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
 
 ![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:7}
 
@@ -538,7 +538,7 @@ $$
 $$
 
 Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
-Es posible que esta solución carezca de sentido para muchos lectores por que el error puede parecer mínimo si se representan las coordenadas sobre un plano bidimensional, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos sobre una superficie esférica, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la [figura 8](#fig:8) se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
+Es posible que esta solución carezca de sentido para muchos lectores por que el error puede parecer mínimo si se representan las coordenadas sobre un plano bidimensional, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los calculos sobre una superficie esférica, los usuarios en Suecia se generaran dentro de areas que no serían circulares, sino elipses (en la figura \ref{fig:8} se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma segun en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
 
 ![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:8}
 
@@ -580,9 +580,9 @@ Para la ejecución de un simulador basado en eventos es necesario una cola de pr
 
 ![Simulador basado en eventos](images/event_based_simulator.png){#fig:10}
 
-En la [Figura 10](#fig:10) vemos una ejecución básica del motor de nuestro simulador. El primer evento en ejecutarse es el primero de la cola. Cada evento al ejecutarse puede generar nuevos eventos y estos son insertados en la cola.
+En la figura \ref{fig:10} vemos una ejecución básica del motor de nuestro simulador. El primer evento en ejecutarse es el primero de la cola. Cada evento al ejecutarse puede generar nuevos eventos y estos son insertados en la cola.
 
-Para definir el comportamiento de nuestro simulador, hemos definido el siguiente conjunto de eventos a partir del flujo de eventos de la [Figura 3](#fig:3): 
+Para definir el comportamiento de nuestro simulador, hemos definido el siguiente conjunto de eventos a partir del flujo de eventos de la figura \ref{fig:3}: 
 
 - Usuario aparece
 - Usuario llega a la estación con reserva
@@ -599,9 +599,9 @@ Se puede encontrar una explicación más detallada del diseño e implementación
 
 ### Arquitectura detallada
 
-A partir de la [Figura 9](#fig:9), a continuación se desarrolla los detalles de la arquitectura del sistema incluyendo las decisiones que se han tomado que han llevado a un desarrollo evolutivo. 
+A partir de la figura \ref{fig:9}, a continuación se desarrolla los detalles de la arquitectura del sistema incluyendo las decisiones que se han tomado que han llevado a un desarrollo evolutivo. 
 
-Dentro de todo el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la [Figura 11](#fig:11). 
+Dentro de todo el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la figura \ref{fig:11}. 
 
 ![Vista basica del simulador](images/Arquitecture_2_v3.jpg){#fig:11}
 
@@ -613,9 +613,9 @@ En la parte lógica del simulador estaría toda la parte relacionada con las int
 
 ![Simulador con arquitectura interna de la lógica desglosada](images/Arquitecture_3_v3.jpg){#fig:12}
 
-En la [Figura 12](#fig:12) se puede ver con más detalle el comportamiento de la **lógica del simulador**. Como podemos ver lo que hace el **cargador de configuración** es interpretar los datos de los archivos de configuración para hacer funcionar nuestro simulador basado en eventos. El **simulador basado en eventos** se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos **usuarios generados(US)** interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del **sistema de recomendaciones.**
+En la figura \ref{fig:12} se puede ver con más detalle el comportamiento de la **lógica del simulador**. Como podemos ver lo que hace el **cargador de configuración** es interpretar los datos de los archivos de configuración para hacer funcionar nuestro simulador basado en eventos. El **simulador basado en eventos** se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos **usuarios generados(US)** interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del **sistema de recomendaciones.**
 
-La arquitectura de la  [Figura 12](#fig:12) iba a ser la arquitectura principal de nuestro proyecto, sin embargo, surgió la necesidad de añadir un pequeño módulo externo que se encargue de generar los usuarios.
+La arquitectura de la figura \ref{fig:12} iba a ser la arquitectura principal de nuestro proyecto, sin embargo, surgió la necesidad de añadir un pequeño módulo externo que se encargue de generar los usuarios.
 
 En un principio los archivos de configuración que íbamos a utilizar fueron los siguientes:
 
@@ -629,7 +629,7 @@ En un principio los archivos de configuración que íbamos a utilizar fueron los
 
 Parece apropiado pensar que esos tres ficheros de configuración son suficientes, sin embargo, surgió la necesidad de independizar la generación de usuarios. Si sólo utilizamos un archivo de configuración con los **entry points**, nuestro simulador depende del concepto de **entry point**, por lo que hacemos al simulador dependiente de éste. ¿Y si un tercero quiere generar los usuarios a su modo de forma individual? Tendría que estudiar cómo funciona un Entry Point, y crearlos en base a este concepto. Eso limita de algún modo los usuarios que podemos definir para el sistema. Un Entry Point nos ayuda a definir apariciones de usuarios de una forma más cómoda, pero puede darse el caso de que un desarrollador o investigador quiera generar los usuarios de otra manera.
 
-Imaginemos por un momento que el simulador dispone sólo de esos tres archivos de configuración en el sistema. En ese caso, el simulador antes de arrancar deberá generar los usuarios y después arrancar la simulación. Es en este punto es donde surge la necesidad de definir un nuevo módulo en nuestra arquitectura, un **generador de usuarios**. En la [Figura 14](#fig:14) se puede ver el modelo final de la configuración.
+Imaginemos por un momento que el simulador dispone sólo de esos tres archivos de configuración en el sistema. En ese caso, el simulador antes de arrancar deberá generar los usuarios y después arrancar la simulación. Es en este punto es donde surge la necesidad de definir un nuevo módulo en nuestra arquitectura, un **generador de usuarios**. En la figura \ref{fig:14} se puede ver el modelo final de la configuración.
 
 ¿Qué ganamos con separar la generación de usuarios del simulador?
 
@@ -657,7 +657,7 @@ Por ello tenemos que añadir a nuestra arquitectura una parte más con la que ll
 
 - Hacer análisis en base a los históricos.
 
-En la [Figura 15](#fig:15) que se ve a continuación se añaden a la arquitectura los módulos encargados de esta tarea dentro de la interfaz de usuario.
+En la figura \ref{fig:15} que se ve a continuación se añaden a la arquitectura los módulos encargados de esta tarea dentro de la interfaz de usuario.
 
 ![Arquitectura final con interfaz de usuario](images/Arquitecture_4_v3.jpg){#fig:15}
 
@@ -669,7 +669,7 @@ En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, im
 
 Uno de los objetivos que hemos tenido como desarrolladores es crear un simulador donde cada una de las partes sea lo más independiente posible. Permitiendo así que, si un módulo no cumple las características deseadas, o la interfaz no se adapta a las necesidades del proyecto, esta se pueda reemplazar, adaptar, cambiar de tecnología, etc…
 
-En la [Figura 16](#fig:16) hemos separado los distintos proyectos y tecnologías por colores. En color naranja tenemos el simulador, y en color azul la interfaz de usuario (**backend-simulator y frontend-simulator** respectivamente a partir de este apartado)
+En la figura \ref{fig:16} hemos separado los distintos proyectos y tecnologías por colores. En color naranja tenemos el simulador, y en color azul la interfaz de usuario (**backend-simulator y frontend-simulator** respectivamente a partir de este apartado)
 
 El frontend y el backend van a tener este rol a nivel de implementación. Son proyectos en lenguajes diferentes y solo tienen en común los datos que comparten, que serían los archivos de configuración y los históricos. Además, el frontend se encarga de hacer las llamadas al backend para realizar las simulaciones.
 
@@ -697,11 +697,11 @@ En un principio, enfocamos el proyecto con una estructura monolítica, donde cad
 
 Se decidió entonces implementar nuestro proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en nuestro código. A esto hay que añadir la necesidad de que el simulador no generase internamente los usuarios, si no que los reciba de forma externa en un fichero. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
 
-En la [Figura 16](#fig:16) se pueden ver los diferentes módulos del backend.
+En la figura \ref{fig:16} se pueden ver los diferentes módulos del backend.
 
 ![Modulos backend-simulator](images/module_system.png){#fig:17}
 
-A primera vista puede parecer muy diferente con lo definido en la arquitectura de la  [Figura 16](#fig:16), pero eso se debe a que está arquitectura sólo define como se organizan y comunican las partes de nuestro simulador.
+A primera vista puede parecer muy diferente con lo definido en la arquitectura de la figura \ref{fig:16}, pero eso se debe a que está arquitectura sólo define como se organizan y comunican las partes de nuestro simulador.
 
 A continuación, vamos a explicar todos los módulos de uno en uno:
 
@@ -713,9 +713,9 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
     - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción con máyor detalle se puede ver en la sección <!-- TODO --> .
 
-- Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la [Figura 19](#fig:19). La clase `EventUser` contiene los métodos necesarios para la realización de reservas. El evento `EventUserAppears` es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Veáse [Figura 10](#fig:10)). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
+- Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la figura \ref{fig:19}. La clase `EventUser` contiene los métodos necesarios para la realización de reservas. El evento `EventUserAppears` es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Veáse figura \ref{fig:10}). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
 
-- Generador de usuarios: Este módulo contiene las clases con los entry points definidos. Para facilitar la implementación de nuevos entry points, se ha utilizado el patrón factoría, como se puede ver en la [Figura 18](#fig:18).
+- Generador de usuarios: Este módulo contiene las clases con los entry points definidos. Para facilitar la implementación de nuevos entry points, se ha utilizado el patrón factoría, como se puede ver en la figura \ref{fig:18}.
 En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^5] es una librería que nos permite convertir los archivos JSON en instancias de clases definidas con los mismos datos que el fichero. Utilizamos esta flexibilidad que nos proporciona Gson para crear una factoría de Entry Points.
 
     La clase abstracta `EntryPoint` define el método `generateUsers()`, la cual deben heredar todas las implementaciones de puntos de entrada en el sistema. Estos usuarios son de tipo `SingleUser` los cuales tienen como propiedad el instante de tiempo en el que aparecen y podrán ser insertados posteriormente en un evento de aparición en ese mismo instante de tiempo.
@@ -733,11 +733,11 @@ En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^
 
 - History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe los resultados que se han realizado expresando los cambios en cada evento, lo cual hace que los históricos no sean tan pesados. Los instantes son almacenados en diferentes archivos JSON de 100 en 100, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos en el trabajo final de Tao Cumplido[@bib10].
 
-- Entidades e infraestructura: En este módulo se definen todas las entidades de la simulación. Consideramos como entidad los objetos que cambian por cada evento que sucede. Entidades en nuestro sistema son: usuarios, estaciones, reservas y bicis. Una reserva es una entidad ya que puede cambiar su estado, al igual que una estación cuando un usuario coge o deja una bici. En la [Figura 20](#fig:20) se muestra el diagrama de clases de las entidades. 
+- Entidades e infraestructura: En este módulo se definen todas las entidades de la simulación. Consideramos como entidad los objetos que cambian por cada evento que sucede. Entidades en nuestro sistema son: usuarios, estaciones, reservas y bicis. Una reserva es una entidad ya que puede cambiar su estado, al igual que una estación cuando un usuario coge o deja una bici. En la figura \ref{fig:20} se muestra el diagrama de clases de las entidades. 
 
     ![Diagrama UML de entidades e infraestructura](images/Entity_Diagram.png){#fig:20}
 
-    Aquí también están definidas las implementaciones de cada usuario. Al igual que con los Entry Points, tenemos una factoría definida que nos facilita la implementación de nuevos usuarios [(Figura 21)](#fig:21). Estos usuarios heredan todos de una clase abstracta `User`, que define todos los métodos abstractos que debe tener un usuario al interactuar con el simulador. Es así como se definen los nuevos US (Usuarios simulados). Además, estos pueden tener parámetros que influyan en sus decisiones. Todo está a disposición del implementador que desee programar un usuario en concreto. 
+    Aquí también están definidas las implementaciones de cada usuario. Al igual que con los Entry Points, tenemos una factoría definida que nos facilita la implementación de nuevos usuarios figura \ref{fig:21}. Estos usuarios heredan todos de una clase abstracta `User`, que define todos los métodos abstractos que debe tener un usuario al interactuar con el simulador. Es así como se definen los nuevos US (Usuarios simulados). Además, estos pueden tener parámetros que influyan en sus decisiones. Todo está a disposición del implementador que desee programar un usuario en concreto. 
 
     ![Factoría de usuarios](images/User_factory.png){#fig:21}
 
@@ -935,7 +935,7 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
     GraphHopper internamente genera unos ficheros a partir del mapa OSM, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En nuestro caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
     
-### Interfaz de usuario del simulador (Frontend)
+### Interfaz de usuario del simulador y formularios dinámicos(Frontend)
 
 Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano cómo están implementados nuestros usuarios, es tener un visualizador con el que observar toda la simulación. En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. 
 
@@ -967,19 +967,19 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
         `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
     - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
 
-En la [Figura 22](#fig:22) se muestra la arquitectura a grandes rasgos del frontend. Se puede observar que para iniciar una simulación la comunicación es de 3 niveles:
+En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del frontend. Se puede observar que para iniciar una simulación la comunicación es de 3 niveles:
 
 1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración y este pasa dicha información al proceso *Main*.
 2. Los datos con las rutas de los ficheros de configuración son recibidos por el proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios.
 3. El simulador se ejecuta y envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
 
-![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22} 
+![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22}
 
 ### Formularios dinámicos en las configuraciones {#sec:dinform}
 
 Al tener que introducir datos en la configuración y ser estos variables surgió la necesidad de que la interfaz gráfica fuera capaz de detectar los campos de todos los datos a introducir y generar los formularios de forma dinámica. 
 
-Como ya hemos mencionado, el simulador dispone de dos códigos base principales, el del Backend(Java) y el del Frontend(Typescript, Angular y Electron). Por cada usuario que creemos, tenemos que modificar ambos códigos. No muchos desarrolladores conocen TypeScript, por lo que se dificultaría en gran medida la implementación de nuevos usuarios, ya que habría que modificar el código del Frontend. Con un generador de formularios dinámicos podríamos modificar sólo el código del Backend y los esquemas para crear nuevos usuarios y mantener la interfaz de usuario actualizada con los nuevos usuarios que se pueden crear, facilitando la tarea de añadir o quitar nuevos parámetros en las configuraciones. Por lo tanto se obtienen bastantes ventajas de esta funcionalidad:
+Como ya hemos mencionado, el simulador dispone de dos códigos base principales, el del Backend(Java) y el del Frontend(Typescript, Angular y Electron). Por cada usuario que creemos, tenemos que modificar ambos códigos. Por lo que se dificultaría en gran medida la implementación de nuevos usuarios, ya que habría que modificar el código del Frontend. Con un generador de formularios dinámicos podríamos modificar sólo el código del Backend y los esquemas para crear nuevos usuarios y mantener la interfaz de usuario actualizada con los nuevos usuarios que se pueden crear, facilitando la tarea de añadir o quitar nuevos parámetros en las configuraciones. Por lo tanto se obtienen bastantes ventajas de esta funcionalidad:
 
 - No es necesario implementar formularios por cada tipo de usuario, se generan en tiempo de ejecución.
 - No hay que cambiar el código de la GUI para añadir, modificar o quitar una implementación de usuario, solo cambiar los esquemas.
@@ -987,7 +987,7 @@ Como ya hemos mencionado, el simulador dispone de dos códigos base principales,
 
 En el siguiente diagrama se muestra el funcionamiento básico de los formularios dinámicos. 
 
-![Sistema de bicis compartidas](images/schema_form_generator.png){#fig:23}
+![Sistema de bicis compartidas](images/schema_form_generator.png){#fig:23 .class height=21cm}
 
 # Evaluación
 
