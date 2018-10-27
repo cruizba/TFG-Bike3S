@@ -705,21 +705,21 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
 - Común: Este módulo incluye todas las utilidades e interfaces necesarias para la comunicación entre los módulos. Algunas de las utilidades interesantes implementadas que merece la pena mencionar son las siguientes:
 
-    - `GeoPoint`: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos.
+  - `GeoPoint`: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos.
 
-    - `GraphManager`, `GraphHopperIntegration` y `GeoRoute`: Véase la sección \secref{sec:maps} para su descripción 
+  - `GraphManager`, `GraphHopperIntegration` y `GeoRoute`: Véase la sección \secref{sec:maps} para su descripción 
 
-    - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción en mayor detalle se puede ver en la sección \secref{sec:logsim}.
+  - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción en mayor detalle se puede ver en la sección \secref{sec:logsim}.
 
 - Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la figura \ref{fig:19}. La clase `EventUser` contiene los métodos necesarios para la realización de reservas. El evento `EventUserAppears` es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Veáse figura \ref{fig:10}). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
 
 - Generador de usuarios: Este módulo contiene las clases con los entry points definidos. Para facilitar la implementación de nuevos entry points, se ha utilizado el patrón factoría, como se puede ver en la figura \ref{fig:18}.
-En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^5] es una librería que nos permite convertir los archivos JSON en instancias de clases definidas con los mismos datos que el fichero. Utilizamos esta flexibilidad que nos proporciona Gson para crear una factoría de Entry Points.
+
+  En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^5] es una librería que nos permite convertir los archivos JSON en instancias de clases definidas con los mismos datos que el fichero. Utilizamos esta flexibilidad que nos proporciona Gson para crear una factoría de Entry Points.
 
     La clase abstracta `EntryPoint` define el método `generateUsers()`, la cual deben heredar todas las implementaciones de puntos de entrada en el sistema. Estos usuarios son de tipo `SingleUser` los cuales tienen como propiedad el instante de tiempo en el que aparecen y podrán ser insertados posteriormente en un evento de aparición en ese mismo instante de tiempo.
 
     En el Anexo 3, se puede ver como implementar un Entry Point.
-
 
 ![Entry Points Factory](images/EntryPointFactory.png){#fig:18}
 
@@ -727,7 +727,6 @@ En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^
 
 ![Jerarquía de clases de los eventos](images/Core_diagram.png){#fig:19 .class height=21cm}
 
-> 
 
 - History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe los resultados que se han realizado expresando los cambios en cada evento, lo cual hace que los históricos no sean tan pesados. Los instantes son almacenados en diferentes archivos JSON de 100 en 100, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos en el trabajo final de Tao Cumplido[@bib10].
 
@@ -740,71 +739,99 @@ En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^
     ![Factoría de usuarios](images/User_factory.png){#fig:21}
 
     Los diferentes métodos que deben implementar los usuarios simulados son:
-    - `determineStationToRentBike(): Station` y `determineStationToReturnBike(): Station`
 
-        El usuario elige a que estación ir para alquilar o para devolver una bici. El implementador deberá hacer uso de los servicios a los que puede acceder el usuario para determinar a que estación ir. Este método devuelve una estación.
-    
-    - `determineRoute(): GeoRoute`
-        En este método debera hallarse una ruta hasta el destino del usuario. Cualquier gestor de rutas podrá ser usado, pero la ruta que devuelva debe ser un objeto de la clase GeoRoute para que pueda ser usada por el núcleo. Por defecto se puede usar el servicio `graph` que utilizará GraphHopper para calcular las rutas.
+  - `determineStationToRentBike(): Station` y `determineStationToReturnBike(): Station`
 
-    - `decidesNextPoint(): GeoPoint`
-        El usuario decide a que lugar de la ciudad quiere ir a dar una vuelta.
-    
-    - `decidesToLeaveSystemAfterTimeout(): boolean`
-        El usuario decide si abandona el sistema tras una expiración de reserva.
-    
-    - `decidesToLeaveSystemAffterFailedReservation(): boolean`
-        Tras un intento fallido de reserva de bici o de hueco, decide si abandonar el sistema o no. Es importante destacar que el usuario tiene acceso a un objeto llamado `memory` el cual contiene información acerca de las acciones que ha realizado el usuario simulado, para poder tomar decisiones e implementar algoritmos más avanzados que puedan tomar referencia de las acciones pasadas.
+      El usuario elige a que estación ir para alquilar o para devolver una bici. El implementador deberá hacer uso de los servicios a los que puede acceder el usuario para determinar a que estación ir. Este método devuelve una estación.
 
-    - `decidesToLeaveSystemWhenBikesUnavailable(): boolean`
-        El usuario decide si abandonar el sistema cuando no hay bicis disponibles en la estación. 
+  - `determineRoute(): GeoRoute`
 
-    - `decidesToReserveBikeAtSameStationAfterTimeout(): boolean`
-        El usuario decide si quiere volver a intentar reservar en la misma estación donde había hecho la reserva que acaba de expirar.
-    
-    - `decidesToReserveBikeAtNewDecidedStation(): boolean`
-        El usuario decide si reservar en la estación que ha escogido como destino.
-        
-    - `decidesToReserveSlotAtSameStationAfterTimeout(): boolean`
-        Tras haber reservado un slot en una estación y haber expirado la reserva, el usuario decide si volver a reservar en esa estación.
+      En este método debera hallarse una ruta hasta el destino del usuario. Cualquier gestor de rutas podrá ser usado, pero la ruta que devuelva debe ser un objeto de la clase GeoRoute para que pueda ser usada por el núcleo. Por defecto se puede usar el servicio `graph` que utilizará GraphHopper para calcular las rutas.
 
-    - `decidesToReturnBike(): boolean`
-        El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el metodo `decidesNextPoint()`, el cual devolverá un punto al que el usuario ira a dar una vuelta con la bicicleta.
+  - `decidesNextPoint(): GeoPoint`
 
-    - `decidesToDetermineOtherStationAfterTimeout(): boolean`
-        Tras la expiración de una reserva, el usuario decide si elegir una nueva estación.
+      El usuario decide a que lugar de la ciudad quiere ir a dar una vuelta.
 
-    - `decidesToDetermineOtherStationAfterFailedReservation(): boolean`
-        Tras un intento de reserva fallido, el usuario decide si elegir una nueva estación.
+  - `decidesToLeaveSystemAfterTimeout(): boolean`
+
+      El usuario decide si abandona el sistema tras una expiración de reserva.
+
+  - `decidesToLeaveSystemAffterFailedReservation(): boolean`
+
+      Tras un intento fallido de reserva de bici o de hueco, decide si abandonar el sistema o no. Es importante destacar que el usuario tiene acceso a un objeto llamado `memory` el cual contiene información acerca de las acciones que ha realizado el usuario simulado, para poder tomar decisiones e implementar algoritmos más avanzados que puedan tomar referencia de las acciones pasadas.
+
+  - `decidesToLeaveSystemWhenBikesUnavailable(): boolean`
+
+      El usuario decide si abandonar el sistema cuando no hay bicis disponibles en la estación. 
+
+  - `decidesToReserveBikeAtSameStationAfterTimeout(): boolean`
+
+      El usuario decide si quiere volver a intentar reservar en la misma estación donde había hecho la reserva que acaba de expirar.
+
+  - `decidesToReserveBikeAtNewDecidedStation(): boolean`
+
+      El usuario decide si reservar en la estación que ha escogido como destino.
+
+  - `decidesToReserveSlotAtSameStationAfterTimeout(): boolean`
+
+      Tras haber reservado un slot en una estación y haber expirado la reserva, el usuario decide si volver a reservar en esa estación.
+
+  - `decidesToReturnBike(): boolean`
+
+      El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el metodo `decidesNextPoint()`, el cual devolverá un punto al que el usuario ira a dar una vuelta con la bicicleta.
+
+  - `decidesToDetermineOtherStationAfterTimeout(): boolean`
+
+      Tras la expiración de una reserva, el usuario decide si elegir una nueva estación.
+
+  - `decidesToDetermineOtherStationAfterFailedReservation(): boolean`
+
+      Tras un intento de reserva fallido, el usuario decide si elegir una nueva estación.
 
     Además en las implementaciones de estos métodos se podrá acceder a los siguientes atributos, que contienen información del usuario:
-    - `id: integer` - Identificador del usuario.
-    - `position: GeoPoint` - Posición actual del usuario.
-    - `walkingVelocity: double` - Velocidad caminando.
-    - `cyclingVelocity: double` - Velocidad en bici.
-    - `destinationStation: Station` - Estación a la que el usuario quiere ir para coger o devolver una bici.
-    - `destinationPoint: GeoPoint`- Punto al que el usuario quiere ir en bici para dar una vuelta.
-    - `route : GeoRoute` - Ruta actual del usuario.
-    - `bike: Bike` - Bici que tiene el usuario.
-    - `reservedBike: boolean` - `true` si tiene bici reservada, `false` en caso contrario.
-    - `reservedSlot: boolean` - `true` si tiene un slot reservado, `false` en caso contrario.
-    - `reservation: Reservation` - Reserva actual del usuario.
-    - `memory: UserMemory` - Contiene atributos que registran los hechos sucedidos hasta el momento actual de la simulación
-    
+
+  - `id: integer` - Identificador del usuario.
+
+  - `position: GeoPoint` - Posición actual del usuario.
+
+  - `walkingVelocity: double` - Velocidad caminando.
+
+  - `cyclingVelocity: double` - Velocidad en bici.
+
+  - `destinationStation: Station` - Estación a la que el usuario quiere ir para coger o devolver una bici.
+
+  - `destinationPoint: GeoPoint`- Punto al que el usuario quiere ir en bici para dar una vuelta.
+
+  - `route : GeoRoute` - Ruta actual del usuario.
+
+  - `bike: Bike` - Bici que tiene el usuario.
+
+  - `reservedBike: boolean` - `true` si tiene bici reservada, `false` en caso contrario.
+
+  - `reservedSlot: boolean` - `true` si tiene un slot reservado, `false` en caso contrario.
+
+  - `reservation: Reservation` - Reserva actual del usuario.
+
+  - `memory: UserMemory` - Contiene atributos que registran los hechos sucedidos hasta el momento actual de la simulación
+
     Si los usuarios simulados quieren consultar algún tipo de información o quieren consultar alguna de las recomendaciones del sistema, lo hará a través de ciertos servicios que implementarán una interfaz para realizar estas consultas. Estos servicios serán ofrecidos por la clase abstracta `User` a modo de atributos, por lo tanto cualquier clase que herede de User, tendrá acceso a estos servicios, que podrán ser usados en todos los métodos. Como se inicializan estos servicios se puede ver en la sección \secref{sec:logsim}. Los servicios de los que disponen los usuarios son: 
-    - `infraestrucutre: InfraestructureManager`: Información acerca del estado de las estaciones, su ubicación, etc.
-    - `recomendationSystem: RecomendationSystem`: Sistema de recomendaciones al que el usuario puede consultar.
-    - `graph: GraphManager`: Gestor de rutas por defecto. Hemos utilizado GraphHopper como veremos en el apartado \secref{sec:logsim}
+
+  - `infraestrucutre: InfraestructureManager`: Información acerca del estado de las estaciones, su ubicación, etc.
+
+  - `recomendationSystem: RecomendationSystem`: Sistema de recomendaciones al que el usuario puede consultar.
+
+  - `graph: GraphManager`: Gestor de rutas por defecto. Hemos utilizado GraphHopper como veremos en el apartado \secref{sec:logsim}
 
     De momento se ha implementado un sistema de recomendaciones muy básico. La idea es crear implementaciones con funcionalidades más complejas para evaluar diferentes modelos  de equilibrio del uso de las bicicletas. Estas nuevas implementaciones se podrían añadir como nuevos servicios a los que el resto de usuarios podrán acceder, pudiendose usar uno o más sistemas de recomendaciones.
-    
+
     Por otro lado el simulador debe ofrecer la posibilidad de implementar usuarios facilmente, pero además es importante poder depurarlos. Al haber una gran cantidad de usuarios decidí implementar un "logger" que en cada ejecución generase por cada usuario un fichero con las trazas de su ejecución. Para ello simplemente hemos creado una clase llamada `DebugLogger`, la cual ofrece los métodos necesarios para poder escribir automáticamente las acciones del usuario, escribiendo una simple instrucción cuando queramos crear una traza en un archivo log. Podemos escribir un log de dos formas diferentes:
-    
-    - `debugLog()`: Escribe la información del evento, junto con información del Evento y parámetros del usuario.
-    - `debugLog("Message to log")``: Igual que ``debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
-    
+
+  - `debugLog()`: Escribe la información del evento, junto con información del Evento y parámetros del usuario.
+
+  - `debugLog("Message to log")``: Igual que ``debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
+
     Cada usuario tendrá su propio fichero de log, por lo que el usuario con $id = 5$ tendrá un fichero log llamado `User5.txt`. La implementación de esta clase Logger es una simple clase estática que es llamada en los eventos de la simulación.
-    
+
 ### Inicialización y ejecución del simulador {#sec:inisim}
 
 El simulador tiene dos modos de ejecución principales, uno para la generación de usuarios y otro para ejecutar una simulación. El simulador como tal, no necesita los entry points para empezar a simular, como comentamos en la sección \secref{sec:confusu}, sino que se le pasa un archivo de configuración con todos los usuarios generados. Para crear este fichero de configuración ofrecemos un generador de usuarios que recibe el archivo de configuración de los entry points. Una vez generados los usuarios, se podrá ejecutar el simulador. Las fases por las que pasa el simulador para inicializarse son las siguientes:
@@ -825,6 +852,7 @@ En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de
 ```{.java .numberLines}
     UserFactory userFactory = new UserFactory();
     User user = userFactory.createUser(userType, services);
+
 ```
 
 En éste código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. Ahora bien, ¿cómo sabe el simulador que clase se corresponde con el tipo de usuario `userType`? Especificando mediante anotaciones que clases son implementaciones de usuario y como se identifica en la configuración.
@@ -840,7 +868,7 @@ Por ejemplo si quisieramos crear un usuario, deberíamos hacerlo de la siguiente
         private double parameter2;
         ...
     }
-    
+
     ...
 ```
 
@@ -858,16 +886,19 @@ public class EntryPointPoisson extends EntryPoint {
     ...
     }
 }
+
 ```
 
 Al igual que los usuarios, hemos implementado una factoría de entry points que sigue la misma lógica que la factoría de usuarios. La implementación concreta de este entry point se encuentra en el módulo `usersgenerator` en la clase `EntryPointPoisson` y la implementación de la factoría en `EntryPointFactory`. 
 
 Pero no solo en las factorías va a ser una muy buena herramienta la reflexión computacional. Como hemos mencionado con anterioridad en la parte de Diseño \secref{sec:diseno}, los usuarios harán uso de servicios para consultar información y recomendaciones. Para no hacer dependientes las implementaciones de los usuarios hemos utilizado una inyección de dependencias, dejando responsable de la creación e inicialización de estos servicios a la clase `SimulationServices`. La clase SimulationServices se hará cargo de inicializar el gestor de rutas y el sistema de recomendaciones. Se pueden crear varios tipos de gestores de rutas y sistemas de recomendaciones por lo que hemos decidido emplear la misma lógica de reflexión utilizada para los entry points y los usuarios en estos servicios. En primer lugar se especifica en en el archivo de configuración global que gestor de rutas y que sistema de recomendaciones queremos utilizar:
 ```
+
     ...
     "recommendationSystemType": "AVAILABLE_RESOURCES_RATIO",
     "graphManagerType": "GRAPH_HOPPER"
     ...
+
 ```
 
 Las implementaciones de los gestores de rutas deberán tener la anotación `@GraphManagerType()` con el tipo correspondiente y `@GraphManagerParameters` para los parámetros necesarios de inicialización. Por otro lado las implementaciones de sistemas de recomendaciones deberán tener la anotación `@RecommendationSystemType()` con el tipo y `@RecommendationSystemParameters` para los parámetros. La clase `SimulationService` se encargará de, según la configuración, inicializar e inyectar dichas dependencias en los usuarios.
@@ -904,7 +935,7 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
     [^8]: https://github.com/graphhopper/graphhopper
 
     GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizandolo a modo de librería. Decidí optar por integrar el motor en el simulador, para que las simulaciones se ejecutarán con mayor rapidez y consumiera menos recursos el simulador. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
-    
+
     Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. Posteriormente la librería crea una serie de ficheros con información que utilizará para calcular las rutas. El código del constructor del servicio de rutas es el siguiente:
 
     ```{.java .numberLines}
@@ -929,10 +960,10 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
         hopper.setEncodingManager(new EncodingManager("foot, bike"));
         hopper.importOrLoad();
     }
-    ```
+```
 
     GraphHopper internamente genera unos ficheros a partir del mapa OSM, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En nuestro caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
-    
+
 ### Interfaz de usuario del simulador y formularios dinámicos(Frontend)
 
 Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano cómo están implementados nuestros usuarios, es tener un visualizador con el que observar toda la simulación. En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. 
@@ -941,29 +972,35 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
 - *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
 
-    - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos. Esto es explicado en más detalle en el apartado \secref{sec:dinform}
+  - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos. Esto es explicado en más detalle en el apartado \secref{sec:dinform}
 
-    - `Controllers`: Contiene todos las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
-    - `DataAnalysis`: Contiene toda la lógica para analizar los históricos[@bib7].
-    - `Entities`: Clases utilizadas por `DataAnalysis`.
-    - `Util`: Utilidades necesarias por otros módulos, que pueden ser de utilidad general. 
+  - `Controllers`: Contiene todos las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
+
+  - `DataAnalysis`: Contiene toda la lógica para analizar los históricos[@bib7].
+
+  - `Entities`: Clases utilizadas por `DataAnalysis`.
+
+  - `Util`: Utilidades necesarias por otros módulos, que pueden ser de utilidad general. 
 
     Al ejecutar el frontend, éste debe ejecutar los módulos en Java del backend tanto para crear usuarios como para simular. Estos dos módulos son dos ejecutables java con extensión ".jar" disponibles en la ruta de la aplicación cuando es compilada. Simplemente hay que crear un proceso hijo que los ejecute. El proceso *Main* tendrá que poder ejecutar estos dos procesos:
 
-        - `java -jar bikesurbanfleets-config-usersgenerator-1.0.jar <parameters>`
-        - `java -jar bikesurbanfleets-core-1.0.jar <parameters>`
+    - `java -jar bikesurbanfleets-config-usersgenerator-1.0.jar <parameters>`
+    - `java -jar bikesurbanfleets-core-1.0.jar <parameters>`
 
     En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
 
 - *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formados de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
 
-    - App: Contiene todos los componentes de la aplicación. Los principales son:
-        
-        `configuration-component`: Componente encargado de la creación de configuraciones para el simulador.
-        `simulate-component`: Permite cargar los ficheros de configuración para poder simular 
-        `visualization-component`: Permite visualizar como los usuarios interactúan en un mapa real tras realizar una simulación, cargando el histórico de ésta. Permite depurar los usuarios y además facilita la comprensión de los datos históricos arrojados por el simulador.
-        `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
-    - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
+  - App: Contiene todos los componentes de la aplicación. Los principales son:
+
+      `configuration-component`: Componente encargado de la creación de configuraciones para el simulador.
+
+      `simulate-component`: Permite cargar los ficheros de configuración para poder simular 
+
+      `visualization-component`: Permite visualizar como los usuarios interactúan en un mapa real tras realizar una simulación, cargando el histórico de ésta. Permite depurar los usuarios y además facilita la comprensión de los datos históricos arrojados por el simulador.
+
+      `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
+  - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
 
 En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del frontend. Se puede observar que para iniciar una simulación la comunicación es de 3 niveles:
 
@@ -1024,6 +1061,7 @@ Al pulsar el boton *Generate Configuration* si los datos están correctos se gen
 ![Analizador de historicos](images/Analyse.png){#fig:29}
 
 ## Prueba simulador
+
 Se realizaron una serie de pruebas con los siguientes tipos de usuarios implementados:
 
 - Uninformed: Este usuario trata de coger o devolver la bici de la estación más cercana que tenga desde el punto de entrada. Este usuario no tiene información de la disponibilidad de bicis o de huecos en la estación.
@@ -1039,10 +1077,13 @@ Se realizaron una serie de pruebas con los siguientes tipos de usuarios implemen
 Con estos usuarios se decide hacer un experimento como el de la figura \ref{fig:28}. Se tienen 20 estaciones repartidas por el centro de Madrid y 4 entry points. Las medidas básicas que provee el simulador son:
 
 - $SH$ (Succesful hires) - Número de bicis alquiladas con éxtio.
+
 - $FH$ (Failed hires) - Número de intentos de alquilar que no se han realizado con éxito.
 
 - $SR$ (Succesful returns) - Devoluciones exitosas.
+
 - $FR$ (Failed returns) - Devoluciones fallidas.
+
 - $N$ - Numero total de usuarios.
 
 A partir de estos valores se calculan los siguientes medidas de calidad:
@@ -1052,7 +1093,6 @@ A partir de estos valores se calculan los siguientes medidas de calidad:
 $$
 DS = SH / N
 $$
-
 
 - $RS$ (Return satisfaction) - Satisfacción de devolución: Proporción de usuarios que son capaces de devolver con éxito por primera vez o en las siguientes.
 
@@ -1081,6 +1121,7 @@ Se realizaron experimentos en los que se aumenta progresivamente el número de u
 Como se puede ver el usuario desinformado es el peor de los casos tanto en la satisfacción de demanda como en el alquiler de bicis. Se dan ciertas incongruencias con el usuario Obediente que debería ser el mejor de todos, debido a que al reservar siempre, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas.
 
 # Conclusiones
+
 A lo largo de este trabajo hemos aprendido a realizar un simulador, a plantear los archivos necesarios de configuración para llevarla a cabo, planteando su arquitectura e implementación, concluyendo con el alcance de nuestro objetivo. Se ha conseguido implementar un simulador con una configuración adaptable a cambios, extensible, fácil de modificar, con una interfaz de usuario que nos permite realizar simulaciones de una manera sencilla.
 
 Cada una de las partes de este proyecto se ha hecho siempre pensando a futuro hacia nuevas implementaciones y cambios.
@@ -1094,6 +1135,7 @@ No siempre las lecciones aprendidas son en base a malas experiencias. En este ca
 - Los patrones de diseño, bien aplicados, son muy importantes. En nuestro caso hemos aplicado dos factorías, una para los *US* (Usuarios simulados) y otro para los *entry points*.
 
 - Es importante verificar las entradas y salidas si son grandes, con herramientas como los esquemas. En nuestro caso la utilización de los Json Schema no sólo han aportado una forma para validar los datos de los archivos de configuración e históricos, si no también un medio para generar formularios en la GUI de forma dinámica.
+
 - Toda librería debe ser usada de la forma más independiente posible. Por ejemplo, el simulador utiliza los mapas a través de una interfaz, lo cual lo hace independiente a como estén implementados dichos mapas y como se calculan las rutas. Podríamos sustituirlo por otra librería o incluso crear una nosotros mismos.
 
 Pero no siempre las cosas salen bien, es por eso por lo que tampoco debemos olvidar los pequeños errores de diseño que hayamos podido cometer:
@@ -1114,11 +1156,273 @@ Pero no siempre las cosas salen bien, es por eso por lo que tampoco debemos olvi
 
 - Experimentos más completos para ver el funcionamiento en casos reales.
 
-# Anexo 1 {-}
+# Anexo 1 - Archivos de configuración {-}
 
-# Anexo 2 {-}
+A continuación se presentan los diferentes archivos de configuración que son necesarios para crear simulaciones.
 
-# Anexo 3 {-}
+## Configuración global {-}
+
+```json
+{
+    "reservationTime": 500,
+    "totalSimulationTime": 86400,
+    "debugMode": true,
+    "randomSeed": 201,
+    "boundingBox": {
+        "northWest": {
+            "latitude": 40.4215886,
+            "longitude": -3.7134038
+        },
+        "southEast": {
+            "latitude": 40.4121931,
+            "longitude": -3.69826
+        }
+    },
+    "recommendationSystemType": "AVAILABLE_RESOURCES_RATIO",
+    "graphManagerType": "GRAPH_HOPPER",
+    "maxDistanceRecommendation": 1000
+}
+```
+
+- Reservation Time: Tiempo máximo para las reservas (segundos).
+
+- Total Simulation Time: Tiempo total de la simulación (segundos).
+
+- Debug Mode: Modo depuración. Si es `true` se generarán unos archivos log con información individual de cada usuario.
+
+- Random Seed: Semilla de aleatoriedad. Puede tener cualquier valor entero. Las simulaciones realizadas con el mismo valor de semilla, serán iguales.
+
+- Bounding Box: Cuadro delimitador. Contiene dos puntos que delimitan el cuadro donde se realizará la simulación. `northWest` y `southEast` se corresponde con los puntos noroeste y sureste del cuadro delimitador.
+
+- Recommendation System Type: Recomendador que se está utilizando en ese momento.
+
+- Graph Manager Type: Gestor de rutas que se está utilizando en ese momento.
+
+- Max Distance Recommendation: Maxima distancia a la que los recomendadores hacen sugerencias.
+
+## Estaciones {-}
+
+```json
+{
+    "stations": [
+        {
+            "bikes": 10,
+            "position": {
+                "latitude": 40.4197429,
+                "longitude": -3.7080733
+            },
+            "capacity": 20
+        },
+       ...
+    ]
+}
+```
+
+- Bikes: Numero de bicis en la estación.
+
+- Position: Posición de la estación.
+
+- Capacity: Capacidad total de la estación.
+    
+
+## Puntos de entrada (Entry points) {-}
+
+```json
+{
+    "entryPoints": [
+        {
+            "entryPointType": "POISSON",
+            "userType": {
+                "typeName": "USER_INFORMED",
+                "parameters": {
+                    "minRentalAttempts": 2
+                }
+            },
+            "position": {
+                "latitude": 40.419969,
+                "longitude": -3.709819
+            },
+            "radius": 100,
+            "distribution": {
+                "lambda": 1
+            }
+        },
+        ...
+   ]
+}
+```
+
+-   Entry Point Type: Tipo de entry point, en nuestro caso Poisson.
+    
+-   User Type: Tipo de usuario y parametros:
+    
+    -   Type Name: Tipo del usuario que se quiere generar.
+        
+    -   Parameters: Parametros de los usuarios. En nuestro caso está especificado que solo puede intentar alquilar una bicicleta 2 veces.
+        
+-   Position: Posición origen del punto de entrada.
+    
+-   Radius: Radio de aparición de los usuarios. (metros)
+    
+-   Distribution: Parámetros de la distribución. En nuestro caso lambda, que vale 1 (en minutos). Significa que se creará de media 1 usuario por minuto con un proceso de poisson.
+    
+
+## Usuarios generados {-}
+
+```json
+{
+    "initialUsers": [
+    {
+        "position": {
+             "latitude": 40.420634503997825,
+             "longitude": -3.7103315803956933
+        },
+        "userType": {
+            "typeName": "USER_INFORMED",
+            "parameters": {
+                "minRentalAttempts": 2
+            }
+      },
+      "timeInstant": 19
+      },
+      ...
+   ]
+}
+    
+```
+
+-   Position: Posición en la que aparece el usuario.
+    
+-   User Type: Es el mismo userType que el utilizado en los puntos de entrada.
+    
+-   Time Instant: Instante de tiempo en el que aparece el usuario.
+
+# Anexo 2 - Manual de configuración del entorno de desarrollo {-}
+
+## Prerrequisitos {-}
+
+Es necesario tener instaladas las siguientes herramientas
+
+1. JDK 1.8
+2. Maven >= 3.5
+3. Node.js >= 8.9
+4. Git
+
+Asegúrese de que todos los binarios estan registrados en la variable de entorno PATH.
+
+El gestor de paquetes NPM es también necesario pero normalmente es instalado automaticamente con Node.js.
+
+## Setup {-}
+
+Ejecute las siguientes instrucciones en el directorio donde desee trabajar:
+
+```
+    git clone https://github.com/stimonm/Bike3S.git
+    cd Bike3S
+    npm install
+    node fuse configure:dev
+```
+
+Si no aparece ningun error, ya está todo preparado para desarrollar, empaquetar y probar el simulador.
+
+## Ejecutar el simulador en el entorno de desarrollo {-}
+
+Para ejecutar el simulador en modo grafico en el entorno de desarrollo, solo es necesario ejecutar el siguiente comando en el directorio raíz del proyecto:
+
+```
+    node fuse build:frontend
+```
+
+## Comandos básicos para desarrollo
+
+Compilar Backend:
+
+```
+    node fuse build:backend
+```
+
+Compilar Frontend:
+
+```
+    node fuse build:frontend
+```
+
+Compilar todo:
+
+```
+    node fuse build:dist
+```
+
+## Crear ejecutable e instalador para su sistema operativo {-}
+
+```
+    npm run distribute
+```
+
+# Anexo 3 - Como añadir un entry point {-}
+
+Para poder simular formas de entrada dentro del sistema, tenemos que crear entry point. Vamos a crear un entry point de ejemplo a modo de guía. Este entry point creará usuarios de forma secuencial dado unos segundos como parametro:
+
+1. Creamos una clase para el Entry Point. Se puede crear en el módulo `backend-bikesurbanfleets-config-usersgenerator` en el paquete `package es.urjc.ia.bikesurbanfleets.usersgenerator.entrypoint.implementations`
+
+La clase debe tener el siguiente aspecto:
+
+```java
+@EntryPointType("SEQUENTIAL")
+public class EntryPointPoisson extends EntryPoint {
+
+    private GeoPoint position;
+
+    private UserProperties userType;
+}
+```
+
+La anotación `EntryPointType("SEQUENTIAL")`, determina el nombre del Entry Point y lo hace visible a el simulador para poder crearlo. Los atributos `GeoPoint position` y `UserProperties userType` son obligatorios, determinan la posición y el tipo de usuario que se va a implementar junto con sus parámetros.
+
+Necesitaríamos 3 parámetros para este entry point. 
+
+- Tiempo entre apariciones.
+- Instante de inicio de generación de usuarios.
+- Instante final de generación de usuarios.
+
+la clase final quedaría de la siguiente forma:
+
+```java
+@EntryPointType("SEQUENTIAL")
+public class EntryPointSequential extends EntryPoint {
+
+    private GeoPoint position;
+
+    private UserProperties userType;
+
+    private int secondsBetweenUsers;
+
+    private int startTime;
+
+    private int endTime;
+
+    @Override
+	public List<SingleUser> generateUsers() {
+        List<SingleUser> users = new ArrayList<>();
+        int actualInstant = this.startTime;
+        while (actualInstant <= this.endTime) {
+            SingleUser user = new SingleUser(this.position, userType, actualInstant);
+            users.add(user);
+            actualInstant += this.secondsBetweenUsers;
+        }
+        return users;
+	}
+
+}
+```
+
+2. Añadimos el entry point a los schemas
+
+En el directorio raíz del proyecto, en la carpeta `schemas`, en el fichero `entrypoints-config.ts` añadimos lo siguiente: 
+
+```ts
+sObject()
+```
 
 # Anexo 4 {-}
 
