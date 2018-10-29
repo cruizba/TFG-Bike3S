@@ -317,8 +317,6 @@ La diferencia entre la interfaz de infraestructura y el sistema de recomendacion
 
 Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables a nivel de texto, por lo que utilzaremos la notación JSON. Además proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Estos archivos deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simulación.
 
-### Visualizador
-
 #### Configuración de la infraestructura
 
 Para que los usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga está información.
@@ -1333,7 +1331,7 @@ Para ejecutar el simulador en modo grafico en el entorno de desarrollo, solo es 
     node fuse build:frontend
 ```
 
-## Comandos básicos para desarrollo
+## Comandos básicos para desarrollo {-}
 
 Compilar Backend:
 
@@ -1353,7 +1351,7 @@ Compilar todo:
     node fuse build:dist
 ```
 
-## Crear ejecutable e instalador para su sistema operativo {-}
+## Crear ejecutable e instalador {-}
 
 ```
     npm run distribute
@@ -1361,13 +1359,14 @@ Compilar todo:
 
 # Anexo 3 - Como añadir un entry point {-}
 
-Para poder simular formas de entrada dentro del sistema, tenemos que crear entry point. Vamos a crear un entry point de ejemplo a modo de guía. Este entry point creará usuarios de forma secuencial dado unos segundos como parametro:
+Para poder simular formas de entrada dentro del sistema, tenemos que crear un entry point. Vamos a crear un entry point de ejemplo a modo de guía. Este entry point creará usuarios de forma secuencial dado unos segundos como parametro:
 
-1. Creamos una clase para el Entry Point. Se puede crear en el módulo `backend-bikesurbanfleets-config-usersgenerator` en el paquete `package es.urjc.ia.bikesurbanfleets.usersgenerator.entrypoint.implementations`
+1. Creamos una clase para el Entry Point. Se puede crear en el módulo 
+`backend- bikesurbanfleets-config-usersgenerator` en el paquete `package es.urjc. ia.bikesurbanfleets.usersgenerator.entrypoint.implementations`
 
 La clase debe tener el siguiente aspecto:
 
-```java
+```{.java .numberLines}
 @EntryPointType("SEQUENTIAL")
 public class EntryPointPoisson extends EntryPoint {
 
@@ -1385,47 +1384,324 @@ Necesitaríamos 3 parámetros para este entry point.
 - Instante de inicio de generación de usuarios.
 - Instante final de generación de usuarios.
 
-la clase final quedaría de la siguiente forma:
+La clase final quedaría de la siguiente forma:
 
-```java
-@EntryPointType("SEQUENTIAL")
-public class EntryPointSequential extends EntryPoint {
+```{.java .numberLines}
+	@EntryPointType("SEQUENTIAL")
+	public class EntryPointSequential extends EntryPoint {
 
-    private GeoPoint position;
+	    private GeoPoint position;
 
-    private UserProperties userType;
+	    private UserProperties userType;
 
-    private int secondsBetweenUsers;
+	    private int secondsBetweenUsers;
 
-    private int startTime;
+	    private int startTime;
 
-    private int endTime;
+	    private int endTime;
 
-    @Override
-	public List<SingleUser> generateUsers() {
-        List<SingleUser> users = new ArrayList<>();
-        int actualInstant = this.startTime;
-        while (actualInstant <= this.endTime) {
-            SingleUser user = new SingleUser(this.position, userType, actualInstant);
-            users.add(user);
-            actualInstant += this.secondsBetweenUsers;
-        }
-        return users;
+	    @Override
+		public List<SingleUser> generateUsers() {
+		List<SingleUser> users = new ArrayList<>();
+		int actualInstant = this.startTime;
+		while (actualInstant <= this.endTime) {
+		    SingleUser user = new SingleUser(this.position, userType, actualInstant);
+		    users.add(user);
+		    actualInstant += this.secondsBetweenUsers;
+		}
+		return users;
+		}
+
 	}
-
-}
 ```
+Como se puede ver hemos creado un método denominado `generateUsers()`. Este es un método abstracto heredado de la clase de la que extendemos EntryPoint y debe devolver una lista con los usuarios ya generados. Aquí aplicaremos la lógica necesaria con los atributos que le hayamos atribuido a nuestro entry point para generar los usuarios. En nuestro caso caso es un bucle while, el cual en cada iteración creara un usuario cada cierto número de segundos en un rango dado.
 
-2. Añadimos el entry point a los schemas
+2. Añadir el entry point a los schemas
 
 En el directorio raíz del proyecto, en la carpeta `schemas`, en el fichero `entrypoints-config.ts` añadimos lo siguiente: 
 
 ```ts
-sObject()
+	sObject({
+		entryPointType: sConst('SEQUENTIAL'),
+		position: GeoPoint,
+		userType: UserProperties,
+		secondsBetweenUsers: UInt,
+		startTime: UInt,
+		endTime: UInt
+	}),
 ```
 
-# Anexo 4 {-}
+Este fragmento de código ira a continuación de la línea:
 
-# Anexo 5 {-}
+```
+	export const EntryPoint = sAnyOf(
+```
+
+Aquí se especifican todos los parámetros que debe tener un entry point. Los parametros `entryPointType`, `position` y `userType` no cambian entre entry points. 
+
+De este modo generaremos el schema correspondiente del Entry Point y éste será configurable desde la interfaz de usuario sin añadir ninguna linea de código al frontend.
+
+3. Compilar backend y generar schemas.
+
+Para probar nuestro nuevo Entry Point debemos ejecutar los siguientes comandos.
+
+```
+	node fuse build:backend
+	node fuse build:schema
+	node fuse build:frontend
+```
+
+El primer comando compila el backend, el segundo genera los schemas y el tercero compila y ejecuta el frontend.
+
+4. Probar nuestro entry point para crear una configuración.
+
+Si creamos un entry point en la parte de configuración veremos lo siguiente:
+
+![Entry Point - Menu de selección de tipo](images/new_entry_point_1.png){.class width=9cm}
+
+El frontend nos detecta automáticamente que hay un nuevo tipo de Entry Point. Lo seleccionamos, seleccionamos también el tipo de usuario que queremos y la siguiente ventana que nos aparecerá será la siguiente:
+
+![Entry Point - Parametros usuarios](images/new_entry_point_2.png){.class width=14cm}
+
+También aparecen automáticamente los formularios para introducir los parámetros que especificamos en el schema. El entry Point ha sido implementado con exito. Ya sólo es necesario para terminar la prueba crear una configuración con estos entry points, generar los usuarios y simular.
+
+# Anexo 4 - Manual para crear implementaciones de usuario {-}
+
+Para crear un nuevo tipo de usuario se recomienda hacerlo en el módulo `backend- bikesurbanfleets-world-entities` en el paquete `es.urjc.ia.bikesurbanfleets. users.types`.
+
+Vamos a crear un usuario de ejemplo que elija una estación aleatoriamente y que haga reservas dado un porcentaje parametrizable desde el archivo de configuración.
+
+La clase en un principio debe presentar el siguiente aspecto, antes de comenzar a programarlo:
+
+```{.java .numberLines}
+@UserType("USER_RANDOM_STATION")
+public class UserRandomExtension extends User {
+
+    @UserParameters
+    public class Parameters {
+        
+    }
+
+    private Parameters parameters;
+
+    public UserInformed(Parameters parameters, SimulationServices services) {
+        super(services);
+        this.parameters = parameters;
+    }
+}
+```
+
+Es necesario que todas las clases de usuarios tengan como anotación `@UserType` para que el simulador sea capaz de detectar esta nueva clase de usuario y utilizarla. También es obligatorio que la clase de usuario implemente una clase interna que implemente la interfaz `@UserParameters`, donde incluiremos todos los parámetros configurables del usuario.
+
+En nuestro caso, queremos que el usuario reserve un porcentaje dado de, y que abandone el sistema tras haber intentado coger bici segun el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
+
+```{.java .numberLines}
+    @UserParameters
+    public class Parameters {
+
+        private int minReservationPercentage;
+
+        private int minRentalAttempts;
+
+    }
+```
+
+El atributo `minReservationPercentage` representa el porcentaje de veces que realizará una reserva y `minRentalAttempts` el mínimo de veces que queremos que intente coger una bici.
+
+## Implementación de métodos {-}
+
+Como este usuario no va a realizar reservas, pondremos todos sus métodos de decisión a `false`:
+
+- `boolean decidesToLeaveSystemAfterTimeout()`{.java}
+- `boolean decidesToLeaveSystemAffterFailedReservation()`{.java}
+- `boolean decidesToReserveBikeAtSameStationAfterTimeout()`{.java}
+- `boolean decidesToReserveBikeAtNewDecidedStation()`{.java}
+- `boolean decidesToReserveSlotAtSameStationAfterTimeout()`{.java}
+- `boolean decidesToReserveSlotAtNewDecidedStation()`{.java}
+- `boolean decidesToDetermineOtherStationAfterTimeout()`{.java}
+- `boolean decidesToDetermineOtherStationAfterFailedReservation()`{.java}
+
+Podríamos hacer que el usuario tome decisiones utilizando la memoria del usuario para controlar dichas decisiones. 
+El usuario tiene acceso a una memoria que contiene información de todo lo que ha ido realizando a lo largo de la simulación: 
+
+- `bikeReservationAttemptsCounter` - Contador de intentos de reserva de bici
+- `bikeReservationTimeoutsCounter` - Contador de timeouts de reserva de bici
+- `slotReservationAttemptsCounter` - Contador de intentos de reserva de hueco
+- `slotReservationTimeoutsCounter` - Contador de timeouts de reserva de hueco
+- `rentalAttemptsCounter` - Intentos de coger bici
+- `returnAttemptsCounter` - Intentos de devolver bici
+
+Podemos utilizar esta información para hacer que el usuario decida que hacer en ciertos casos. Por ejemplo en nuestro caso queremos que abandone tras un minimo de intentos, el método `decidesToLeaveSystemWhenBikesUnavailable()`{.java} quedará de la siguiente forma:
+
+```{.java .numberLines}
+    @Override
+    public boolean decidesToLeaveSystemWhenBikesUnavailable() {
+        return this.getMemory().getRentalAttemptsCounter() > 2;
+    }
+```
+
+Este método devolverá `true`{.java} si se ha superado el numero mínimo de intentos y abandonará el sistema.
+
+También el usuario tiene la posibilidad de dar una vuelta en bici, en vez de ir diréctamente a la estación. Si no queremos que de una vuelta y vaya directamente a la estación simplemente el método `boolean decidesToReturnBike()`{.java} debe devolver `true`{.java}.
+
+Procederemos ahora a implementar que ruta debe escoger el usuario para ir a coger o devolver una bici según el gestor de rutas.
+```{.java .numberLines}
+    @Override
+    public GeoRoute determineRoute() throws Exception{
+        List<GeoRoute> routes = null;
+        routes = calculateRoutes(getDestinationPoint());
+        if(routes != null) {
+            int index = infraestructure.getRandom().nextInt(0, routes.size());
+            return routes.get(index);
+        }
+        else {
+            return null;
+        }
+    }
+```
+Con este método se escogera la primera ruta generada por el gestor de rutas, que en el caso de GraphHopper será la más corta.
+
+Ahora implementaremos como queremos que determine la estación a la que queremos que coja una bici y que la devuelva:
+
+Para coger una bici:
+```{.java .numberLines}
+    @Override
+    public Station determineStationToReturnBike() {
+        List<Station> allStations = this.services.getInfrastructureManager()
+            .consultStations();
+        int stationRandIndex = infraestructure.getRandom()
+            .nextInt(0, allStations.size());
+        return allStations.get(stationRandIndex);
+    }
+
+    @Override
+    public GeoRoute determineRoute() throws Exception{
+        List<GeoRoute> routes = null;
+        routes = calculateRoutes(getDestinationPoint());
+        if(routes != null) {
+            int index = infraestructure.getRandom().nextInt(0, routes.size());
+            return routes != null ? routes.get(index) : null;
+        }
+        else {
+    	    return null;
+        }
+    }
+```
+
+La clase al completo quedara de la siguiente manera:
+
+```{.java .numberLines}
+@UserType("USER_STATION_RANDOM")
+public class UserStationRandom extends User {
+
+    @UserParameters
+    public class Parameters {
+
+        private int minReservationPercentage = 50;
+
+        private int minRentalAttempts = 2;
+
+    }
+
+    private Parameters parameters;
+
+    public UserStationRandom(Parameters parameters, SimulationServices services) {
+        super(services);
+        this.parameters = parameters;
+    }
+
+    @Override
+    public boolean decidesToLeaveSystemAfterTimeout() {
+        return false;
+    }
+
+    @Override
+    public boolean decidesToLeaveSystemAffterFailedReservation() {
+        return false;
+    }
+
+    @Override
+    public boolean decidesToLeaveSystemWhenBikesUnavailable() {
+        return this.getMemory()
+            .getRentalAttemptsCounter() > parameters.minRentalAttempts;
+    }
+
+    @Override
+    public boolean decidesToReserveBikeAtSameStationAfterTimeout() {
+        return false;
+    }
+
+    @Override
+    public boolean decidesToReserveBikeAtNewDecidedStation() {
+        return false;
+    }
+
+    @Override
+    public boolean decidesToReserveSlotAtSameStationAfterTimeout() {
+        return false;
+    }
+
+    @Override
+    public boolean decidesToReserveSlotAtNewDecidedStation() {
+        return false;
+    }
+
+    @Override
+    public boolean decidesToReturnBike() {
+        return true;
+    }
+
+    @Override
+    public boolean decidesToDetermineOtherStationAfterTimeout() {
+        return false;
+    }
+
+    @Override
+	public boolean decidesToDetermineOtherStationAfterFailedReservation() {
+		return false;
+	}
+
+    @Override
+    public Station determineStationToRentBike() {
+        List<Station> allStations = this.services.getInfrastructureManager() 
+            .consultStations();
+        int stationRandIndex = infraestructure.getRandom()
+             .nextInt(0, allStations.size());
+        return allStations.get(stationRandIndex);
+    }
+
+    @Override
+    public Station determineStationToReturnBike() {
+        List<Station> allStations = this.services.getInfrastructureManager() 
+            .consultStations();
+        int stationRandIndex = infraestructure.getRandom()
+            .nextInt(0, allStations.size());
+        return allStations.get(stationRandIndex);
+    }
+
+    @Override
+    public GeoRoute determineRoute() throws Exception{
+        List<GeoRoute> routes = null;
+        routes = calculateRoutes(getDestinationPoint());
+        if(routes != null) {
+            int index = infraestructure.getRandom()
+                 .nextInt(0, routes.size());
+            return routes != null ? routes.get(index) : null;
+        }
+        else {
+    	    return null;
+        }
+    }
+
+    @Override
+    public GeoPoint decidesNextPoint() {
+        return null;
+    }
+
+}
+```
+
+
+# Anexo 5 - Manual para crear sistemas de recomendación {-}
 
 # Referencias
