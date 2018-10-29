@@ -1,4 +1,11 @@
 {
     "cSpell.language": ",es",
-    "cSpell.enabled": true
+    "cSpell.enabled": true,
+    "spellright.language": [
+        "es"
+    ],
+    "spellright.documentTypes": [
+        "latex",
+        "plaintext"
+    ]
 }

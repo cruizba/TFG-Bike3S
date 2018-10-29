@@ -15,11 +15,12 @@
   \endorigfigure
 }
  
+\pagestyle{headings}
 \pagestyle{fancy}
-\fancyhf{}
-\fancyhead[LE,RO]{}
-\fancyhead[RE,LO]{Arquitectura, diseño, y configuración de un simulador de bicis compartidas}
-\fancyfoot[CE,CO]{}
+\fancyhf{} % sets both header and footer to nothing
+\renewcommand{\headrulewidth}{0pt}
+%\fancyhead[LO]{Carlos Ruiz Ballesteros}
+%\fancyhead[RO]{Arquitectura, diseño, y configuración de un simulador de bicis compartidas}
 \fancyfoot[LE,CO]{\thepage}
 
 \renewcommand{\baselinestretch}{1}
