@@ -1,6 +1,7 @@
 ---
 title: Arquitectura, diseño y configuración de un simulador de bicicletas compartidas
 author: Carlos Ruiz Ballesteros
+geometry: "left=2.5cm,right=2.5cm,top=3cm,bottom=3cm"
 date: 29 de Octubre de 2018
 
 ---
@@ -1061,6 +1062,10 @@ En el siguiente diagrama se muestra el funcionamiento básico de los formularios
 
 ![Generación dinámica de formularios](images/schema_form_generator.png){#fig:23 .class height=7cm}
 
+\pagebreak
+&nbsp;
+\newpage
+
 # Evaluación
 
 En este apartado se presentan las distintas partes de la interfaz de usuario además de los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018[^9]
@@ -1328,6 +1333,10 @@ A continuación se presentan los diferentes archivos de configuración que son n
 - Position: Posición en la que aparece el usuario.
 - User Type: Es el mismo userType que el utilizado en los puntos de entrada.
 - Time Instant: Instante de tiempo en el que aparece el usuario. (segundos)
+
+\pagebreak
+&nbsp;
+\newpage
 
 # Anexo 2 - Manual de configuración del entorno de desarrollo {-}
 
@@ -1770,6 +1779,10 @@ Así tendremos acceso desde la interfaz gráfica a la creación de configuracion
 &nbsp;
 \newpage
 
-\thispagestyle{plain}
+\pagebreak
+&nbsp;
+\newpage
 
 # Referencias
+
+\thispagestyle{plain}
