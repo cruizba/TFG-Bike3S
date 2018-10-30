@@ -23,6 +23,14 @@ date: 29 de Octubre de 2018
 
 \tableofcontents
 
+\pagebreak
+&nbsp;
+\newpage
+
+\pagebreak
+&nbsp;
+\newpage
+
 # Resumen {-}
 
 Imaginemos por un momento que necesitamos ir de un sitio a otro en nuestra ciudad y disponemos de un sistema de bicicletas por estaciones. Como sabemos los sistemas de bicicletas públicas, ofrecen a los usuarios bicis en estaciones situadas en puntos concretos de la ciudad para poder utilizarlas como medio de transporte de un punto a otro. Estas estaciones están situadas en lugares concretos de la ciudad y podemos desplazarnos de un sitio a otro, cogiendo las bicis en una estación y dejándolas en otra cerca de nuestro destino. 
@@ -35,8 +43,15 @@ Muchas soluciones y estrategias de balanceo son muy difíciles de probar directa
 
 En eso se centra este trabajo, en la implementación de un simulador capaz de recrear de la manera más realista posible, un sistema de bicis compartidas. Este simulador deberá permitir la posibilidad de tener diferentes tipos de usuario, implementar un sistema de recomendaciones, implementar un sistema de incentivos y poder probar cualquier sistema de bicis públicas en cualquier lugar del mundo. En definitiva, crear un simulador que nos permita crear, simular y analizar situaciones reales e implementar sistemas de balanceo para comprobar su viabilidad. Se crearán archivos de configuración para crear situaciones con estaciones y ciudades reales. Posteriormente tras las simulaciones se podrán analizar los datos obtenidos y visualizarlos para comprobar su eficacia.
 
->
+\pagebreak
+&nbsp;
 
+>
+&nbsp;
+>
+&nbsp;
+>
+    
 # Introducción
 
 En este capítulo se darán a conocer las motivaciones que llevaron a la realización de este proyecto, el contexto del mismo y los objetivos planteados. 
@@ -151,7 +166,7 @@ Antes de comenzar las iteraciones y primeros prototipos de el proyecto, es neces
 
 Para examinar y definir en detalle las distintas especificaciones de el simulador, debemos introducir un poco las necesidades globales del simulador en general.
 
-Necesitamos un software que sea capaz a partir de un estado inicial de simular situaciones reales y debe permitir visualizar y dar una serie de datos correspondientes de la simulación. El simulador tiene que mostrar estos datos a través de un histórico que posteriormente se utilizará para analizar los resultados del sistema de recomendaciones y los algoritmos implementados.
+Necesitamos un software que sea capaz de, a partir de un estado inicial, simular situaciones reales y debe permitir visualizar y dar una serie de datos correspondientes de la simulación. El simulador tiene que mostrar estos datos a través de un histórico que posteriormente se utilizará para analizar los resultados del sistema de recomendaciones y los algoritmos implementados.
 
 En resumen, el simulador tiene que ser capaz de, a partir de unos datos de configuración iniciales, generar un histórico con los resultados de la simulación para comprobar el comportamiento de los distintos algoritmos de balanceo implementados.
 
@@ -231,7 +246,7 @@ _Generador de usuarios_: Del requisito anterior podemos deducir que debería hab
 
 **Requisito funcional 4**
 
-_Procesador de la configuración_: En el simulador deberá haber un procesador para la configuración para las configuraciones descritas que sea capaz de preparar todo el sistema para su correspondiente ejecución.
+_Procesador de la configuración_: En el simulador deberá haber un procesador para la configuración que sea capaz de preparar todo el sistema para su correspondiente ejecución.
 
 **Requisito funcional 5**
 
@@ -257,7 +272,7 @@ Interfaz de usuario dinámica: Al añadir o quitar parámetros de configuración
 
 **Requisito no funcional 2**
 
-El simulador debe ser multiplataforma, pudiendo así ser utilizado y desarrollarlo en las plataformas GNU/Linux, Windows y MacOS.
+El simulador debe ser multiplataforma, pudiendo así ser utilizado y desarrollado en las plataformas GNU/Linux, Windows y MacOS.
 
 **Requisito no funcional 3**
 
@@ -265,7 +280,7 @@ El diseño del simulador y el código debe ser lo más sencillo posible y aporta
 
 **Requisito no funcional 4**
 
-Tanto el formato de los ficheros de configuración como el del histórico deben ser independientes, es decir, la configuración podrá ser creada y el histórico leído por otro software independientemente del simulador. Se utilizará el formato JSON y deberá contar de un sistema para la verificación de datos.
+Tanto el formato de los ficheros de configuración como el del histórico deben ser independientes, es decir, la configuración podrá ser creada y el histórico leído por otro software independientemente del simulador. Se utilizará el formato JSON y deberá contar con un sistema para la verificación de datos.
 
 ## Análisis
 
@@ -281,7 +296,7 @@ Para ir formando las partes de el simulador, vamos a partir de lo siguiente:
 
 5. Cada simulación debe producir un histórico, y con este histórico se debe poder **visualizar la simulación** y **analizar los datos resultantes**.
 
-Partiendo de esta pequeña analogía, con los puntos anteriormente citados vamos a ir mencionando las distintas partes de el simulador que se corresponden con cada punto anterior en el SBC real.
+Partiendo de esto, con los puntos anteriormente citados vamos a ir mencionando las distintas partes de el simulador que se corresponden con cada punto anterior en el SBC real.
 
 ### Núcleo
 
@@ -305,7 +320,7 @@ Si analizamos el comportamiento de un usuario en el sistema de bicis real, se pu
 
 - Si el usuario reserva un anclaje y hay disponibles, podrá devolver la bici sin problemas y abandonar el sistema. Las reservas de anclajes también pueden expirar por lo que si la reserva expira, tendrá que decidir entre:
 
-  - Continuar hacia la estación y devolverá si hay anclajes disponibles.
+  - Continuar hacia la estación y devolverla si hay anclajes disponibles.
 
   - Repetir el proceso y decir a que otra estación ir para devolver la bici y si reservar o no.
 
@@ -329,15 +344,15 @@ En la figura \ref{fig:4} vemos un diagrama en el que se explica cómo los US pod
 
 El simulador podrá disponer en un futuro de más de un sistema de recomendaciones, pero de momento se ha incluído uno, el cual ha sido implementado por otra desarrolladora del simulador (Sandra Timón [@bib7]).
 
-La diferencia entre la interfaz de infraestructura y el sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el de recomendaciones, los criterios que aplica para realizarlas responden a los intereses del sistema (para balancear el sistema).
+La diferencia entre la interfaz de infraestructura y el sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el de recomendaciones, los criterios que aplica para realizar estas recomendaciones, responden a los intereses del sistema para balancearlo.
 
 ### Configuración
 
-Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables, utilizando el formato JSON. Además proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Estos archivos deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simulación.
+Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables utilizando el formato JSON. Además proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Estos archivos deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simulación.
 
-#### Configuración de la infraestructura
+#### Configuración de la infraestructura.
 
-Para que los usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga está información.
+Para que los usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador información sobre dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga esta información.
 
 El contenido del archivo de configuración de las estaciones contiene:
 
@@ -393,11 +408,11 @@ También nos puede interesar un usuario único en un determinado instante de tie
 
 - Instante de aparición: Momento exacto en el que el usuario aparece.
 
-- Tipo de usuario
+- Tipo de usuario y parámetros propios.
 
 En definitiva, un **Entry Point** es un concepto genérico de entrada al simulador y pueden variar sus parámetros. Ahora la pregunta es, ¿cómo y de que forma generaremos los usuarios siguiendo un proceso de Poisson? 
 
-#### Generación de usuarios siguiendo un proceso Poisson
+#### Generación de usuarios siguiendo un proceso Poisson. {#sec:genusers}
 
 Con respecto a la generación de usuarios, la distribución que más se acerca a como los usuarios aparecen es la distribución exponencial que se aplica en procesos de Poisson. La distribución exponencial podemos considerarla como el modelo más adecuado para la probabilidad del tiempo de espera entre dos eventos que sigan un proceso de Poisson. Estos eventos que ocurren son las apariciones de usuario y para simularlo tendremos que resolver primero dos problemas:
 
@@ -429,13 +444,13 @@ $$
 
 Entonces si $f(x)$ es continua y estrictamente creciente (2), como todos los valores de $f(x)$ están dentro del rango del cero al uno (3), existirá una función inversa $f^{-1}(y)$ donde 0 < y < 1.
 
-Con esta función inversa, podríamos calcular un valor aleatorio $X$ por medio de una variable aleatoria de distribución uniforme $u = U(0,1)$.
+Con esta función inversa, podríamos calcular un valor aleatorio $X$ por medio de una variable aleatoria de distribución uniforme $u = U(0,1)$ que se utilice como argumento de la inversa de la distribución de probabilidad exponencial(1).
 
 $$
 X = f^{-1}(u)\;\;\;\;\;(4)
 $$
 
-Si hacemos la inversa de la distribución de probabilidad exponencial, obtenemos un posible valor de la distribución:
+Si hacemos esta inversa, obtenemos un posible valor de la distribución:
 
 $$
 X = \frac{-ln(u)}{\lambda} \;\;\;\;\; (5)
@@ -447,7 +462,7 @@ Lo que estamos haciendo es a partir del valor de $u$ (que como hemos mencionado 
 
 Por ejemplo, si el valor de $u$ es 0.42 el valor que devolverá es de 2,64 segundos para un $\lambda=1/5$
 
-![La función inversa (5) nos permite generar variables aleatorias a partir de un valor aleatorio entre 0 y 1](images/exponential_function.PNG){#fig:5}
+![La función inversa (5) nos permite generar variables aleatorias que se correspondan a tiempos de aparición a partir de un valor aleatorio entre 0 y 1](images/exponential_function.PNG){#fig:5}
 
 >
 
@@ -514,10 +529,10 @@ Sin embargo esto nos va a dar como resultado más cantidad de puntos en zonas ce
 Por lo tanto lo que haremos es generar $d$ con la siguiente formula para el radio [@bib4].
 
 $$
-d = R*\sqrt(rand(0, 1))\;\;\;\;\;\;\;\;(2)
+d = R*\sqrt(random(0, 1))\;\;\;\;\;\;\;\;(2)
 $$
 
-Donde rand(0, 1) es un función que devuelve un valor uniforme entre 0 y 1, y R es el radio del círculo. En la figura \ref{fig:7} se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
+Donde random(0, 1) es un función que devuelve un valor uniforme entre 0 y 1, y R es el radio del círculo. En la figura \ref{fig:7} se puede ver como influye la generación de puntos utilizando la formula descrita anteriormente. El círculo en la derecha, corresponde a una generación correcta de puntos.
 
 ![Comparativa generación puntos aleatorios](images/circles_point.jpg){#fig:7}
 
@@ -530,7 +545,7 @@ t1 = (x3, y3); \; \;
 t2 = (x4, y4); \;\;\;\;\;\;\;\;(3)
 $$
 
-Supongamos ahora que los puntos p1 y p2 se encuentran cercanos al ecuador, y los puntos t1 y t2 se encuentran cercanos a los polos. Además supongamos también que: 
+Supongamos ahora que los puntos p1 y p2 se encuentran cercanos al ecuador, y los puntos t1 y t2 se encuentran cercanos a los polos. Además supongamos también que las diferencias de las longitudes y latitudes de ambos puntos son las mismas, es decir: 
 
 $$
 x2 - x1 = x4 - x3; \; \;
@@ -627,11 +642,11 @@ En la parte lógica del simulador estaría toda la parte relacionada con las int
 
 ![Simulador con arquitectura interna de la lógica desglosada](images/Arquitecture_3_v3.jpg){#fig:12}
 
-En la figura \ref{fig:12} se puede ver con más detalle el comportamiento de la **lógica del simulador**. Como podemos ver lo que hace el **cargador de configuración** es interpretar los datos de los archivos de configuración para hacer funcionar el simulador basado en eventos. El **simulador basado en eventos** se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos **usuarios generados(US)** interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del **sistema de recomendaciones.**
+En la figura \ref{fig:12} se puede ver con más detalle el comportamiento de la **lógica del simulador**. Como podemos ver lo que hace el **cargador de configuración** es interpretar los datos de los archivos de configuración para hacer funcionar el simulador basado en eventos. Este se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos **usuarios generados(US)** interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del **sistema de recomendaciones.**
 
 La arquitectura de la figura \ref{fig:12} iba a ser la arquitectura principal de el proyecto, sin embargo, surgió la necesidad de añadir un pequeño módulo externo que se encargue de generar los usuarios.
 
-En un principio los archivos de configuración que íbamos a utilizar fueron los siguientes:
+En un principio los archivos de configuración que íbamos a utilizar eran los siguientes:
 
 - Parámetros globales
 
@@ -643,7 +658,7 @@ En un principio los archivos de configuración que íbamos a utilizar fueron los
 
 Parece apropiado pensar que esos tres ficheros de configuración son suficientes, sin embargo, surgió la necesidad de independizar la generación de usuarios. Si solo utilizamos un archivo de configuración con los **entry points**, el simulador depende del concepto de **entry point**, por lo que hacemos al simulador dependiente de éste. ¿Y si un tercero quiere generar los usuarios a su modo de forma individual? Tendría que estudiar cómo funciona un Entry Point, y crearlos en base a este concepto. Eso limita de algún modo los usuarios que podemos definir para el sistema. Un Entry Point nos ayuda a definir apariciones de usuarios de una forma más cómoda, pero puede darse el caso de que un desarrollador o investigador quiera generar los usuarios de otra manera.
 
-Imaginemos por un momento que el simulador dispone sólo de esos tres archivos de configuración en el sistema. En ese caso, el simulador antes de arrancar deberá generar los usuarios y después arrancar la simulación. Es en este punto es donde surge la necesidad de definir un nuevo módulo en nuestra arquitectura, un **generador de usuarios**. En la figura \ref{fig:14} se puede ver el modelo final de la configuración.
+Imaginemos por un momento que el simulador dispone sólo de esos tres archivos de configuración en el sistema. En ese caso, el simulador antes de arrancar deberá generar los usuarios y después arrancar la simulación. Es en este punto donde surge la necesidad de definir un nuevo módulo en nuestra arquitectura, un **generador de usuarios**. En la figura \ref{fig:14} se puede ver el modelo final de la configuración.
 
 ¿Qué ganamos con separar la generación de usuarios del simulador?
 
@@ -677,7 +692,7 @@ En la figura \ref{fig:15} que se ve a continuación se añaden a la arquitectura
 
 ## Implementación
 
-En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes a mi TFG, que se centran principalmente la configuración, el uso de patrones de diseño y modularización que le de flexibilidad al código y la interfaz de usuario. Además utilizaremos un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis. También explicaremos como hemos implementado un pequeño inyector de dependencias para que los usuarios puedan hacer uso de múltiples servicios fácilmente y como hemos implementado un sistema de logs para comprobar que el comportamiento de los usuarios individualmente en el desarrollo de los mismos. Crearemos utilizando técnicas de reflexión factorías que faciliten la implementación de nuevos usuarios y puntos de entrada junto. Por otra parte también veremos como hemos implementado la interfaz gráfica para la configuración, la estructura de esta junto con la creación de formularios dinámicos para los usuarios.
+En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes a mi TFG, que se centran principalmente en la configuración, el uso de patrones de diseño y modularización que le de flexibilidad al código y la interfaz de usuario. Además utilizaremos un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis. También explicaremos como hemos implementado un pequeño inyector de dependencias para que los usuarios puedan hacer uso de múltiples servicios fácilmente y como hemos implementado un sistema de logs para comprobar el comportamiento de los usuarios individualmente en el desarrollo de los mismos. Crearemos utilizando técnicas de reflexión factorías que faciliten la implementación de nuevos usuarios y puntos de entrada. Por otra parte también veremos como hemos implementado la interfaz gráfica para la configuración, la estructura de esta junto con la creación de formularios dinámicos para los usuarios.
 
 ### Tecnologías {#sec:tecno}
 
@@ -721,17 +736,17 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
 - Común: Este módulo incluye todas las utilidades e interfaces necesarias para la comunicación entre los módulos. Algunas de las utilidades interesantes implementadas que merece la pena mencionar son las siguientes:
 
-  - `GeoPoint`: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos.
+  - `GeoPoint`: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos. En esta clase se implementa la creación de puntos aleatorios dentro de una circunferencia vista en el apartado \secref{sec:genusers}.
 
   - `GraphManager`, `GraphHopperIntegration` y `GeoRoute`: Véase la sección \secref{sec:maps} para su descripción 
 
-  - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Esta utilidad es realmente útil para ver errores en las implementaciones de los usuarios. Una descripción en mayor detalle se puede ver en la sección \secref{sec:logsim}.
+  - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Es muy útil para ver errores en las implementaciones de los usuarios. Una descripción en mayor detalle se puede ver en la sección \secref{sec:logsim}.
 
 - Núcleo: Contiene todo lo referente a los eventos del simulador, y el motor de ejecución de la cola de eventos. En este módulo están definidos la cola de eventos, y el cargador de los archivos de configuración. Los eventos siguen la jerarquía de clases de la figura \ref{fig:19}. La clase `EventUser` contiene los métodos necesarios para la realización de reservas. El evento `EventUserAppears` es el primero en crearse por cada usuario leído del archivo de configuración. Una de las partes del núcleo se encarga de leer los usuarios del archivo de configuración e introducir los eventos en la cola (Véase figura \ref{fig:10}). Una explicación más detallada del núcleo se encuentra en el trabajo final de Sandra Timón Mayo [@bib7].
 
 - Generador de usuarios: Este módulo contiene las clases con los entry points definidos. Para facilitar la implementación de nuevos entry points, se ha utilizado el patrón factoría, como se puede ver en la figura \ref{fig:18}.
 
-  En la clase `EntryPointFactory` podemos ver un atributo de la clase Gson. Gson[^5] es una librería que nos permite convertir los archivos JSON en instancias de clases definidas con los mismos datos que el fichero. Utilizamos esta flexibilidad que nos proporciona Gson para crear una factoría de Entry Points.
+  En la clase `EntryPointFactory` se utiliza Gson[^5], que es una librería que nos permite convertir los archivos JSON en instancias de clases definidas con los mismos datos que el fichero. Utilizamos esta flexibilidad que nos proporciona Gson para crear una factoría de Entry Points.
 
     La clase abstracta `EntryPoint` define el método `generateUsers()`, la cual deben heredar todas las implementaciones de puntos de entrada en el sistema. Estos usuarios son de tipo `SingleUser` los cuales tienen como propiedad el instante de tiempo en el que aparecen y podrán ser insertados posteriormente en un evento de aparición en ese mismo instante de tiempo.
 
@@ -744,7 +759,7 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 ![Jerarquía de clases de los eventos](images/Core_diagram.png){#fig:19 .class height=21cm}
 
 
-- History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe los resultados que se han realizado expresando los cambios en cada evento, lo cual hace que los históricos no sean tan pesados. Los instantes son almacenados en diferentes archivos JSON de 100 en 100, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos en el trabajo final de Tao Cumplido[@bib10].
+- History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe los resultados que se han realizado expresando los cambios en cada evento, lo cual hace que los históricos no sean tan pesados. Los instantes son almacenados en diferentes archivos JSON, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos y la visualización en el trabajo final de Tao Cumplido[@bib10].
 
 - Entidades e infraestructura: En este módulo se definen todas las entidades de la simulación. Consideramos como entidad los objetos que cambian por cada evento que sucede. Entidades en el sistema son: usuarios, estaciones, reservas y bicis. Una reserva es una entidad ya que puede cambiar su estado, al igual que una estación cuando un usuario coge o deja una bici. En la figura \ref{fig:20} se muestra el diagrama de clases de las entidades. 
 
@@ -794,7 +809,7 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
   - `decidesToReturnBike(): boolean`
 
-      El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el método `decidesNextPoint()`, el cual devolverá un punto al que el usuario ira a dar una vuelta con la bicicleta.
+      El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el método `decidesNextPoint()`, el cual devolverá un punto al que el usuario irá a dar una vuelta con la bicicleta.
 
   - `decidesToDetermineOtherStationAfterTimeout(): boolean`
 
@@ -844,9 +859,9 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
   - `debugLog()`: Escribe la información del evento, junto con información del Evento y parámetros del usuario.
 
-  - `debugLog("Message to log")``: Igual que ``debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
+  - `debugLog("Message to log")`: Igual que `debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
 
-    Cada usuario tendrá su propio fichero de log, por lo que el usuario con $id = 5$ tendrá un fichero log llamado `User5.txt`. La implementación de esta clase Logger es una simple clase estática que es llamada en los eventos de la simulación.
+    Cada usuario tendrá su propio fichero de log. Por ejemplo, el usuario con $id = 5$ tendrá un fichero log llamado `User5.txt`. La implementación de esta clase Logger es una simple clase estática que es llamada en los eventos de la simulación.
 
 ### Inicialización y ejecución del simulador {#sec:inisim}
 
@@ -859,11 +874,11 @@ El simulador tiene dos modos de ejecución principales, uno para la generación 
 
 Con respecto al punto 3 utilizamos un patrón de inyección de dependencias que consiste en permitir que al crear un objeto, no sea necesario que ese mismo objeto se encargue de crear o inicializar los objetos de los que hace uso o que posee como atributos. En nuestro caso, por ejemplo, los usuarios pueden hacer uso de un gestor de rutas, de un recomendador, o pueden ver la información actual del sistema de bicis. Cada uno de estos servicios es inicializado al comienzo de la simulación y se pasa como parámetro al constructor de todos los tipos de `User`. La clase principal `User` tiene acceso entonces a este servicio, y los usuarios implementados que heredan de esta clase, pueden acceder a todos los servicios en sus métodos. 
 
-Una vez todo está inicializado, el motor de simulación (implementado en `SimulationEngine`, dentro del módulo `Core`), se encargará de ejecutar todos los eventos que se han introducido en la cola del simulador, que por evento irá generando los históricos hasta que la coda quede vacía.
+Una vez todo está inicializado, el motor de simulación (implementado en `SimulationEngine`, dentro del módulo `Core`), se encargará de ejecutar todos los eventos que se han introducido en la cola del simulador, que por evento irá generando los históricos hasta que la cola quede vacía.
 
 ### Aplicando reflexión para una mejor extensibilidad {#sec:reflex}
 
-En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de muchas formas de entrada de los usuarios al sistema (entry points), además de múltiples servicios que los usuarios podrán durante las simulaciones. s por esto que necesitamos de un método que nos permita de la manera más eficiente posible implementar nuevas características, y para ello hemos utilizado la Java Reflection API. En la configuración de los entry points y los usuarios debemos indicar que tipo de usuario queremos generar. Cada tipo de usuario lo vamos a identificar con una cadena de texto. Así si quiero crear un usuario de la clase `UserRandom`, en la configuración ponemos el tipo `"USER_RANDOM"`. En el Anexo 1, en el ejemplo de configuración de usuarios y entry points, podemos ver como se especifica el tipo de usuario en la configuración. Como hemos dicho con anterioridad, para crear los usuarios utilizamos una factoría. Para crear un usuario debemos escribir la siguiente instrucción en nuestro código Java:
+En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de muchas formas de entrada de los usuarios al sistema (entry points), además de múltiples servicios que los usuarios podrán usar durante las simulaciones. Es por esto que necesitamos de un método que nos permita de la manera más eficiente posible implementar nuevas características, y para ello hemos utilizado la Java Reflection API. En la configuración de los entry points y los usuarios debemos indicar que tipo de usuario queremos generar. Cada tipo de usuario lo vamos a identificar con una cadena de texto. Así si quiero crear un usuario de la clase `UserRandom`, en la configuración ponemos el tipo ```USER_RANDOM`''. En el Anexo 1, en el ejemplo de configuración de usuarios y entry points, podemos ver como se especifica el tipo de usuario en la configuración. Como hemos dicho con anterioridad, para crear los usuarios utilizamos una factoría. Para crear un usuario debemos escribir la siguiente instrucción en nuestro código Java:
 
 ```{.java .numberLines}
     UserFactory userFactory = new UserFactory();
@@ -873,6 +888,8 @@ En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de
 
 En este código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. Ahora bien, ¿cómo sabe el simulador que clase se corresponde con el tipo de usuario `userType`? Especificando mediante anotaciones que clases son implementaciones de usuario y como se identifica en la configuración.
 Por ejemplo si quisiéramos crear un usuario, deberíamos hacerlo de la siguiente forma:
+
+>
 
 ```{.java .numberLines}
     @UserType("USER_RANDOM")
@@ -889,7 +906,7 @@ Por ejemplo si quisiéramos crear un usuario, deberíamos hacerlo de la siguient
 ```
 
 En la notación `@UserType` ponemos con que cadena de texto se identifica a este usuario y en `@UserParameters` definimos que parámetros concretos tiene este.
-Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, después se llamará al método `userFactory.createUser("USER_RANDOM", services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoría y la utilización de la API de reflexión se encuentra en el módulo `world-entities` en la clase `UserFactory`.
+Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, después se llamará al método `userFactory.createUser('USER_RANDOM', services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoría y la utilización de la API de reflexión se encuentra en el módulo `world-entities` en la clase `UserFactory`.
 
 Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos e identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que ira junto con el tipo de entry point. De esta forma si queremos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
 
@@ -920,7 +937,7 @@ Pero no solo en las factorías va a ser una muy buena herramienta la reflexión 
 Las implementaciones de los gestores de rutas deberán tener la anotación `@GraphManagerType()` con el tipo correspondiente y `@GraphManagerParameters` para los parámetros necesarios de inicialización. Por otro lado las implementaciones de sistemas de recomendaciones deberán tener la anotación `@RecommendationSystemType()` con el tipo y `@RecommendationSystemParameters` para los parámetros. La clase `SimulationService` se encargará de, según la configuración, inicializar e inyectar dichas dependencias en los usuarios.
 
 ### Carga de mapas y cálculo de rutas {#sec:maps}
-Algo interesante a implementar es la posibilidad a de crear simulaciones en ciudades reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
+Una cosa muy importante a implementar es la posibilidad a de crear simulaciones en ciudades reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
 
 Para hacer que el simulador no dependa directamente de dicha librería, decidimos crear una interfaz (`GraphManager`) y un formato de rutas propio (`GeoRoute`), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los métodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase `GeoRoute`. De esta forma si necesitamos nosotros crear nuestra propia utilidad o utilizar otra librería no sería difícil implementarla en el sistema. 
 
@@ -950,9 +967,11 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
     [^8]: https://github.com/graphhopper/graphhopper
 
-    GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizándolo a modo de librería. Decidí optar por integrar el motor en el simulador, para que las simulaciones se ejecutarán con mayor rapidez y consumiera menos recursos el simulador. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
+    GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizándolo a modo de librería. Decidí optar por integrar el motor en el simulador, para que las simulaciones se ejecutaran con mayor rapidez y consumiera menos recursos el simulador. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
 
     Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. Posteriormente la librería crea una serie de ficheros con información que utilizará para calcular las rutas. El código del constructor del servicio de rutas es el siguiente:
+
+   \pagebreak
 
     ```{.java .numberLines}
     public GraphHopperIntegration(GraphProperties properties) throws IOException {
@@ -984,7 +1003,7 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
 Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano cómo están implementados los usuarios, es tener un visualizador con el que observar toda la simulación. En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. 
 
-La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUI. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección \secref{sec:tecno}, vamos a utilizar para la interfaz de usuario Electron, que al ejecutarse crea dos procesos, un proceso que llamaremos *Main* y otro proceso que denominaremos *Renderer*:
+La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUIs. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección \secref{sec:tecno}, vamos a utilizar para la interfaz de usuario Electron, que al ejecutarse crea dos procesos, un proceso que llamaremos *Main* y otro proceso que denominaremos *Renderer*:
 
 - *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
 
@@ -998,24 +1017,24 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
   - `Util`: Utilidades necesarias por otros módulos, que pueden ser de utilidad general. 
 
-    Al ejecutar el frontend, éste debe ejecutar los módulos en Java del backend tanto para crear usuarios como para simular. Estos dos módulos son dos ejecutables java con extensión ".jar" disponibles en la ruta de la aplicación cuando es compilada. Simplemente hay que crear un proceso hijo que los ejecute. El proceso *Main* tendrá que poder ejecutar estos dos procesos:
+    Al ejecutar el frontend, éste debe ejecutar los módulos en Java del backend tanto para crear usuarios como para simular. Estos dos módulos son dos ejecutables java con extensión ".jar" disponibles en la ruta de la aplicación cuando es compilada. Simplemente hay que crear un proceso hijo que los ejecute. El proceso *Main* tendrá que poder ejecutar estos dos procesos, que se corresponden con los archivos jar compilados del backend:
 
     - `java -jar bikesurbanfleets-config-usersgenerator-1.0.jar <parameters>`
     - `java -jar bikesurbanfleets-core-1.0.jar <parameters>`
 
     En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
 
-- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formados de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Ésta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
+- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formados de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Esta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
 
   - App: Contiene todos los componentes de la aplicación. Los principales son:
 
-      `configuration-component`: Componente encargado de la creación de configuraciones para el simulador.
+      - `configuration-component`: Componente encargado de la creación de configuraciones para el simulador.
 
-      `simulate-component`: Permite cargar los ficheros de configuración para poder simular 
+      - `simulate-component`: Permite cargar los ficheros de configuración para poder simular 
 
-      `visualization-component`: Permite visualizar como los usuarios interactúan en un mapa real tras realizar una simulación, cargando el histórico de ésta. Permite depurar los usuarios y además facilita la comprensión de los datos históricos arrojados por el simulador.
+      - `visualization-component`: Permite visualizar como los usuarios interactúan en un mapa real tras realizar una simulación, cargando el histórico de ésta. Permite depurar los usuarios y además facilita la comprensión de los datos históricos arrojados por el simulador.
 
-      `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
+      - `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
   - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
 
 En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del frontend. Se puede observar que para iniciar una simulación la comunicación es de 3 niveles:
@@ -1024,7 +1043,7 @@ En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del fronte
 2. Los datos con las rutas de los ficheros de configuración son recibidos por el proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios.
 3. El simulador se ejecuta y envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
 
-![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22}
+![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22 .class height=19cm}
 
 ### Formularios dinámicos en las configuraciones {#sec:dinform}
 
@@ -1040,7 +1059,7 @@ En la interfaz de usuario actual, se pueden añadir o quitar sin problemas pará
 
 En el siguiente diagrama se muestra el funcionamiento básico de los formularios dinámicos. 
 
-![Generación dinámica de formularios](images/schema_form_generator.png){#fig:23 .class height=9cm}
+![Generación dinámica de formularios](images/schema_form_generator.png){#fig:23 .class height=7cm}
 
 # Evaluación
 
@@ -1056,17 +1075,19 @@ A continuación se muestran capturas de las distintas partes del simulador:
 
 - Create configuration: Se pueden crear de forma interactiva simulaciones pudiendo crear entry points con radio de una forma intuitiva y delimitar la zona de simulación. En esta ventana se utilizan los formularios dinámicos.
 
-![Simulación creada desde la GUI](images/configuration_gui.png){#fig:25 .class width=9cm}
+>
+
+![Simulación creada desde la GUI](images/configuration_gui.png){#fig:25 .class width=15cm}
 
 Al añadir entidades en el mapa se puede ver en el momento los datos de la configuración que estamos realizando, como la posición de los Entry Points, el radio... Pudiendo modificarlos desde un editor incorporado. En la figura \ref{fig:26} se puede ver una lista de Entry Points en la configuración.
 
 Al pulsar el botón *Generate Configuration* si los datos están correctos se generarán los archivos de configuración necesarios en el directorio que se indique.
 
-![Lista de Entry Points en GUI](images/entry_point_list.png){#fig:26 .class width=6cm}
+![Lista de Entry Points en GUI](images/entry_point_list.png){#fig:26 .class width=5cm}
 
 - Simulate configuration: En esta ventana de la GUI se pueden generar usuarios individuales (cargando los entry points) y llamar al backend para simular con los archivos de configuración y los usuarios individuales generados.
 
-![Simulación ejecutándose desde la GUI](images/Simulation.png){#fig:27}
+![Simulación ejecutándose desde la GUI](images/Simulation.png){#fig:27 .class width=12cm}
 
 - View Simulation: Desde este visualizador se puede cargar el histórico de la simulación que se desee y ver como los usuarios actúan dentro del sistema.
 
@@ -1082,7 +1103,7 @@ Se realizaron una serie de pruebas con los siguientes tipos de usuarios implemen
 
 - Uninformed: Este usuario trata de coger o devolver la bici de la estación más cercana que tenga desde el punto de entrada. Este usuario no tiene información de la disponibilidad de bicis o de huecos en la estación.
 
-- Informed: Este usuario usa información del sistema y sólo va a estaciones con bicis. Este usuario escoge la ruta más corta para ir a la estación.
+- Informed: Este usuario usa información del sistema y sólo va a estaciones con bicis además de escoger la ruta más corta para ir a la estación.
 
 - Obedient: Pide información al sistema de recomendaciones y siempre sigue sus sugerencias. Este recomendador devuelve estaciones en un rango de 600 metros a la posición del usuario, ordenadas por el ratio de bicis o huecos disponibles, dependiendo de si el usuario quiere coger o devolver una bici. 
 
@@ -1136,6 +1157,10 @@ Se realizaron experimentos en los que se aumenta progresivamente el número de u
 
 Como se puede ver el usuario desinformado es el peor de los casos tanto en la satisfacción de demanda como en el alquiler de bicis. Se dan ciertas incongruencias con el usuario Obediente que debería ser el mejor de todos, debido a que al reservar siempre, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas.
 
+\pagebreak
+&nbsp;
+\newpage
+
 # Conclusiones
 
 A lo largo de este trabajo hemos aprendido a realizar un simulador, a plantear los archivos necesarios de configuración para llevarla a cabo, planteando su arquitectura e implementación, concluyendo con el alcance de nuestro objetivo. Se ha conseguido implementar un simulador con una configuración adaptable a cambios, extensible, fácil de modificar, con una interfaz de usuario que nos permite realizar simulaciones de una manera sencilla.
@@ -1144,31 +1169,31 @@ Cada una de las partes de este proyecto se ha hecho siempre pensando a futuro ha
 
 ## Lecciones aprendidas
 
-No siempre las lecciones aprendidas son en base a malas experiencias. En este caso ha habido más lecciones de buenas experiencias que de errores:
+No siempre las lecciones aprendidas son debido a malas experiencias. En este caso ha habido más lecciones de buenas experiencias que de errores:
 
 - Un equipo bien organizado, comunicativo y motivado da como resultado un buen software.
 
 - Los patrones de diseño, bien aplicados, son muy importantes. En nuestro caso hemos aplicado dos factorías, una para los *US* (Usuarios simulados) y otro para los *entry points*.
 
-- Es importante verificar las entradas y salidas si son grandes, con herramientas como los esquemas. En nuestro caso la utilización de los Json Schema no sólo han aportado una forma para validar los datos de los archivos de configuración e históricos, si no también un medio para generar formularios en la GUI de forma dinámica.
+- Es importante verificar las entradas y salidas si son grandes, con herramientas como los esquemas. En nuestro caso la utilización de los schemas para los JSON no sólo han aportado una forma para validar los datos de los archivos de configuración e históricos, si no también un medio para generar formularios en la GUI de forma dinámica.
 
 - Toda librería debe ser usada de la forma más independiente posible. Por ejemplo, el simulador utiliza los mapas a través de una interfaz, lo cual lo hace independiente a como estén implementados dichos mapas y como se calculan las rutas. Podríamos sustituirlo por otra librería o incluso crear una nosotros mismos.
 
 Pero no siempre las cosas salen bien, es por eso por lo que tampoco debemos olvidar los pequeños errores de diseño que hayamos podido cometer:
 
-- Un evento dentro del simulador nos hubiera ahorrado muchísimos quebraderos de cabeza y cuando nos dimos cuenta ya era demasiado tarde. Este evento es del usuario haciendo reserva de bici o de hueco. Aún así el simulador funciona correctamente.
+- Un evento dentro del simulador nos hubiera ahorrado muchísimos quebraderos de cabeza y cuando nos dimos cuenta ya era demasiado tarde. Este evento es del usuario haciendo reserva de bici o de hueco. Aun así el simulador funciona correctamente.
 
-- Angular es demasiado pesado para Electron. En un principio, Angular no se pensó como framework multiventana como nosotros lo hemos utilizado, y las ventanas tardaban mucho en cargar de forma individual. Además, Angular tiene mucho código por debajo ejecutando, y esto junto con Electron, suele conllevar a programas algo más lento y de ocupación de memoria y disco bastante altos para una aplicación de escritorio. Una alternativa buena hubiera sido utilizar React o Vue.js que son frameworks más ligeros. Pero a pesar de esto, Angular es un framework bastante elegante, ordenado con inyección de dependencias (para utilizar servicios) y muy potente.
+- Angular y Electron son demasiado pesados. En un principio, Angular no se pensó como framework multiventana como nosotros lo hemos utilizado, y las ventanas tardaban mucho en cargar de forma individual. Además, Angular tiene mucho código por debajo ejecutando, y esto junto con Electron, suele conllevar a programas algo más lentos y de carga de memoria y disco bastante altos para una aplicación de escritorio. Una alternativa buena hubiera sido utilizar React o Vue.js que son frameworks más ligeros o utilizar una tecnología más sólida para la interfaz de usuario. Pero a pesar de esto, Angular es un framework bastante elegante, ordenado con inyección de dependencias (para utilizar servicios) y muy potente.
 
 ## Líneas futuras
 
 - Una de las ideas que más me llama la atención es la posibilidad de convertir el simulador en un framework que nos permita, por ejemplo, añadir usuarios y entry points, sin necesidad de modificar el propio código del simulador.
 
-    Una de estas posibilidades es la de poder crear usuarios a través de un lenguaje de scripting, como Python o Lua. Imaginemos que el simulador, antes de arrancar, hace un barrido de todos los usuarios implementados en python que haya en una carpeta y los ejecute. Con esto podríamos hacer que la propia interfaz de usuario incluya un pequeño editor de texto con el que se puedan añadir nuevos usuarios sin la necesidad de configurar ningún entorno y de compilar todo el proyecto. Estaríamos facilitando la labor de investigación de una manera muy eficiente. Aún así, los usuarios son bastante fáciles de implementar en el proyecto, por lo que no es algo realmente prioritario. Además contamos con la posibilidad de que los usuarios son parametrizables, y estos pueden comportarse de manera diferente a partir de sus parámetros.
+    Una de estas posibilidades es la de poder crear usuarios a través de un lenguaje de scripting, como Python o Lua. Imaginemos que el simulador, antes de arrancar, hace un barrido de todos los usuarios implementados en python que haya en una carpeta y los ejecute. Con esto podríamos hacer que la propia interfaz de usuario incluya un pequeño editor de texto con el que se puedan añadir nuevos usuarios sin la necesidad de configurar ningún entorno y de compilar todo el proyecto. Estaríamos facilitando la labor de investigación de una manera muy eficiente. Aun así, los usuarios son bastante fáciles de implementar en el proyecto, por lo que no es algo realmente prioritario. Además contamos con la posibilidad de que los usuarios son parametrizables, y estos pueden comportarse de manera diferente a partir de sus parámetros.
 
 - Extender y mejorar la actual versión y corregir posibles errores.
 
-- Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar en base a esto al usuario.
+- Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar al usuario una estación que beneficie a ambos, al sistema y al usuario.
 
 - Experimentos más completos para ver el funcionamiento en casos reales.
 
@@ -1214,7 +1239,7 @@ A continuación se presentan los diferentes archivos de configuración que son n
 
 - Graph Manager Type: Gestor de rutas que se está utilizando en ese momento.
 
-- Max Distance Recommendation: Máxima distancia a la que los recomendadores hacen sugerencias.
+- Max Distance Recommendation: Máxima distancia a la que los recomendadores hacen sugerencias. (metros)
 
 ## Estaciones {-}
 
@@ -1268,20 +1293,13 @@ A continuación se presentan los diferentes archivos de configuración que son n
 }
 ```
 
--   Entry Point Type: Tipo de entry point, en este caso Poisson.
-    
--   User Type: Tipo de usuario y parámetros:
-    
-    -   Type Name: Tipo del usuario que se quiere generar.
-        
-    -   Parameters: Parametros de los usuarios. En este caso está especificado que solo puede intentar alquilar una bicicleta 2 veces.
-        
--   Position: Posición origen del punto de entrada.
-    
--   Radius: Radio de aparición de los usuarios. (metros)
-    
--   Distribution: Parámetros de la distribución. En este caso lambda, que vale 1 (en minutos). Significa que se creará de media 1 usuario por minuto con un proceso de poisson.
-    
+- Entry Point Type: Tipo de entry point, en este caso Poisson.
+- User Type: Tipo de usuario y parámetros:
+    - Type Name: Tipo del usuario que se quiere generar.
+    - Parameters: Parametros de los usuarios. En este caso está especificado que solo puede intentar alquilar una bicicleta 2 veces.
+- Position: Posición origen del punto de entrada.
+- Radius: Radio de aparición de los usuarios. (metros)
+- Distribution: Parámetros de la distribución. En este caso lambda, que vale 1 (en minutos). Significa que se creará de media 1 usuario por minuto con un proceso de poisson.
 
 ## Usuarios generados {-}
 
@@ -1307,17 +1325,15 @@ A continuación se presentan los diferentes archivos de configuración que son n
     
 ```
 
--   Position: Posición en la que aparece el usuario.
-    
--   User Type: Es el mismo userType que el utilizado en los puntos de entrada.
-    
--   Time Instant: Instante de tiempo en el que aparece el usuario.
+- Position: Posición en la que aparece el usuario.
+- User Type: Es el mismo userType que el utilizado en los puntos de entrada.
+- Time Instant: Instante de tiempo en el que aparece el usuario. (segundos)
 
 # Anexo 2 - Manual de configuración del entorno de desarrollo {-}
 
 ## Prerrequisitos {-}
 
-Es necesario tener instaladas las siguientes herramientas
+Es necesario tener instaladas las siguientes herramientas:
 
 1. JDK 1.8
 2. Maven >= 3.5
@@ -1369,7 +1385,7 @@ Compilar todo:
     node fuse build:dist
 ```
 
-## Crear ejecutable e instalador {-}
+Crear ejecutable e instalador
 
 ```
     npm run distribute
@@ -1421,14 +1437,15 @@ La clase final quedaría de la siguiente forma:
 
 	    @Override
 		public List<SingleUser> generateUsers() {
-		List<SingleUser> users = new ArrayList<>();
-		int actualInstant = this.startTime;
-		while (actualInstant <= this.endTime) {
-		    SingleUser user = new SingleUser(this.position, userType, actualInstant);
-		    users.add(user);
-		    actualInstant += this.secondsBetweenUsers;
-		}
-		return users;
+            List<SingleUser> users = new ArrayList<>();
+            int actualInstant = this.startTime;
+            while (actualInstant <= this.endTime) {
+                SingleUser user = new SingleUser(this.position, 
+                    userType, actualInstant);
+                users.add(user);
+                actualInstant += this.secondsBetweenUsers;
+            }
+            return users;
 		}
 
 	}
@@ -1515,9 +1532,9 @@ public class UserRandomExtension extends User {
 }
 ```
 
-Es necesario que todas las clases de usuarios tengan como anotación `@UserType` para que el simulador sea capaz de detectar esta nueva clase de usuario y utilizarla. También es obligatorio que la clase de usuario implemente una clase interna que implemente la interfaz `@UserParameters`, donde incluiremos todos los parámetros configurables del usuario.
+Es necesario que todas las clases de usuarios tengan como anotación `@UserType` para que el simulador sea capaz de detectar esta nueva clase de usuario y utilizarla. También es obligatorio que la clase de usuario implemente una clase interna que tenga como anotacion `@UserParameters`, donde incluiremos todos los parámetros configurables del usuario.
 
-En este caso, queremos que el usuario reserve un porcentaje dado de, y que abandone el sistema tras haber intentado coger bici según el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
+En este caso, queremos que el usuario reserve un porcentaje dado de veces, y que abandone el sistema tras haber intentado coger bici según el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
 
 ```{.java .numberLines}
     @UserParameters
@@ -1587,28 +1604,23 @@ Con este método se escogerá la primera ruta generada por el gestor de rutas, q
 
 Ahora implementaremos como queremos que determine la estación a la que queremos que coja una bici y que la devuelva:
 
-Para coger una bici:
 ```{.java .numberLines}
     @Override
-    public Station determineStationToReturnBike() {
-        List<Station> allStations = this.services.getInfrastructureManager()
+    public Station determineStationToRentBike() {
+        List<Station> allStations = this.services.getInfrastructureManager() 
             .consultStations();
         int stationRandIndex = infraestructure.getRandom()
-            .nextInt(0, allStations.size());
+             .nextInt(0, allStations.size());
         return allStations.get(stationRandIndex);
     }
 
     @Override
-    public GeoRoute determineRoute() throws Exception{
-        List<GeoRoute> routes = null;
-        routes = calculateRoutes(getDestinationPoint());
-        if(routes != null) {
-            int index = infraestructure.getRandom().nextInt(0, routes.size());
-            return routes != null ? routes.get(index) : null;
-        }
-        else {
-    	    return null;
-        }
+    public Station determineStationToReturnBike() {
+        List<Station> allStations = this.services.getInfrastructureManager() 
+            .consultStations();
+        int stationRandIndex = infraestructure.getRandom()
+            .nextInt(0, allStations.size());
+        return allStations.get(stationRandIndex);
     }
 ```
 
