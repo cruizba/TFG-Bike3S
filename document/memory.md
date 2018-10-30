@@ -1,5 +1,5 @@
 ---
-title: Arquitectura, diseño, y configuración de un simulador de bicis compartidas 
+title: Arquitectura, diseño y configuración de un simulador de bicicletas compartidas
 author: Carlos Ruiz Ballesteros
 date: 29 de Octubre de 2018
 
@@ -1765,5 +1765,11 @@ Para probar este nuevo usuario debemos ejecutar los siguientes comandos.
 ```
 
 Así tendremos acceso desde la interfaz gráfica a la creación de configuraciones con dichos usuarios.
+
+\pagebreak
+&nbsp;
+\newpage
+
+\thispagestyle{plain}
 
 # Referencias
