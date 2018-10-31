@@ -8,8 +8,6 @@ const reload = require('reload');
 const path = require('path');
 const app = express();
 
-const pandocParameters = JSON.parse(fs.readFileSync(__dirname + "/pandoc_parameters.json"));
-
 console.log(`Watching for file changes on ${document}`);
 console.log(process.cwd() + "/document");
 
@@ -24,24 +22,34 @@ createPdf().then(() => {
     let reloadServer = reload(app);
     fs.watchFile(document, (curr, prev) => {
         console.log(`${document} file Changed`);
+        createCommand();
+        /*
         createPdf().then(() => {
             reloadServer.reload();
         }).catch((error) => {
             console.log(error);
         })
+        */
     });
 })
 
 function createCommand() {
-    let command = [pandocParameters.input];
-    for(parameter of pandocParameters.parameters) {
-        command.push(parameter.argName);
-        let argValue = parameter.argValue;
-        if(argValue !== undefined) {
-            command.push(argValue);
+    const commandsJson = JSON.parse(fs.readFileSync(__dirname + '/commands.json'));
+    let finalCommand = '';
+    for(command in commandsJson) {
+        for(attribute in commandsJson[command]) {
+            if(attribute === 'command') {
+                finalCommand += commandsJson[command][attribute] + ' ';
+            }
+            if(attribute === 'parameters') {
+                for(parameter of commandsJson[command][attribute]) {
+                    finalCommand += commandsJson[command][attribute] + ' '
+                }
+            }
         }
+        finalCommand += '&& '
     }
-    command.push("-o", pandocParameters.output);
+    console.log(finalCommand)
     return command;
 }
 
