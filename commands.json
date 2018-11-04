@@ -9,23 +9,23 @@
             "--csl", "ieee.csl",  
             "--include-in-header", "titlesec.tex",
             "--number-sections",
-            "-o", "out_1.pdf"
+            "-o", "temp/out_1.pdf"
         ]
     },
     "delete-first-page": {
         "command": "pdftk",
         "parameters": [
-            "out_1.pdf",
+            "temp/out_1.pdf",
             "cat",
             "2-end",
-            "output", "out_2.pdf"
+            "output", "temp/out_2.pdf"
         ]
     },
     "merge-cover": {
         "command": "pdftk",
         "parameters": [
             "cover.pdf",
-            "out_2.pdf",
+            "temp/out_2.pdf",
             "cat",
             "output", "memory.pdf"
         ]
