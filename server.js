@@ -88,7 +88,7 @@ function executeCommand(commandForSpawn) {
 function createPdf() {return new Promise(async (resolve, reject) => {
     //Create temp folder if it doesn't exists
     if(fs.existsSync(__dirname + '/document/temp')) {
-        await rimraf(__dirname + '/document/temp', () => console.log("Temp folder deleted"));
+        await rimraf(__dirname + '/document/temp', () => {});
     }
     fs.mkdirSync(__dirname + '/document/temp');
     let commandsList = createCommand();
@@ -96,6 +96,7 @@ function createPdf() {return new Promise(async (resolve, reject) => {
     for(commandForSpawn of commandsList) {
         await executeCommand(commandForSpawn);
     }
-    await rimraf(__dirname + '/document/temp', () => console.log("Temp folder deleted"));
+    await rimraf(__dirname + '/document/temp', () => {});
+    console.log("Pdf created");
     resolve();
 })};

@@ -34,15 +34,13 @@ date: 29 de Octubre de 2018
 
 # Resumen {-}
 
-Imaginemos por un momento que necesitamos ir de un sitio a otro en nuestra ciudad y disponemos de un sistema de bicicletas por estaciones. Como sabemos los sistemas de bicicletas públicas, ofrecen a los usuarios bicis en estaciones situadas en puntos concretos de la ciudad para poder utilizarlas como medio de transporte de un punto a otro. Estas estaciones están situadas en lugares concretos de la ciudad y podemos desplazarnos de un sitio a otro, cogiendo las bicis en una estación y dejándolas en otra cerca de nuestro destino. 
+Imaginemos por un momento que necesitamos ir de un sitio a otro en nuestra ciudad y disponemos de un sistema de alquiler de bicicletas por estaciones. Como sabemos los sistemas de bicicletas públicas, ofrecen a los usuarios bicis en estaciones situadas en puntos concretos de la ciudad para poder utilizarlas como medio de transporte de un punto a otro. Estas estaciones están situadas en lugares concretos de la ciudad y podemos desplazarnos de un sitio a otro, cogiendo las bicis en una estación y dejándolas en otra cerca de nuestro destino. 
 
-Con la llegada de los smartphones, la utilización de estos sistemas es más sencilla, ya que los usuarios pueden disponer de mucha información del sistema a través de aplicaciones software instaladas en estos dispositivos. Estas aplicaciones pueden ofrecerle al usuario estaciones donde coger y dejar una bici en función del destino al que quieran ir. En sistemas como BiciMad es posible reservar bicicletas, ver el estado actual de todas las estaciones, etc. 
+Con la llegada de los smartphones, la utilización de estos sistemas es más sencilla, ya que los usuarios pueden disponer de mucha información del sistema a través de aplicaciones software. Estas aplicaciones pueden ofrecerle al usuario estaciones donde coger y dejar una bici en función del destino al que quieran ir. En sistemas como BiciMad es posible reservar bicicletas, ver el estado actual de todas las estaciones, etc. 
 
-En ciertas ocasiones, este sistema puede saturarse en estaciones concretas, haciendo que la experiencia de los usuarios que quieran utilizarlo no sea tan satisfactoria, por lo que es necesario aplicar soluciones. Hay que plantear posibles estrategias de balanceo para prever esas situaciones problemáticas. El objetivo es balancear las estaciones para que estén disponibles el mayor tiempo posible, minimizando los costes y mejorando la experiencia de uso.
+En ciertas ocasiones, este tipo de sistemas pueden saturarse en estaciones concretas, haciendo que la experiencia de los usuarios que quieran utilizarlo no sea tan satisfactoria, por lo que es necesario aplicar soluciones. Hay que plantear posibles estrategias de balanceo para prever esas situaciones problemáticas. El objetivo es asegurar la disponibilidad tanto de bicis como de huecos en todas las estaciones, para que los usuarios puedan coger y devolver una bici en todas ellas.
 
-Dada la complejidad de...
-
-Muchas soluciones y estrategias de balanceo son muy difíciles de probar directamente en el sistema real, ya que habría que implementar muchas cosas en un sistema en funcionamiento, y quizás nuestra estrategia de balanceo no sea la más adecuada, ocasionando gastos innecesarios y empeorando la experiencia de los usuarios. Para probar la viabilidad de las estrategias que se planteen es necesario disponer de un **simulador** capaz de probar estos sistemas y algoritmos de balanceo propuestos. 
+Muchas soluciones y estrategias de balanceo son muy difíciles de probar directamente en el sistema real, ya que habría que implementar muchas cosas en un sistema en funcionamiento, y quizás nuestra estrategia de balanceo no sea la más adecuada, ocasionando gastos innecesarios y empeorando la experiencia de los usuarios. Por tanto para probar la viabilidad de las estrategias que se planteen es mejor usar un **simulador** capaz de probar estos sistemas y algoritmos de balanceo propuestos. 
 
 En eso se centra este trabajo, en la implementación de un simulador capaz de recrear de la manera más realista posible, un sistema de bicis compartidas. Este simulador deberá permitir la posibilidad de tener diferentes tipos de usuario, implementar un sistema de recomendaciones, implementar un sistema de incentivos y poder probar cualquier sistema de bicis públicas en cualquier lugar del mundo. En definitiva, crear un simulador que nos permita crear, simular y analizar situaciones reales e implementar sistemas de balanceo para comprobar su viabilidad. Se crearán archivos de configuración para crear situaciones con estaciones y ciudades reales. Posteriormente tras las simulaciones se podrán analizar los datos obtenidos y visualizarlos para comprobar su eficacia.
 
@@ -70,7 +68,7 @@ La necesidad de alentar a las personas a utilizar vías alternativas de transpor
 
 Los sistemas de bicis compartidas instaladas en las grandes ciudades son una muy buena opción a la hora de buscar alternativas de movilidad. Estos sistemas permiten a los ciudadanos moverse por distintos puntos de la ciudad alquilando una bici de cualquiera de las estaciones disponibles y devolviéndola en otra estación diferente.
 
-Pero el problema no solo se centra en promover el uso de estos sistemas, sino que va más allá. Uno de los más importantes es el balanceo de bicicletas entre estaciones. Algunas situaciones que pueden producir este desequilibrio son:
+Pero el problema no solo se centra en promover el uso de estos sistemas, sino que va más allá. Uno de los más importantes es el balanceo de bicicletas entre estaciones, es decir, asegurar la disponibilidad de bicis y huecos en todas las estaciones. Algunas situaciones que pueden producir este desequilibrio son:
 
 - Eventos especiales.
 - Horas punta.
@@ -78,7 +76,7 @@ Pero el problema no solo se centra en promover el uso de estos sistemas, sino qu
 
 Para evitar estos problemas es necesario tener un control sobre los recursos disponibles, manejarlos y distribuirlos de la manera más eficiente posible. Llevar a cabo nuevas ideas en un sistema de alquiler de bicis y probarlo en la realidad, puede ser muy tedioso y costoso.
 
-Es por esto por lo que surge la necesidad de un simulador, con el que podamos poner a prueba todos estos tipos de sucesos, crear distintos tipos de usuarios, probar sistemas de recomendaciones o de incentivos, para que los usuarios puedan ayudar a balancear el sistema.
+Es por esto por lo que surge la necesidad de un simulador, con el que podamos poner a prueba todos estos tipos de sucesos, crear distintos tipos de usuarios, probar sistemas de recomendaciones o de incentivos, para probar y evaluar diferentes estrategias y acciones de control cuya finalidad es mejorar el balanceo.
 
 Un simulador es útil para el estudio de estos problemas donde se pueda probar en cualquier ciudad del mundo distintos sistemas, algoritmos e ideas posibles de implementar para incentivar su uso, mejorar el sistema, o incluso probar soluciones en algunas ciudades y trasladarlas a otras.
 
@@ -88,11 +86,11 @@ Adicionalmente, no debería ser un simulador único e invariable, sino que debe 
 
 ## Contexto
 
-Para definir las diferentes partes de el simulador, es necesario tener una visión general del sistema de bicis en la realidad.
+Para definir las diferentes partes de el simulador, es necesario tener una visión general del sistema de bicis en la realidad, que se presenta en la Figura \ref{fig:1}
 
 ![Sistema de bicis compartidas](images/real_system_v2.jpg){#fig:1}
 
-Podemos distinguir claramente en la Figura \ref{fig:1} tres partes principales dentro del sistema de bicis compartidas:
+Podemos distinguir claramente en esta figura tres partes principales dentro del sistema de bicis compartidas:
 
 - Infraestructura física con estaciones y bicis (Amarillo).
 - Usuarios con Smartphone y App del sistema (Rojo).
@@ -100,7 +98,7 @@ Podemos distinguir claramente en la Figura \ref{fig:1} tres partes principales d
 
 Estas tres partes diferenciadas constituyen tres partes importantes dentro del desarrollo del simulador. El **núcleo**, que incluirá la infraestructura y como deben los usuarios interactuar con el sistema, los **usuarios** que pueden tener comportamientos diferentes, y el **sistema de recomendaciones y de información** que podrá influir en el comportamiento de los usuarios.
 
-Los usuarios hacen uso de la infraestructura cuando cogen o dejan una bici y también hacen uso del sistema de recomendaciones o a través de la App, para reservar una bici o un hueco, ver el estado de una estación, o quizás hacer caso a alguna de las sugerencias de una App de recomendaciones.
+Los usuarios hacen uso de la infraestructura cuando cogen o dejan una bici y también pueden hacer uso del sistema de recomendaciones a través de la App, para reservar una bici o un hueco o ver el estado de una estación.
 Vemos que hay una interacción continua entre usuarios e infraestructura. El sistema de recomendaciones puede influenciar en las decisiones finales del usuario.
 
 En el desarrollo de este simulador hemos participado varias personas hasta la fecha de publicación de esta memoria, las cuales han realizado diferentes partes, aunque parte de este desarrollo ha sido realizado de forma conjunta debido a la necesidad de tener una base común, que serían el núcleo y algunos estándares definidos.
@@ -112,7 +110,7 @@ Con esta visión global del sistema se especifica una serie de objetivos que se 
 Antes de plantear que objetivos perseguir, hay que analizar que necesidades va a tener el simulador en el futuro y con que fin se va a utilizar en términos globales. Podríamos distinguir varios objetivos si hablamos de la totalidad del simulador:
 
 - Probar algoritmos de balanceo y predicción de demanda en un sistema de bicicletas compartido.
-- Implementar sistemas de recomendaciones e incentivos para optimizar la demanda.
+- Implementar sistemas de recomendaciones e incentivos para optimizar la disponibilidad de bicis y huecos en todas las estaciones.
 - Plantear nuevas distribuciones de estaciones sobre una ciudad.
 
 Basado en estos objetivos globales se derivan los siguientes objetivos más concretos para el desarrollo:
@@ -122,17 +120,16 @@ Basado en estos objetivos globales se derivan los siguientes objetivos más conc
 - Generación de usuarios versátil y que puedan seguir distribuciones (Poisson).
 - Poder definir qué tipos de usuarios queremos en el sistema y parametrizarlos para que puedan tener comportamientos variados.
 - Facilidad para crear configuraciones (GUI).
-- Creación de distintos tipos de usuario, con diferentes comportamientos que respondan de forma distinta a las situaciones dadas y las recomendaciones.
 - Creación de distintos tipos de recomendadores. 
 - Simulación realista.
-- Análisis de los datos para probar los diferentes algoritmos.
-- Visualizar las simulaciones a través de los históricos.
+- Análisis de los datos para evaluar los diferentes algoritmos y estrategias de recomendación.
+- Visualizar las simulaciones.
 
 En general el simulador tiene que ser capaz de recrear situaciones reales basadas en entornos reales, con infraestructuras existentes o que puedan existir en el mundo real. Es decir, uno de los objetivos básicos es dotar al simulador de mecanismos ágiles para poder crear configuraciones de diferentes situaciones.
 
-Además estas configuraciones tienen que poder ser generadas con cierta independencia del simulador, añadiendo la posibilidad de que nuevos desarrolladores puedan crear sus propias herramientas que generen casos para la simulación y ofreciendo una interfaz agradable para la realización de simulaciones.
+Además estas configuraciones tienen que poder ser generadas con cierta independencia del simulador, añadiendo la posibilidad de que nuevos desarrolladores puedan crear sus propias herramientas que generen casos para la simulación y ofreciendo una interfaz ágil para la realización de simulaciones.
 
-En el contexto global del desarrollo, la parte que ha correspondido al tema de este trabajo que se presenta en mayor detalle es:
+En el contexto global del desarrollo, la parte que ha correspondido al trabajo presentado en este documento y que se presenta en mayor detalle es:
 
 - Configuración.
 - Interfaz de usuario.
@@ -141,47 +138,51 @@ En el contexto global del desarrollo, la parte que ha correspondido al tema de e
 
 ## Metodología
 
-Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas... No obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la Figura \ref{fig:2}
+Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas, etc. No obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la Figura \ref{fig:2}.
 
-![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2}
+![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2 .class width=10cm}
 
 En este modelo, primero se realiza un análisis de los requisitos que se van a necesitar para cada iteración. Después del desarrollo de estos, se hacen pruebas y para finalizar se integra con el resto del sistema.
 
-Cada 2 semanas realizamos una iteración donde se realizan todos los pasos comentados anteriormente, donde todo el equipo de desarrollo decide qué requisitos son más críticos e importantes y que bugs se han detectado. En base a estas decisiones y utilizando herramientas online como Trello[^3], se gestiona que tareas debe realizar cada uno.
+Cada 2 semanas se ha realizado una iteración donde se realizaron todos los pasos comentados anteriormente, donde todo el equipo de desarrollo decidió qué requisitos son más críticos e importantes y que bugs se detectarón. En base a estas decisiones y utilizando herramientas online como Trello[^3], se gestionó que tareas debe realizar cada uno.
 
 [^3]: Es un tablero online donde se pueden crear, asignar y clasificar tareas, de tal modo que todo el equipo tiene una visión global del estado actual de desarrollo que se está creando.
 
 Un desarrollo iterativo e incremental ofrece varias ventajas con respecto a otras metodologías como puede ser el desarrollo en cascada. Una de las ventajas que ofrece es la entrega de software que se puede usar a mitad de desarrollo, mientras que en el modelo en cascada cada fase del proceso debe ser finalizada (firmada) para pasar a la siguiente fase. El desarrollo de software no es lineal y esto crea dificultades si se utiliza una metodología en cascada[@bib2].
 
-Cada cierto tiempo realizamos una release. Utilizamos un formato de versiones semántico[@bib3] del tipo X.Y.Z donde, X, Y y Z son números enteros mayores que 0.
+Cada cierto tiempo se han realizo releases. Utilizamos un formato de versiones semántico[@bib3] del tipo X.Y.Z donde, X, Y y Z son números enteros mayores que 0.
 
-X se corresponde a la versión mayor (cambios grandes que modifican parte o gran parte de la funcionalidad). Y se corresponde a la versión menor(pequeños cambios, corrección de bugs) y Z, que son micro versiones (parches, pequeños bugs críticos...)
+X se corresponde a la versión mayor (cambios grandes que modifican parte o gran parte de la funcionalidad). Y se corresponde a la versión menor(pequeños cambios, corrección de bugs) y Z, que son micro versiones (parches, pequeños bugs críticos...).
 
 # Descripción informática
 
-El presente capítulo aborda toda la fase de desarrollo del proyecto, desde la especificación de requisitos, el diseño y la implementación del mismo, contextualizando el trabajo realizado por todos en el simulador y explicando con más detalle nuestra parte correspondiente.
+El presente capítulo aborda toda la fase de desarrollo del proyecto, desde la especificación de requisitos, el diseño y la implementación del mismo, contextualizando el trabajo realizado por todos los integrantes del equipo de desarrollo y explicando con más detalle la parte correspondiente de nuestra memoria.
 
 ## Especificación de requisitos
 
-Antes de comenzar las iteraciones y primeros prototipos de el proyecto, es necesario crear una especificación de requisitos clara y concisa. Vamos a seguir algunas de las recomendaciones del estándar IEEE830[@bib6] para ello. En un desarrollo iterativo e incremental ágil debemos tener muy en cuenta que los requisitos puedan ser lo más modificables posibles.
+Antes de comenzar las iteraciones y primeros prototipos del proyecto, es necesario crear una especificación de requisitos clara y concisa. Vamos a seguir algunas de las recomendaciones del estándar IEEE830[@bib6] para ello. En un desarrollo iterativo e incremental ágil debemos tener muy en cuenta que los requisitos puedan ser modificables con frecuencia.
 
 ### Perspectiva general del producto
 
-Para examinar y definir en detalle las distintas especificaciones de el simulador, debemos introducir un poco las necesidades globales del simulador en general.
+Para examinar y definir en detalle las distintas especificaciones del simulador, debemos introducir las necesidades globales del simulador en general.
 
-Necesitamos un software que sea capaz de, a partir de un estado inicial, simular situaciones reales y debe permitir visualizar y dar una serie de datos correspondientes de la simulación. El simulador tiene que mostrar estos datos a través de un histórico que posteriormente se utilizará para analizar los resultados del sistema de recomendaciones y los algoritmos implementados.
+Necesitamos un software que sea capaz de, a partir de un estado inicial:
+
+a. Simular situaciones reales.
+b. Visualizar estas simulaciones
+c. Presentar una serie de datos correspondientes de la simulación.
+
+El simulador tiene que mostrar estos datos a través de un histórico que posteriormente se utilizará para analizar los resultados del sistema de recomendaciones y de los algoritmos implementados.
 
 En resumen, el simulador tiene que ser capaz de, a partir de unos datos de configuración iniciales, generar un histórico con los resultados de la simulación para comprobar el comportamiento de los distintos algoritmos de balanceo implementados.
 
 Este TFG se centrará en dos partes:
 
-- Configuración: Será diseñado con el objetivo de inicializar el simulador utilizando la ubicación de una ciudad real, poder generar usuarios en zonas especificas, parametrizar valores globales de la simulación, ubicar estaciones en cualquier punto y parametrizar también que tipos de usuarios se van a utilizar en las simulaciones, en que zonas y con qué distribución aparecerán.
+- Configuración: Será diseñado con el objetivo de inicializar el simulador utilizando la ubicación de una ciudad real, poder generar usuarios en zonas especificas, parametrizar valores globales de la simulación, ubicar estaciones en cualquier punto y parametrizar que tipos de usuarios se van a utilizar, en que zonas y con qué distribución aparecerán.
 
 - Participación en el desarrollo global, que incluye la separación del simulador en módulos, la aplicación de ciertos patrones de diseño y la implementación de la parte gráfica de configuración y simulación.
 
-### Definición de acrónimos y abreviaturas
-
-En esta sección se describen los términos y abreviaturas utilizados para la especificación de requisitos:
+En las siguientes subsecciones se detallan los requisitos funcionales y no funcionales que corresponden a la parte del desarrollo realizado en el ámbito de este TFG. En la descripción se emplean las siguientes abreviaturas:
 
 - Sistema de bicis compartidas (SBC): Infraestructura (estaciones, bicis).
 
@@ -197,13 +198,9 @@ En esta sección se describen los términos y abreviaturas utilizados para la es
 
 - Interfaz de usuario (GUI).
 
-### Tipos de usuario:
-
-Solo tendríamos un tipo de usuario, que serían los investigadores, profesores o cualquier persona que quiera hacer uso de el simulador. Podrán o no tener conocimientos de programación, pero los usuarios con conocimientos de desarrollo podrán modificar y crear usuarios de una forma mucho más precisa dentro del código fuente.
-
 ### Requisitos funcionales
 
-En esta sección se expondrán los requisitos de mi parte dentro de este proyecto. Nótese que estos requisitos han ido cambiando a lo largo del desarrollo iterativo e incremental.
+Los requisitos funcionales consisten en una serie de comportamientos o módulos que deben ser integrados en el sistena de simulación y son los siguientes:
 
 **Requisito funcional 1**
 
@@ -217,7 +214,7 @@ _Fichero de configuración global del SBC_: La simulación deberá partir de una
 
 **Requisito funcional 2**
 
-_Fichero de configuración de estaciones_. Se podrá mediante un fichero de configuración, disponer para la simulación de un conjunto finito de estaciones. El archivo de configuración deberá especificar:
+_Fichero de configuración de estaciones_. Se podrá mediante un fichero de configuración, definir un conjunto finito de estaciones. El archivo de configuración deberá especificar:
 
 - Las bicis disponibles en las estaciones.
 
@@ -225,37 +222,41 @@ _Fichero de configuración de estaciones_. Se podrá mediante un fichero de conf
 
 - Punto geográfico de su ubicación real o ficticia.
 
-**Requisito funcional 3.1**
+>
 
-_Fichero de configuración para los US_: La configuración deberá proporcionar un mecanismo con el cual se puedan generar usuarios en distintos puntos geográficos. De momento los más importantes son:
+**Requisito funcional 3**
 
-- Distribución exponencial siguiendo un proceso de Poisson.
+_Fichero de configuración para los US_: La configuración deberá proporcionar un mecanismo o módulo con el cual se puedan generar usuarios en distintos puntos geográficos. Estos lugares donde los usuarios son generados se denominarán puntos de entrada (entry points). Este módulo deberá ser capaz de generar usuarios de dos formas:
 
-- Único US.
+- Con una distribución exponencial siguiendo un proceso de Poisson. Dada una cantidad de usuarios por una unidad de tiempo y un punto geográfico, generarlos como un proceso de Poisson en dicho punto. En este proceso de poisson $\lambda$ será la cantidad de usuarios por segundo. (Véase \secref{sec:genusers}). 
 
-**Requisito funcional 3.2**
+- Usuarios individuales: Dado un punto geográfico, generar un único usuario.
+
+Este fichero de configuracion no tendrá limite de puntos de entrada, y podrán definirse más métodos de generación de usuarios.
+
+**Requisito funcional 4**
 
 _Configuración de usuarios independiente:_ La configuración de entrada de los US en el SBC debe ser independiente del simulador, es decir, deberá generar un fichero con los usuarios que van a aparecer en la simulación. Por lo tanto, habrá dos ficheros de configuración:
 
 - Fichero de configuración con puntos de entrada y distribuciones.
 
-- Ficheros de configuración con usuarios generados según el fichero con puntos de entrada.
+- Ficheros de configuración con usuarios generados a partir del anterior fichero.
 
-Los US podrán o no tener parámetros de configuración que modifiquen su comportamiento de facto. Los parámetros dependerán del tipo de US que se quiera.
-
-**Requisito funcional 3.3**
-
-_Generador de usuarios_: Del requisito anterior podemos deducir que debería haber un generador de US que reciba el fichero de configuración con puntos de entrada y distribuciones y nos genere un fichero de configuración con US siguiendo dichas distribuciones o reglas definidas.
-
-**Requisito funcional 4**
-
-_Procesador de la configuración_: En el simulador deberá haber un procesador para la configuración que sea capaz de preparar todo el sistema para su correspondiente ejecución.
+Los US podrán o no tener parámetros de configuración que modifiquen su comportamiento de facto. Los parámetros dependerán del tipo de US que se quiera simular.
 
 **Requisito funcional 5**
 
-_Gestor de rutas_: Los US deberán tomar rutas reales y decisiones basándose en el mapa y la situación del SBC, Estas rutas serán posteriormente guardadas en el histórico para su visualización.
+_Generador de usuarios_: Del requisito anterior podemos deducir que debería haber un generador de US que reciba el fichero de configuración con puntos de entrada y distribuciones y nos genere un fichero de configuración con US siguiendo dichas distribuciones o reglas definidas.
 
 **Requisito funcional 6**
+
+_Procesador de la configuración_: En el simulador deberá haber un procesador para la configuración que sea capaz de preparar todo el sistema para su correspondiente ejecución.
+
+**Requisito funcional 7**
+
+_Gestor de rutas_: Los US deberán tomar rutas reales y decisiones basándose en el mapa y la situación del SBC, Estas rutas serán posteriormente guardadas en el histórico para su visualización.
+
+**Requisito funcional 8**
 
 _Herramientas GUI_: La GUI deberá proporcionar las siguientes herramientas:
 
@@ -265,7 +266,7 @@ _Herramientas GUI_: La GUI deberá proporcionar las siguientes herramientas:
 
 - Analizar y exportar datos.
 
-Además debe permitir crear y cargar configuraciones en la GUI, deberá poder crear configuraciones a través de un mapa. Los elementos de la configuración que se vayan añadiendo, deberán verse en un mapa y en una vista en forma de árbol para que sea accesible.
+Además la GUI debe facilitar la creación de los distintos elementos a través de un mapa. Los elementos de la configuración que se vayan añadiendo, deberán verse en un mapa y en una vista en forma de árbol para que sean accesibles.
 
 ### Requisitos no funcionales
 
@@ -287,21 +288,17 @@ Tanto el formato de los ficheros de configuración como el del histórico deben 
 
 ## Análisis
 
-Para ir formando las partes de el simulador, vamos a partir de lo siguiente:
+Previamente a la implementación es necesario hacer un análisis del sistema en la realidad y abstraer dichos conceptos para poder crear el simulador. A continuación se describen las tres partes esenciales en las que se ha trabajado en este TFG:
 
-1. En el sistema de bicis solo se pueden realizar ciertas **acciones**.
+- Acciones de los usuarios: Debemos analizar que pueden hacer los usuarios en el sistema y que decisiones pueden tomar.
 
-2. Los usuarios pueden elegir entre esas acciones posibles dependiendo de su **estado**, que tipo de usuario sea, y el sistema de recomendaciones.
+- Interacción de los usuarios con el sistema de recomendaciones: Los usuarios podrán tomar decisiones basándose en información externa proporcionada por aplicaciones móviles y de su entorno. 
 
-3. El sistema de bicis se encuentra en un lugar en específico y, si se tienen datos anteriores del sistema, se pueden deducir distribuciones de aparición de los usuarios en el sistema. Por lo cual contamos con un **estado inicial**
+- Definición de un estado inicial (configuración): Para poder simular en su totalidad estas acciones y decisiones de los usuarios en el sistema, debemos partir de un estado inicial, que debe ser definido a partir de una configuración. Se hace especial incapié en esta última parte, ya que representa una gran parte del trabajo de este TFG.
 
-4. Cada persona que utiliza el sistema es distinta, el uso del SBC es diferente para cada tipo de usuario.
+En los siguientes subapartados se mencionan las distintas partes del simulador que se corresponden con cada punto descrito anteriormente.
 
-5. Cada simulación debe producir un histórico, y con este histórico se debe poder **visualizar la simulación** y **analizar los datos resultantes**.
-
-Partiendo de esto, con los puntos anteriormente citados vamos a ir mencionando las distintas partes de el simulador que se corresponden con cada punto anterior en el SBC real.
-
-### Núcleo
+### Acciones de los usuarios
 
 En el núcleo definiremos como se ejecutarán las acciones de las entidades en el simulador. Para definir como se van a ejecutar estas acciones vamos a plantear un diagrama de flujo de las posibles acciones del usuario dentro del sistema.
 
@@ -333,7 +330,7 @@ En la figura \ref{fig:3} se puede ver el flujo de decisiones del usuario con má
 
 ![Flujo de decisiones de un Usuario Simulado](images/flow_events.png){#fig:3}
 
-### Usuarios y sistema de recomendaciones
+### Interacción de los usuarios con el sistema de recomendaciones
 
 Los US interactúan con el SBC en el núcleo, pero ¿cómo tomarán estos las decisiones? Si nos fijamos en el flujo de decisiones, muchos de los posibles estados por los que puede pasar un US dependen de si reserva, no reserva, si decide volver a intentarlo después de un intento fallido, a que estación ir...
 
@@ -349,11 +346,11 @@ El simulador podrá disponer en un futuro de más de un sistema de recomendacion
 
 La diferencia entre la interfaz de infraestructura y el sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el de recomendaciones, los criterios que aplica para realizar estas recomendaciones, responden a los intereses del sistema para balancearlo.
 
-### Configuración
+### Definición de un estado inicial (configuración)
 
 Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables utilizando el formato JSON. Además proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Estos archivos deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simulación.
 
-#### Configuración de la infraestructura.
+#### Configuración de las estaciones
 
 Para que los usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador información sobre dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga esta información.
 
@@ -1204,11 +1201,18 @@ Pero no siempre las cosas salen bien, es por eso por lo que tampoco debemos olvi
 
 - Experimentos más completos para ver el funcionamiento en casos reales.
 
-# Anexo 1 - Archivos de configuración {-}
+# Referencias
+
+<div id="refs"></div>
+
+\thispagestyle{plain}
+
+# Anexos
+## Anexo 1 - Archivos de configuración {-}
 
 A continuación se presentan los diferentes archivos de configuración que son necesarios para crear simulaciones.
 
-## Configuración global {-}
+### Configuración global {-}
 
 ```json
 {
@@ -1248,7 +1252,7 @@ A continuación se presentan los diferentes archivos de configuración que son n
 
 - Max Distance Recommendation: Máxima distancia a la que los recomendadores hacen sugerencias. (metros)
 
-## Estaciones {-}
+### Estaciones {-}
 
 ```json
 {
@@ -1273,7 +1277,7 @@ A continuación se presentan los diferentes archivos de configuración que son n
 - Capacity: Capacidad total de la estación.
     
 
-## Puntos de entrada (Entry points) {-}
+### Puntos de entrada (Entry points) {-}
 
 ```json
 {
@@ -1308,7 +1312,7 @@ A continuación se presentan los diferentes archivos de configuración que son n
 - Radius: Radio de aparición de los usuarios. (metros)
 - Distribution: Parámetros de la distribución. En este caso lambda, que vale 1 (en minutos). Significa que se creará de media 1 usuario por minuto con un proceso de poisson.
 
-## Usuarios generados {-}
+### Usuarios generados {-}
 
 ```json
 {
@@ -1336,13 +1340,9 @@ A continuación se presentan los diferentes archivos de configuración que son n
 - User Type: Es el mismo userType que el utilizado en los puntos de entrada.
 - Time Instant: Instante de tiempo en el que aparece el usuario. (segundos)
 
-\pagebreak
-&nbsp;
-\newpage
+## Anexo 2 - Manual de configuración del entorno de desarrollo {-}
 
-# Anexo 2 - Manual de configuración del entorno de desarrollo {-}
-
-## Prerrequisitos {-}
+### Prerrequisitos {-}
 
 Es necesario tener instaladas las siguientes herramientas:
 
@@ -1355,7 +1355,7 @@ Asegúrese de que todos los binarios estén registrados en la variable de entorn
 
 El gestor de paquetes NPM es también necesario pero normalmente es instalado automáticamente con Node.js.
 
-## Setup {-}
+### Setup {-}
 
 Ejecute las siguientes instrucciones en el directorio donde desee trabajar:
 
@@ -1368,7 +1368,7 @@ Ejecute las siguientes instrucciones en el directorio donde desee trabajar:
 
 Si no aparece ningún error, ya está todo preparado para desarrollar, empaquetar y probar el simulador.
 
-## Ejecutar el simulador en el entorno de desarrollo {-}
+### Ejecutar el simulador en el entorno de desarrollo {-}
 
 Para ejecutar el simulador en modo gráfico en el entorno de desarrollo, solo es necesario ejecutar el siguiente comando en el directorio raíz del proyecto:
 
@@ -1376,7 +1376,7 @@ Para ejecutar el simulador en modo gráfico en el entorno de desarrollo, solo es
     node fuse build:frontend
 ```
 
-## Comandos básicos para desarrollo {-}
+### Comandos básicos para desarrollo {-}
 
 Compilar Backend:
 
@@ -1402,11 +1402,11 @@ Crear ejecutable e instalador
     npm run distribute
 ```
 
-# Anexo 3 - Como añadir un entry point {-}
+## Anexo 3 - Como añadir un entry point {-}
 
 Para poder simular formas de entrada dentro del sistema, tenemos que crear un entry point. Vamos a crear un entry point de ejemplo a modo de guía. Este entry point creará usuarios de forma secuencial dado unos segundos como parámetro:
 
-## 1. Creamos una clase para el Entry Point. {-}
+### 1. Creamos una clase para el Entry Point. {-}
 
 Se puede crear en el módulo `backend- bikesurbanfleets-config-usersgenerator` en el paquete `package es.urjc. ia.bikesurbanfleets.usersgenerator.entrypoint.implementations`
 
@@ -1463,7 +1463,7 @@ La clase final quedaría de la siguiente forma:
 ```
 Como se puede ver hemos creado un método denominado `generateUsers()`. Este es un método abstracto heredado de la clase de la que extendemos EntryPoint y debe devolver una lista con los usuarios ya generados. Aquí aplicaremos la lógica necesaria con los atributos que le hayamos atribuido al entry point para generar los usuarios. En este caso caso es un bucle while, el cual en cada iteración creara un usuario cada cierto número de segundos en un rango dado.
 
-## 2. Añadir el entry point a los schemas {-}
+### 2. Añadir el entry point a los schemas {-}
 
 
 En el directorio raíz del proyecto, en la carpeta `schemas/schemas-and-form-definitions`, en el fichero `entrypoints-config.ts` añadimos lo siguiente: 
@@ -1490,7 +1490,7 @@ Aquí se especifican todos los parámetros que debe tener un entry point. Los pa
 De este modo generaremos el schema correspondiente del Entry Point y éste será configurable desde la interfaz de usuario sin añadir ninguna linea de código al frontend.
 
 
-## 3. Compilar backend y schemas {-}
+### 3. Compilar backend y schemas {-}
 
 Para probar el nuevo Entry Point debemos ejecutar los siguientes comandos.
 
@@ -1502,7 +1502,7 @@ Para probar el nuevo Entry Point debemos ejecutar los siguientes comandos.
 
 El primer comando compila el backend, el segundo genera los schemas y el tercero compila y ejecuta el frontend.
 
-## 4. Probar el entry point para crear una configuración. {-}
+### 4. Probar el entry point para crear una configuración. {-}
 
 Si creamos un entry point en la parte de configuración veremos lo siguiente:
 
@@ -1515,13 +1515,13 @@ El frontend nos detecta automáticamente que hay un nuevo tipo de Entry Point. L
 También aparecen automáticamente los formularios para introducir los parámetros que especificamos en el schema. El entry Point ha sido implementado con éxito. Ya sólo es necesario para terminar la prueba crear una configuración con estos entry points, generar los usuarios y simular.
 
 
-# Anexo 4 - Manual para crear implementaciones de usuario {-}
+## Anexo 4 - Manual para crear implementaciones de usuario {-}
 
 Para crear un nuevo tipo de usuario se recomienda hacerlo en el módulo `backend- bikesurbanfleets-world-entities` en el paquete `es.urjc.ia.bikesurbanfleets. users.types`.
 
 Vamos a crear un usuario de ejemplo que elija una estación aleatoriamente y que haga reservas dado un porcentaje parametrizable desde el archivo de configuración.
 
-## 1. Creación de la clase {-}
+### 1. Creación de la clase {-}
 
 La clase en un principio debe presentar el siguiente aspecto, antes de comenzar a programarlo:
 
@@ -1560,7 +1560,7 @@ En este caso, queremos que el usuario reserve un porcentaje dado de veces, y que
 
 El atributo `minReservationPercentage` representa el porcentaje de veces que realizará una reserva y `minRentalAttempts` el mínimo de veces que queremos que intente coger una bici.
 
-## 2. Implementación de métodos {-}
+### 2. Implementación de métodos {-}
 
 Como este usuario no va a realizar reservas, pondremos todos sus métodos de decisión a `false`:
 
@@ -1748,7 +1748,7 @@ public class UserStationRandom extends User {
 }
 ```
 
-## 3. Añadir el usuario a los schemas {-}
+### 3. Añadir el usuario a los schemas {-}
 
 Para poder configurarlo desde la interfaz de usuario en la configuración y validarlo debemos añadirlo a los schemas. Para ello nos vamos al directorio `schemas/schemas-and-form-definitions` y en el archivo `users-config.ts` debemos añadir lo siguiente:
 
@@ -1765,7 +1765,7 @@ Este fragmento de código debe ir después de la línea:
     export const typeParameters =
 ```
 
-## 4. Compilar backend y schemas {-}
+### 4. Compilar backend y schemas {-}
 
 Para probar este nuevo usuario debemos ejecutar los siguientes comandos.
 
@@ -1776,15 +1776,3 @@ Para probar este nuevo usuario debemos ejecutar los siguientes comandos.
 ```
 
 Así tendremos acceso desde la interfaz gráfica a la creación de configuraciones con dichos usuarios.
-
-\pagebreak
-&nbsp;
-\newpage
-
-\pagebreak
-&nbsp;
-\newpage
-
-# Referencias
-
-\thispagestyle{plain}
