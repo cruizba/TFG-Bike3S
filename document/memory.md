@@ -336,7 +336,7 @@ Los US interactúan con el SBC en el núcleo, pero ¿cómo tomarán estos las de
 
 Si pensamos en una persona utilizando el SBC en la realidad, vemos que su información del sistema es limitada sin el uso de un dispositivo smartphone. Pero si el usuario dispusiera de uno y de una aplicación que le proporcione información, puede tener un amplio conocimiento del SBC en ese momento, además de poder seguir consejos, recomendaciones, etc.
 
-Los US podrán obtener información del estado actual de las estaciones, o recomendaciones a través de distintas interfaces que proporcionará el simulador a los usuarios. Por ejemplo, una interfaz para la información de la infraestructura (estaciones y bicis) y otra para las recomendaciones. Podríamos considerar estas interfaces como las "apps" que utilizan los usuarios en el sistema real, y cada usuario, según su implementación, podrá o no hacer uso de ellas.
+Los US podrán obtener información del estado actual de las estaciones, o recomendaciones a través de distintas interfaces que proporcionará el simulador a los usuarios. Por ejemplo, una interfaz para la información de la infraestructura (estaciones y bicis) u otra para las recomendaciones. Podríamos considerar estas interfaces como las "apps" que utilizan los usuarios en el sistema real, y cada usuario, según su implementación, podrá o no hacer uso de ellas.
 
 En la figura \ref{fig:4} vemos un diagrama en el que se explica cómo los US podrían consultar al SBC.
 
@@ -344,17 +344,17 @@ En la figura \ref{fig:4} vemos un diagrama en el que se explica cómo los US pod
 
 El simulador podrá disponer en un futuro de más de un sistema de recomendaciones, pero de momento se ha incluído uno, el cual ha sido implementado por otra desarrolladora del simulador (Sandra Timón [@bib7]).
 
-La diferencia entre la interfaz de infraestructura y el sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el de recomendaciones, los criterios que aplica para realizar estas recomendaciones, responden a los intereses del sistema para balancearlo.
+La diferencia entre una simple interfaz de infraestructura y un sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el segundo aplica unos criterios en la recomendación de una estación (ya sea para coger o dejar una bici) que responden o estan influenciados por los intereses del sistema de balancear la disponibilidad de bicis y huecos.
 
 ### Definición de un estado inicial (configuración)
 
-Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables utilizando el formato JSON. Además proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Estos archivos deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simulación.
+Para comenzar una simulación, será necesario establecer una serie de parámetros con los que poder definir un estado inicial e inicializarlo. Estos parámetros serán archivos de configuración que deberán poder ser legibles y modificables utilizando el formato JSON. Además proporcionaremos una interfaz de usuario para facilitar la creación de estos archivos. Estos archivos deben contener información acerca de la infraestructura (estaciones, bicis), de cómo y donde aparecerán los usuarios y de ciertos parámetros globales necesarios para controlar la simulación.
 
 #### Configuración de las estaciones
 
 Para que los usuarios puedan ir a las estaciones y realizar acciones en ellas, debemos proporcionar al simulador información sobre dónde está cada estación y de cuantas bicis dispone en ese momento. Para ello debemos proporcionar un archivo de configuración que contenga esta información.
 
-El contenido del archivo de configuración de las estaciones contiene:
+El contenido del archivo de configuración de las estaciones contiene la lista de estaciones con los siguientes datos:
 
 - Capacidad: Número de anclajes disponibles.
 
@@ -362,11 +362,11 @@ El contenido del archivo de configuración de las estaciones contiene:
 
 - Posición geográfica.
 
-Con esta información aportada al simulador, se podrán realizar simulaciones en cualquier SBC del mundo, simplemente proporcionando la información necesaria al archivo de configuración.
+Con esta información, se podrán realizar simulaciones en cualquier SBC del mundo, simplemente proporcionando la información necesaria al archivo de configuración.
 
 #### Configuración global de la simulación.
 
-Por otro lado, el contenido del archivo de configuración de parámetros globales contendrá lo siguiente:
+El contenido del archivo de configuración de parámetros globales contendrá lo siguiente:
 
 - Tiempo máximo de reservas.
 
@@ -382,7 +382,7 @@ Sobre todos estos parámetros, hay que destacar la semilla. Los sucesos aleatori
 
 #### Configuración para la aparición de usuarios {#sec:confusu}
 
-Para configurar los usuarios es necesario representar mediante unos datos iniciales cómo van a aparecer. Habrá dos posibles formas de realizar esto:
+Para configurar los usuarios es necesario especificar el lugar y el momento en el que aparecerán en el sistema. Habrá dos posibles formas de realizar esto:
 
 - Crear un fichero de configuración con el instante exacto en el que aparece un usuario.
 
@@ -390,9 +390,9 @@ Para configurar los usuarios es necesario representar mediante unos datos inicia
 
 **¿Qué es un Entry Point?**
 
-Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener cualquier tipo de propiedades, y puede aparecer utilizando una distribución.
+Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener una serie de propiedades que determinan como se generan los usuarios.
 
-En este caso en particular nos interesa que los usuarios sean generados en puntos geográficos concretos siguiendo un proceso de Poisson y que estén distribuidos dado un radio de forma uniforme en el área abarcado por este. Un Entry Point de estas características podría tener las siguientes propiedades:
+En particular nos interesa que los usuarios puedan ser generados en puntos geográficos determinados y siguiendo un proceso de Poisson para determinar el instante de su aparación. Un Entry Point de estas características podría tener las siguientes propiedades:
 
 - Una posición geográfica y un radio, con los que establecer un área de aparición para los usuarios. 
 
@@ -402,7 +402,7 @@ En este caso en particular nos interesa que los usuarios sean generados en punto
 
 - Tipo de usuario: Tipo de usuario simulado que aparecerá. Recordemos que cada tipo de usuario tendrá un comportamiento diferente.
 
-También nos puede interesar un usuario único en un determinado instante de tiempo que podría tener las siguientes las siguientes propiedades:
+También nos interesa la posibilidad de generar un usuario único en un determinado instante de tiempo que podría tener las siguientes las siguientes propiedades:
 
 - Posición geográfica
 
@@ -410,11 +410,11 @@ También nos puede interesar un usuario único en un determinado instante de tie
 
 - Tipo de usuario y parámetros propios.
 
-En definitiva, un **Entry Point** es un concepto genérico de entrada al simulador y pueden variar sus parámetros. Ahora la pregunta es, ¿cómo y de que forma generaremos los usuarios siguiendo un proceso de Poisson? 
+En definitiva, un **Entry Point** es un concepto genérico de entrada al simulador y pueden variar sus parámetros. A continuación se explica en detalle la forma de generar los usuarios siguiendo un proceso de Poisson? 
 
 #### Generación de usuarios siguiendo un proceso Poisson. {#sec:genusers}
 
-Con respecto a la generación de usuarios, la distribución que más se acerca a como los usuarios aparecen es la distribución exponencial que se aplica en procesos de Poisson. La distribución exponencial podemos considerarla como el modelo más adecuado para la probabilidad del tiempo de espera entre dos eventos que sigan un proceso de Poisson. Estos eventos que ocurren son las apariciones de usuario y para simularlo tendremos que resolver primero dos problemas:
+Con respecto a la generación de usuarios, la distribución que más se acerca a como los usuarios aparecen en la realidad es la distribución exponencial que se aplica en procesos de Poisson. La distribución exponencial podemos considerarla como el modelo más adecuado para la probabilidad del tiempo de espera entre dos eventos que sigan un proceso de Poisson. Estos eventos que ocurren son las apariciones de usuario y para simularlo tendremos que resolver primero dos problemas:
 
 1. Necesitamos computar de alguna manera los instantes de aparición de cada usuario siguiendo una distribución exponencial.
 
@@ -430,9 +430,9 @@ $$
 f(x)=1 - e^{-\lambda x}\;\;\;\;\;\;\;\;\;(1)
 $$
 
-Donde $\lambda$ es la cantidad de usuarios que aparecen por cada unidad de tiempo.
+Donde en nuestro caso $\lambda$ es la cantidad de usuarios que aparecen por cada unidad de tiempo.
 
-Con esta función lo que obtendríamos es la probabilidad de que un usuario aparezca dado un instante de tiempo $x$, pero no es suficiente para nuestro problema. Donald Knuth describe una forma de generar variables aleatorias siguiendo está distribución utilizando la formula antes mencionada[@bib8] [@bib9]. Según explica Knuth, siempre que tengamos una distribución continua y su función de distribución de probabilidad cumpla que:
+Con esta función obtendríamos la probabilidad de que un usuario aparezca dado un instante de tiempo $x$, pero no es suficiente para nuestro problema. Donald Knuth describe una forma de generar variables aleatorias siguiendo está distribución utilizando la formula antes mencionada[@bib8] [@bib9]. Según explica Knuth, siempre que tengamos una distribución continua y su función de distribución de probabilidad cumpla que:
 
 $$
 f(x1) \leq f(x2), si \; x1 < x2 \;\;\;\;\; (2)
@@ -466,7 +466,7 @@ Por ejemplo, si el valor de $u$ es 0.42 el valor que devolverá es de 2,64 segun
 
 >
 
-Ya solo nos quedaría definir el algoritmo para la generación de usuarios siguiendo una distribución de Poisson.
+Basado en este análisis se define el algoritmo para la generación de usuarios siguiendo una distribución de Poisson.
 
 Las variables de entrada de el algoritmo son las siguientes:
 
@@ -486,9 +486,9 @@ Si no se recibe $r$, todos los usuarios serán generados en el punto $p$
 
 \LinesNumbered
 \begin{algorithm}[H]
-    let L be a new List\;
-    $ct \leftarrow 0$ // current time\;
-    $uc \leftarrow 0$ // users counter\;
+    let L = [] // Lista vacia
+    $ct \leftarrow 0$ // Tiempo actual\;
+    $uc \leftarrow 0$ // Contador de usuarios\;
     \While{ $ct < e$ {\bf and} $uc < m$}{
     $uc \leftarrow uc + 1$\;
     \eIf{$ r > 0$}{
@@ -496,24 +496,24 @@ Si no se recibe $r$, todos los usuarios serán generados en el punto $p$
     }{
         $up \leftarrow p$\;
     }
-    $t \leftarrow -ln(Random(0,1))$ // Apparition time \;
+    $t \leftarrow -ln(Random(0,1))$ // Instante de aparición \;
     $ct \leftarrow ct + t$\;
     $u \leftarrow$ NewUser($up, ut, ct$)\;
     L.add(u)\;
  }
  \Return L\;
- \caption{How to write algorithms}
+ \caption{Generación de usuarios siguiendo una distribución de Poisson}
 \end{algorithm}
 
-En la línea 10 aplicamos la fórmula deducida en (5). Por cada iteración del bucle se calcula un instante de aparición.
+En la línea 10 aplicamos la fórmula deducida de (5). Por cada iteración del bucle se calcula un instante de aparición de un nuevo usuario.
 
 El algoritmo implementado en el proyecto es mucho más completo ya que aquí no se tienen en cuenta muchos más parámetros que puede recibir un Entry Point. De hecho, este algoritmo sería fácilmente parametrizable, como por ejemplo añadir rangos de tiempo de aparición para que un tipo de usuario aparezca a determinadas horas del día en la simulación.
 
 En el siguiente apartado veremos como implementar la función $RandomPositionInCircle$ de la línea 7
 
-**2. Generación de usuarios dentro de un punto geográfico y un radio**
+**2. Generación de la posición de aparición de los usuarios**
 
-En primer lugar, debemos partir desde una base sencilla. Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional.
+Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional.
 
 ![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:6}
 
@@ -524,9 +524,9 @@ d = random(0, R);  \; \;
 \theta = random(0, 2\pi)\;\;\;\;\;\;\;\;(1)
 $$
 
-Sin embargo esto nos va a dar como resultado más cantidad de puntos en zonas cercanas al centro de la circunferencia. Esto se debe a que a que a medida que el radio aumenta, la superficie en la que se puede representar el punto es mucho mayor. Debemos tener en consideración este dato a la hora de generar $d$ aleatoriamente.
+Sin embargo esto nos va a dar como resultado más cantidad de puntos en zonas cercanas al centro de la circunferencia. Esto se debe a que a medida que el radio aumenta, la superficie en la que se puede representar el punto es mucho mayor. Debemos tener en consideración este dato a la hora de generar $d$ aleatoriamente.
 
-Por lo tanto lo que haremos es generar $d$ con la siguiente formula para el radio [@bib4].
+Por lo tanto lo que hacemos es generar $d$ con la siguiente formula para el radio [@bib4].
 
 $$
 d = R*\sqrt(random(0, 1))\;\;\;\;\;\;\;\;(2)
@@ -556,7 +556,7 @@ Si consideramos los puntos p1, p2, t1 y t2 como puntos en un plano bidimensional
 
 Dado un punto inicial, un ángulo de dirección y una distancia, podemos calcular una nueva coordenada geográfica. Tenemos como punto inicial $\varphi_1$(latitud) y $\lambda_1$(longitud), un ángulo $\theta$ (en sentido horario desde el norte) y una distancia $d$. Además necesitaremos también conocer la distancia angular, que sería $\delta = d / R$, donde $R$ es el radio de la tierra.
 
-Aplicando las siguiente fórmula[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
+Aplicando la siguiente fórmula[@bib5] obtendríamos el punto $(\varphi_2, \lambda_2)$:
 
 $$
 \varphi_2 = asin(sin\;\varphi_1 * cos\;\delta + cos\;\varphi_1*sin\;\delta \;*cos\;\theta) \;\;\;\;\;\;\;\;(5)
@@ -567,7 +567,8 @@ $$
 $$
 
 Si aplicamos la formula para generar de forma aleatoria uniforme el ángulo $\theta$ vista en (1) y la distancia $d$ vista en (2), podemos calcular puntos aleatorios en cualquier círculo en la superficie terrestre.
-Es posible que esta solución carezca de sentido para muchos lectores por que el error puede parecer mínimo si se representan las coordenadas sobre un plano bidimensional, pero no es así. Esta generación de puntos la necesitamos para los Entry Point y estos pueden estar en cualquier ciudad del mundo. Si un usuario define un Entry Point en una ciudad de Suecia, por ejemplo, y no realizamos los cálculos sobre una superficie esférica, los usuarios en Suecia se generaran dentro de áreas que no serían circulares, sino elipses (en la figura \ref{fig:8} se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma según en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
+
+Si se define un Entry Point más al norte, por ejemplo, y no realizamos los cálculos sobre una superficie esférica, los puntos de aparición se generaran dentro de áreas que no serían circulares, sino elipses (en la figura \ref{fig:8} se puede ver la diferencia entre aplicar el calculo sobre 2 dimensiones y sobre la esfera). Esto se explica debido a que la distancia entre grados no es la misma según en la zona en la que estemos. Con esto estamos teniendo en cuenta ese factor, y los usuarios generados siempre se generaran en áreas circulares.
 
 ![En la izquierda se pueden ver puntos aleatorios generados en base a un plano bidimensional y en la derecha puntos generados en base a la superficie de la tierra.](images/entry_point_circle.jpg){#fig:8}
 
@@ -589,7 +590,7 @@ A un nivel muy básico necesitamos tener estas tres partes diferenciadas:
   - Estaciones: Puntos geográficos de las estaciones, número de bicis, capacidad.
   - Entry Points: Puntos de entrada de los usuarios.
   - Parámetros globales: Tiempo total de la simulación, semilla...
-- Simulador: De momento contendrá toda la lógica del simulador y sus interfaces de comunicación con el SDR (sistema de recomendaciones) y la infraestructura.
+- Simulador: Contendrá toda la lógica del simulador y sus interfaces de comunicación con el SDR (sistema de recomendaciones) y la infraestructura.
 - Histórico: Resultado de las simulaciones que posteriormente se analizarán.
 
 Para examinar la arquitectura más en detalle, en los siguientes apartados vamos a ir desglosando esta arquitectura en partes más complejas.
@@ -601,7 +602,7 @@ Existen dos tipos de simuladores:
 - Simulador basado en eventos discretos.
 - Simulador de tiempo continuo.
 
-En un simulador de tiempo continuo el estado del sistema cambia en cada instante de tiempo, mientras que, en un simulador basado en eventos, el tiempo varía en el instante en el que se ha producido dicho evento.
+En un simulador de tiempo continuo el estado del sistema cambia en cada instante de tiempo, mientras que, en un simulador basado en eventos, el estado varía en el instante en el que se ejecutan dichos eventos.
 
 En este desarrollo vamos a utilizar la lógica de un simulador basado en eventos. Este tipo de simuladores definen un conjunto finito de eventos. Estos eventos ocurren cada vez que hay un cambio en el sistema y pueden originar nuevos eventos. 
 
@@ -609,9 +610,9 @@ Para la ejecución de un simulador basado en eventos es necesario una cola de pr
 
 ![Simulador basado en eventos](images/event_based_simulator.png){#fig:10}
 
-En la figura \ref{fig:10} vemos una ejecución básica del motor de el simulador. El primer evento en ejecutarse es el primero de la cola. Cada evento al ejecutarse puede generar nuevos eventos y estos son insertados en la cola.
+En la figura \ref{fig:10} vemos una ejecución básica del motor de el simulador. El primer evento en ejecutarse es el primero de la cola. Cada evento al ejecutarse puede generar nuevos eventos y estos son insertados en la cola ordenados por su instante de aparición.
 
-Para definir el comportamiento de el simulador, hemos definido el siguiente conjunto de eventos a partir del flujo de eventos de la figura \ref{fig:3}: 
+Para definir el comportamiento del simulador, hemos definido el siguiente conjunto de eventos a partir del flujo de decisión de los usuarios de la figura \ref{fig:3}: 
 
 - Usuario aparece
 - Usuario llega a la estación con reserva
@@ -624,17 +625,17 @@ Para definir el comportamiento de el simulador, hemos definido el siguiente conj
 
 [^4]: Momento en el que una reserva pierde su validez debido a un tiempo máximo alcanzado.
 
-Se puede encontrar una explicación más detallada del diseño e implementación del simulador en el TFG de Sandra Timón Mayo[@bib7].
+Se puede encontrar una explicación más detallada del diseño e implementación del procesamiento de los eventos en el TFG de Sandra Timón Mayo[@bib7].
 
 ### Arquitectura detallada
 
 A partir de la figura \ref{fig:9}, a continuación se desarrolla los detalles de la arquitectura del sistema incluyendo las decisiones que se han tomado que han llevado a un desarrollo evolutivo. 
 
-Dentro de todo el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la figura \ref{fig:11}. 
+En el conjunto de software para realizar las simulaciones tendremos una parte que se encargará de cargar las configuraciones, como se puede ver en la figura \ref{fig:11}. 
 
 ![Vista básica del simulador](images/Arquitecture_2_v3.jpg){#fig:11}
 
-Esta figura muestra una parte importante de nuestra arquitectura y es el cargador de configuración. Este se encargará de convertir los datos expresados en los archivos a objetos serializados en el simulador para que puedan ser utilizados por este.
+Esta figura muestra el cargador de configuración. Este se encargará de convertir los datos expresados en los archivos a objetos serializados en el simulador para que puedan ser utilizados por este.
 
 Se puede apreciar como la configuración, además de serializar los datos para la lógica del simulador, inicializa dos servicios que tendrán acceso a ciertos datos de la configuración y del estado de la infraestructura, que servirán como interfaz de comunicación para los usuarios simulados con el sistema de bicis. Cabe mencionar también el generador de históricos, que por cada Evento escribirá en un fichero de texto todos los cambios que se han producido por evento, dando lugar a un histórico final, con el cual, podremos visualizar la simulación y calcular datos sobre esta.
 
