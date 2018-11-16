@@ -86,7 +86,7 @@ Adicionalmente, no debería ser un simulador único e invariable, sino que debe 
 
 ## Contexto
 
-Para definir las diferentes partes de el simulador, es necesario tener una visión general del sistema de bicis en la realidad, que se presenta en la Figura \ref{fig:1}
+Para definir las diferentes partes de el simulador, es necesario tener una visión general del sistema de bicis en la realidad, que se presenta en la figura \ref{fig:1}
 
 ![Sistema de bicis compartidas](images/real_system_v2.jpg){#fig:1}
 
@@ -138,7 +138,7 @@ En el contexto global del desarrollo, la parte que ha correspondido al trabajo p
 
 ## Metodología
 
-Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas, etc. No obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la Figura \ref{fig:2}.
+Este software se ha realizado en un grupo de varias personas, por lo que necesitamos de una metodología para organizarnos. Podríamos considerar que estamos utilizando Scrum[@bib1], pero para los más puristas en cuanto a metodologías software no sería considerado como tal, ya que utilizamos una estructura organizativa horizontal, que suele ser más propio de empresas que venden su propio producto software o, como es el caso, en desarrollos de software para investigación. El equipo de desarrollo tiene un contacto directo con el cliente(que serían los tutores de proyecto) y hay casi una comunicación total día a día con ellos, sin roles intermediarios. Sin embargo, sí que se tienen reuniones cada semana en el equipo para ver cómo avanza el proyecto, retrospectivas, prototipos, integración, pruebas, etc. No obstante, como no aplicamos todas las reglas de Scrum, consideraremos que el desarrollo se está realizando con una metodología iterativa e incremental tal y como se muestra en la figura \ref{fig:2}.
 
 ![Ciclo iterativo e incremental](images/incremental_and_iterative.jpg){#fig:2 .class width=10cm}
 
@@ -637,45 +637,21 @@ En el conjunto de software para realizar las simulaciones tendremos una parte qu
 
 Esta figura muestra el cargador de configuración. Este se encargará de convertir los datos expresados en los archivos a objetos serializados en el simulador para que puedan ser utilizados por este.
 
-Se puede apreciar como la configuración, además de serializar los datos para la lógica del simulador, inicializa dos servicios que tendrán acceso a ciertos datos de la configuración y del estado de la infraestructura, que servirán como interfaz de comunicación para los usuarios simulados con el sistema de bicis. Cabe mencionar también el generador de históricos, que por cada Evento escribirá en un fichero de texto todos los cambios que se han producido por evento, dando lugar a un histórico final, con el cual, podremos visualizar la simulación y calcular datos sobre esta.
+Se puede apreciar como la configuración, además de serializar los datos para la lógica del simulador, inicializa dos servicios que tendrán acceso a ciertos datos de la configuración y del estado de la infraestructura, que servirán como interfaz de comunicación para los usuarios simulados con el sistema de bicis. Cabe mencionar también el generador de históricos, que por cada Evento escribirá en un fichero de texto todos los cambios que se han producido por el evento, dando lugar a un histórico final, con el cual, podremos visualizar la simulación y calcular datos sobre esta.
 
 En la parte lógica del simulador estaría toda la parte relacionada con las interacciones de los usuarios y como estos actúan con la infraestructura y con el sistema de recomendaciones y de información. Esta lógica de simulador es la siguiente que vamos a desglosar en nuestra arquitectura. 
 
 ![Simulador con arquitectura interna de la lógica desglosada](images/Arquitecture_3_v3.jpg){#fig:12}
 
-En la figura \ref{fig:12} se puede ver con más detalle el comportamiento de la **lógica del simulador**. Como podemos ver lo que hace el **cargador de configuración** es interpretar los datos de los archivos de configuración para hacer funcionar el simulador basado en eventos. Este se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos **usuarios generados(US)** interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del **sistema de recomendaciones.**
+En la figura \ref{fig:12} se puede ver con más detalle el comportamiento de la lógica del simulador. Como podemos ver lo que hace el cargador de configuración es interpretar los datos de los archivos de configuración para hacer funcionar el simulador basado en eventos. Este se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos usuarios generados(US) interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del sistema de recomendaciones.
 
-La arquitectura de la figura \ref{fig:12} iba a ser la arquitectura principal de el proyecto, sin embargo, surgió la necesidad de añadir un pequeño módulo externo que se encargue de generar los usuarios.
+Con respecto a la generación de usuarios surgió la necesidad de generarlos de forma independiente del sistema de simulación. De esta forma, es posible generar usuarios de manera aleatoria (a través de entry points) o usuar datos reales de usuarios disponibles de algún sistema de alquiler de bicis con eventos. Para dar cabida a esta necesidad, se integra un nuevo módulo en la parte de configuración: el generador de usuarios como se presenta en la figura \ref{fig:14}
 
-En un principio los archivos de configuración que íbamos a utilizar eran los siguientes:
+![Cargador de configuración con generador de usuarios](images/configuration_2.png){#fig:14 .class width=11cm}
 
-- Parámetros globales
+Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el generador de históricos. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido[@bib10]. En general este módulo se encargará de escuchar cada evento del simulador y escribir el resultado en uno o varios ficheros[@bib10].
 
-- Estaciones
-
-- Entry Points
-
-![Primera idea para la configuración](images/configuration_1.png){#fig:13}
-
-Parece apropiado pensar que esos tres ficheros de configuración son suficientes, sin embargo, surgió la necesidad de independizar la generación de usuarios. Si solo utilizamos un archivo de configuración con los **entry points**, el simulador depende del concepto de **entry point**, por lo que hacemos al simulador dependiente de éste. ¿Y si un tercero quiere generar los usuarios a su modo de forma individual? Tendría que estudiar cómo funciona un Entry Point, y crearlos en base a este concepto. Eso limita de algún modo los usuarios que podemos definir para el sistema. Un Entry Point nos ayuda a definir apariciones de usuarios de una forma más cómoda, pero puede darse el caso de que un desarrollador o investigador quiera generar los usuarios de otra manera.
-
-Imaginemos por un momento que el simulador dispone sólo de esos tres archivos de configuración en el sistema. En ese caso, el simulador antes de arrancar deberá generar los usuarios y después arrancar la simulación. Es en este punto donde surge la necesidad de definir un nuevo módulo en nuestra arquitectura, un **generador de usuarios**. En la figura \ref{fig:14} se puede ver el modelo final de la configuración.
-
-¿Qué ganamos con separar la generación de usuarios del simulador?
-
-1. Un tercero puede desarrollar un software cualquiera independiente, que genere estos usuarios en cualquier lenguaje.
-
-2. Nuestro simulador se centra exclusivamente en tratar las acciones de los usuarios y no su generación.
-
-3. Más modularidad y menos dependencia del simulador.
-
-![Cargador de configuración con generador de usuarios](images/configuration_2.png){#fig:14}
-
-Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el **generador de históricos**. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido[@bib10].
-
-En general este módulo se encargará de escuchar cada evento del simulador y escribir el resultado en uno o varios ficheros[@bib10].
-
-A fin de cumplir con los requisitos de interfaz de usuario número 5.1, 5.2 y 5.3 necesitamos también disponer de una interfaz de usuario que nos permita crear simulaciones de una forma interactiva sin necesidad de escribir los archivos de configuración en un archivo de texto.
+Necesitamos también disponer de una interfaz de usuario que nos permita crear simulaciones de una forma interactiva sin necesidad de escribir los archivos de configuración en un archivo de texto.
 
 Por ello tenemos que añadir a nuestra arquitectura una parte más con la que llamar a el simulador para:
 
@@ -693,19 +669,19 @@ En la figura \ref{fig:15} que se ve a continuación se añaden a la arquitectura
 
 ## Implementación
 
-En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes a mi TFG, que se centran principalmente en la configuración, el uso de patrones de diseño y modularización que le de flexibilidad al código y la interfaz de usuario. Además utilizaremos un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis. También explicaremos como hemos implementado un pequeño inyector de dependencias para que los usuarios puedan hacer uso de múltiples servicios fácilmente y como hemos implementado un sistema de logs para comprobar el comportamiento de los usuarios individualmente en el desarrollo de los mismos. Crearemos utilizando técnicas de reflexión factorías que faciliten la implementación de nuevos usuarios y puntos de entrada. Por otra parte también veremos como hemos implementado la interfaz gráfica para la configuración, la estructura de esta junto con la creación de formularios dinámicos para los usuarios.
+En esta sección, siguiendo las decisiones tomadas en el apartado de diseño, implementaremos todas las partes correspondientes al presente TFG, que se centran principalmente en la configuración, el uso de patrones de diseño y modularización que le de flexibilidad al código y la interfaz de usuario. Además utilizaremos un gestor de rutas para que los usuarios calculen en la simulación los caminos que deben tomar para coger y devolver las bicis. También explicaremos como hemos implementado un inyector de dependencias para que los usuarios puedan hacer uso de múltiples servicios fácilmente y como hemos implementado un sistema de logs para comprobar el comportamiento de los usuarios individualmente en el desarrollo de los mismos. Crearemos utilizando técnicas de reflexión factorías que faciliten la implementación de nuevos usuarios y puntos de entrada. Por otra parte también veremos como hemos implementado la interfaz gráfica para la configuración y la creación de formularios dinámicos para los usuarios.
 
 ### Tecnologías {#sec:tecno}
 
 Uno de los objetivos que hemos tenido como desarrolladores es crear un simulador donde cada una de las partes sea lo más independiente posible. Permitiendo así que, si un módulo no cumple las características deseadas, o la interfaz no se adapta a las necesidades del proyecto, esta se pueda reemplazar, adaptar, cambiar de tecnología, etc…
 
-En la figura \ref{fig:16} hemos separado los distintos proyectos y tecnologías por colores. En color naranja tenemos el simulador, y en color azul la interfaz de usuario (**backend-simulator y frontend-simulator** respectivamente a partir de este apartado)
+En la figura \ref{fig:16} hemos separado los distintos proyectos y tecnologías por colores. En color naranja tenemos el simulador, y en color azul la interfaz de usuario (backend-simulator y frontend-simulator respectivamente a partir de este apartado)
 
 Son proyectos en lenguajes diferentes y solo tienen en común los datos que comparten, que serían los archivos de configuración y los históricos. Además, el frontend se encarga de hacer las llamadas al backend para realizar las simulaciones.
 
-Uno de los requisitos de el proyecto es que sea multiplataforma. Es por ello por lo que en el backend hemos utilizado **Java** y para el frontend **Electron** y **TypeScript**.
+Uno de los requisitos del proyecto es que sea multiplataforma. Es por ello por lo que la implementación del backend hemos utilizado Java y para el frontend Electron y TypeScript.
 
-Por un lado, Java es un lenguaje ya muy maduro que lleva muchos años en la cúspide de los mejores lenguajes empresariales. Un lenguaje muy conocido, demandando, potente y multiplataforma. Su comunidad es muy grande y hay una gran cantidad de librerías y frameworks disponibles.
+Por un lado, Java es un lenguaje ya muy maduro que lleva muchos años en la cúspide de los mejores lenguajes empresariales. Un lenguaje muy conocido, potente y multiplataforma. Su comunidad es muy grande y hay una gran cantidad de librerías y frameworks disponibles.
 
 Por otro lado, en el frontend hemos utilizado Electron, una tecnología que permite desarrollar aplicaciones de escritorio con tecnologías web. Teniendo en cuenta la cantidad de herramienta de visualizaciones que hay para visualizar datos, mapas, crear interfaces de usuario atractivas, pensamos que esta era la mejor opción.
 
@@ -713,21 +689,19 @@ Electron es una combinación de HTML5, CSS y JavaScript para aplicaciones de esc
 
 TypeScript no deja de ser JavaScript, solo que añadiéndole tipado estático y la posibilidad de crear clases y objetos. Como framework para la visualización hemos decidido utilizar Angular (no confundir con AngularJS), que es una tecnología bastante conocida para la creación de aplicaciones web.
 
-A esta arquitectura hay que añadir dos herramientas más. **Un generador de esquemas** y un **validador de archivos** JSON. Con el **generador de esquemas** definiremos la estructura de los datos. Los esquemas los utilizaremos para la validación de los archivos JSON con el **validador.**
+A esta arquitectura hay que añadir dos herramientas más. Un generador de esquemas y un validador de archivos JSON. Con el generador de esquemas definiremos la estructura de los datos. Los esquemas son utilizados para la validación de los archivos JSON de configuración y los JSON de los historicos antes de realizar cualquier simulación.
 
 Estos dos módulos son difíciles de representar en la arquitectura presentada, ya que son muy independientes del proyecto. El validador de archivos JSON es utilizado por el backend y el simulador de usuarios.
 
 En cuanto a control de versiones hemos utilizado Git y la plataforma GitHub como repositorio remoto. Hemos utilizado la mayoría de herramientas que ofrece Github también para notificar errores y comentar mejoras en línea. 
 
-![Arquitectura final con tecnologías](images/Arquitecture_5_v3.jpg){#fig:16}
+![Arquitectura final con tecnologías](images/Arquitecture_10_final.png){#fig:16}
 
-### Lógica del simulador (Backend) {#sec:logsim}
+### Implementación del Backend {#sec:logsim}
 
-En un principio, enfocamos el proyecto con una estructura monolítica, donde cada módulo era un paquete. Pensamos que este punto de partida era el correcto, pero en medio del desarrollo surgió la necesidad de implementar un generador de usuarios externos.
+En un principio, enfocamos el proyecto con una estructura monolítica, donde cada módulo era un paquete. Pensamos que este punto de partida era el correcto, pero a lo largo del desarrollo se decidió implementar el proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en el código. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
 
-Se decidió entonces implementar el proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en el código. A esto hay que añadir la necesidad de que el simulador no generase internamente los usuarios, si no que los reciba de forma externa en un fichero. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
-
-En la figura \ref{fig:16} se pueden ver los diferentes módulos del backend.
+En la figura \ref{fig:17} se pueden ver los diferentes módulos en detalle.
 
 ![Módulos backend-simulator](images/module_system.png){#fig:17}
 
@@ -739,7 +713,7 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
   - `GeoPoint`: Clase que implementa muchos de los métodos necesarios para calcular distancias entre puntos geométricos. Es utilizada dentro del simulador como una forma de representación de los puntos geográficos. En esta clase se implementa la creación de puntos aleatorios dentro de una circunferencia vista en el apartado \secref{sec:genusers}.
 
-  - `GraphManager`, `GraphHopperIntegration` y `GeoRoute`: Véase la sección \secref{sec:maps} para su descripción 
+  - `GraphManager`, `GraphHopperIntegration` y `GeoRoute`: Clases que se corresponden a los puntos geográficos, rutas y gestión de rutas dentro del simulador. Véase la sección \secref{sec:maps} para su descripción 
 
   - `DebugLogger`: Utilidad creada para depurar los usuarios implementados. Es muy útil para ver errores en las implementaciones de los usuarios. Una descripción en mayor detalle se puede ver en la sección \secref{sec:logsim}.
 
@@ -751,131 +725,137 @@ A continuación, vamos a explicar todos los módulos de uno en uno:
 
     La clase abstracta `EntryPoint` define el método `generateUsers()`, la cual deben heredar todas las implementaciones de puntos de entrada en el sistema. Estos usuarios son de tipo `SingleUser` los cuales tienen como propiedad el instante de tiempo en el que aparecen y podrán ser insertados posteriormente en un evento de aparición en ese mismo instante de tiempo.
 
-    En el Anexo 3, se puede ver como implementar un Entry Point.
-
-![Entry Points Factory](images/EntryPointFactory.png){#fig:18}
+    En la definición de nuevos comportamientos de entry points es posible mediante la implementación de nuevas clases que heredan de la clase Entry Point. Una descripción detallada de como se pueden implementar nuevas clases de este tipo se puede ver en el Anexo 3.
 
 [^5]: Gson - https://github.com/google/gson
 
 ![Jerarquía de clases de los eventos](images/Core_diagram.png){#fig:19 .class height=21cm}
 
+>
 
-- History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe los resultados que se han realizado expresando los cambios en cada evento, lo cual hace que los históricos no sean tan pesados. Los instantes son almacenados en diferentes archivos JSON, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos y la visualización en el trabajo final de Tao Cumplido[@bib10].
+![Entry Points Factory](images/EntryPointFactory_v2.png){#fig:18}
 
-- Entidades e infraestructura: En este módulo se definen todas las entidades de la simulación. Consideramos como entidad los objetos que cambian por cada evento que sucede. Entidades en el sistema son: usuarios, estaciones, reservas y bicis. Una reserva es una entidad ya que puede cambiar su estado, al igual que una estación cuando un usuario coge o deja una bici. En la figura \ref{fig:20} se muestra el diagrama de clases de las entidades. 
 
-    ![Diagrama UML de entidades e infraestructura](images/Entity_Diagram.png){#fig:20}
+- History: Contiene toda la lógica necesaria para que evento tras evento, los resultados sean escritos en un histórico. Es un módulo que escribe cambios que se hayan producido en el entorno simulado como resultado de la ejecución de un evento. Los cambios son almacenados en diferentes archivos JSON, haciendo que sean legibles por un ser humano y además manejables para módulos externos sin necesidad de usar streams. Se puede ver más información sobre la generación de históricos y la visualización en el trabajo final de Tao Cumplido[@bib10].
 
-    Aquí también están definidas las implementaciones de cada usuario. Al igual que con los Entry Points, tenemos una factoría definida que nos facilita la implementación de nuevos usuarios figura \ref{fig:21}. Estos usuarios heredan todos de una clase abstracta `User`, que define todos los métodos abstractos que debe tener un usuario al interactuar con el simulador. Es así como se definen los nuevos US (Usuarios simulados). Además, estos pueden tener parámetros que influyan en sus decisiones. Todo está a disposición del implementador que desee programar un usuario en concreto. 
+- Entidades e infraestructura: En este módulo se definen todas las clases que representan entidades reales en la simulación. Consideramos como entidad los objetos que cambian por cada evento que sucede. Entidades en el sistema son: usuarios, estaciones, reservas y bicis. Una reserva es una entidad ya que puede cambiar su estado, al igual que una estación cuando un usuario coge o deja una bici. En la figura \ref{fig:20} se muestra el diagrama de clases de las entidades. 
 
-    ![Factoría de usuarios](images/User_factory.png){#fig:21}
+    ![Diagrama UML de entidades e infraestructura](images/Entity_Diagram_v2.png){#fig:20}
 
-    Los diferentes métodos que deben implementar los usuarios simulados son:
+En el siguiente subapartado se explican como están implementados los usuarios y que métodos ofrecen para su implementación.
 
-  - `determineStationToRentBike(): Station` y `determineStationToReturnBike(): Station`
+### Implementación de los usuarios
 
-      El usuario elige a que estación ir para alquilar o para devolver una bici. El implementador deberá hacer uso de los servicios a los que puede acceder el usuario para determinar a que estación ir. Este método devuelve una estación.
+Al igual que con los Entry Points, tenemos una factoría definida que nos facilita la implementación de nuevos usuarios (figura \ref{fig:21}). Estos usuarios heredan todos de una clase abstracta `User`, que define todos los métodos abstractos que debe tener un usuario al interactuar con el simulador. Además, nuevos tipos de usuarios pueden tener parámetros que determinen sus decisiones. Todo está a disposición del implementador que desee programar un tipo de usuario en concreto. 
 
-  - `determineRoute(): GeoRoute`
+![Factoría de usuarios](images/User_factory.png){#fig:21}
 
-      En este método deberá hallarse una ruta hasta el destino del usuario. Cualquier gestor de rutas podrá ser usado, pero la ruta que devuelva debe ser un objeto de la clase GeoRoute para que pueda ser usada por el núcleo. Por defecto se puede usar el servicio `graph` que utilizará GraphHopper para calcular las rutas.
+Los diferentes métodos que deben implementar los tipos de usuarios simulados son:
 
-  - `decidesNextPoint(): GeoPoint`
+- `determineStationToRentBike(): Station` y `determineStationToReturnBike(): Station`
 
-      El usuario decide a que lugar de la ciudad quiere ir a dar una vuelta.
+    El usuario elige a que estación ir para alquilar o para devolver una bici. El implementador deberá hacer uso de los servicios a los que puede acceder el usuario para determinar a que estación ir. Este método devuelve una estación.
 
-  - `decidesToLeaveSystemAfterTimeout(): boolean`
+- `determineRoute(): GeoRoute`
 
-      El usuario decide si abandona el sistema tras una expiración de reserva.
+    Este método deberá hallarse una ruta hasta el destino del usuario. Cualquier gestor de rutas podrá ser usado, pero la ruta que devuelva debe ser un objeto de la clase GeoRoute para que pueda ser usada por el núcleo. Por defecto se puede usar el servicio `graph` que utilizará GraphHopper para calcular las rutas.
 
-  - `decidesToLeaveSystemAffterFailedReservation(): boolean`
+- `decidesNextPoint(): GeoPoint`
 
-      Tras un intento fallido de reserva de bici o de hueco, decide si abandonar el sistema o no. Es importante destacar que el usuario tiene acceso a un objeto llamado `memory` el cual contiene información acerca de las acciones que ha realizado el usuario simulado, para poder tomar decisiones e implementar algoritmos más avanzados que puedan tomar referencia de las acciones pasadas.
+    El usuario decide a que lugar de la ciudad quiere ir.
 
-  - `decidesToLeaveSystemWhenBikesUnavailable(): boolean`
+- `decidesToLeaveSystemAfterTimeout(): boolean`
 
-      El usuario decide si abandonar el sistema cuando no hay bicis disponibles en la estación. 
+    El usuario decide si abandona el sistema tras una expiración de reserva.
 
-  - `decidesToReserveBikeAtSameStationAfterTimeout(): boolean`
+- `decidesToLeaveSystemAffterFailedReservation(): boolean`
 
-      El usuario decide si quiere volver a intentar reservar en la misma estación donde había hecho la reserva que acaba de expirar.
+    Tras un intento fallido de reserva de bici o de hueco, decide si abandonar el sistema o no. Es importante destacar que el usuario tiene acceso a un objeto llamado `memory` el cual contiene información acerca de las acciones que ha realizado anteriormente, para poder tener en cuenta esta información.
 
-  - `decidesToReserveBikeAtNewDecidedStation(): boolean`
+- `decidesToLeaveSystemWhenBikesUnavailable(): boolean`
 
-      El usuario decide si reservar en la estación que ha escogido como destino.
+    El usuario decide si abandonar el sistema cuando no hay bicis disponibles en la estación. 
 
-  - `decidesToReserveSlotAtSameStationAfterTimeout(): boolean`
+- `decidesToReserveBikeAtSameStationAfterTimeout(): boolean`
 
-      Tras haber reservado un hueco en una estación y haber expirado la reserva, el usuario decide si volver a reservar en esa estación.
+    El usuario decide si quiere volver a intentar reservar en la misma estación donde había hecho la reserva que acaba de expirar.
 
-  - `decidesToReturnBike(): boolean`
+- `decidesToReserveBikeAtNewDecidedStation(): boolean`
 
-      El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el método `decidesNextPoint()`, el cual devolverá un punto al que el usuario irá a dar una vuelta con la bicicleta.
+    El usuario decide si reservar en la estación que ha escogido como destino.
 
-  - `decidesToDetermineOtherStationAfterTimeout(): boolean`
+- `decidesToReserveSlotAtSameStationAfterTimeout(): boolean`
 
-      Tras la expiración de una reserva, el usuario decide si elegir una nueva estación.
+    Tras haber reservado un hueco en una estación y haber expirado la reserva, el usuario decide si vuelve a reservar en esa estación.
 
-  - `decidesToDetermineOtherStationAfterFailedReservation(): boolean`
+- `decidesToReturnBike(): boolean`
 
-      Tras un intento de reserva fallido, el usuario decide si elegir una nueva estación.
+    El usuario decide si devolver la bicicleta. Si no la devuelve, se ejecutará el método `decidesNextPoint()`, el cual devolverá un punto al que el usuario irá a dar una vuelta con la bicicleta.
 
-    Además en las implementaciones de estos métodos se podrá acceder a los siguientes atributos, que contienen información del usuario:
+- `decidesToDetermineOtherStationAfterTimeout(): boolean`
 
-  - `id: integer` - Identificador del usuario.
+    Tras la expiración de una reserva, el usuario decide si elegir una nueva estación.
 
-  - `position: GeoPoint` - Posición actual del usuario.
+- `decidesToDetermineOtherStationAfterFailedReservation(): boolean`
 
-  - `walkingVelocity: double` - Velocidad caminando.
+    Tras un intento de reserva fallido, el usuario decide si elegir una nueva estación.
 
-  - `cyclingVelocity: double` - Velocidad en bici.
+Además en las implementaciones de estos métodos se podrá acceder a los siguientes atributos, que contienen información del usuario:
 
-  - `destinationStation: Station` - Estación a la que el usuario quiere ir para coger o devolver una bici.
+- `id: integer` - Identificador del usuario.
 
-  - `destinationPoint: GeoPoint`- Punto al que el usuario quiere ir en bici para dar una vuelta.
+- `position: GeoPoint` - Posición actual del usuario.
 
-  - `route : GeoRoute` - Ruta actual del usuario.
+- `walkingVelocity: double` - Velocidad caminando.
 
-  - `bike: Bike` - Bici que tiene el usuario.
+- `cyclingVelocity: double` - Velocidad en bici.
 
-  - `reservedBike: boolean` - `true` si tiene bici reservada, `false` en caso contrario.
+- `destinationStation: Station` - Estación a la que el usuario quiere ir para coger o devolver una bici.
 
-  - `reservedSlot: boolean` - `true` si tiene un hueco reservado, `false` en caso contrario.
+- `destinationPoint: GeoPoint`- Punto al que el usuario quiere ir en bici para dar una vuelta.
 
-  - `reservation: Reservation` - Reserva actual del usuario.
+- `route : GeoRoute` - Ruta actual del usuario.
 
-  - `memory: UserMemory` - Contiene atributos que registran los hechos sucedidos hasta el momento actual de la simulación
+- `bike: Bike` - Bici que tiene el usuario.
 
-    Si los usuarios simulados quieren consultar algún tipo de información o quieren consultar alguna de las recomendaciones del sistema, lo hará a través de ciertos servicios que implementarán una interfaz para realizar estas consultas. Estos servicios serán ofrecidos por la clase abstracta `User` a modo de atributos, por lo tanto cualquier clase que herede de User, tendrá acceso a estos servicios, que podrán ser usados en todos los métodos. Como se inicializan estos servicios se puede ver en la sección \secref{sec:logsim}. Los servicios de los que disponen los usuarios son: 
+- `reservedBike: boolean` - `true` si tiene bici reservada, `false` en caso contrario.
 
-  - `infraestrucutre: InfraestructureManager`: Información acerca del estado de las estaciones, su ubicación, etc.
+- `reservedSlot: boolean` - `true` si tiene un hueco reservado, `false` en caso contrario.
 
-  - `recomendationSystem: RecomendationSystem`: Sistema de recomendaciones al que el usuario puede consultar.
+- `reservation: Reservation` - Reserva actual del usuario.
 
-  - `graph: GraphManager`: Gestor de rutas por defecto. Hemos utilizado GraphHopper como veremos en el apartado \secref{sec:logsim}
+- `memory: UserMemory` - Contiene atributos que registran los hechos sucedidos hasta el momento actual de la simulación
 
-    De momento se ha implementado un sistema de recomendaciones muy básico. La idea es crear implementaciones con funcionalidades más complejas para evaluar diferentes modelos de equilibrio del uso de las bicicletas. Estas nuevas implementaciones se podrían añadir como nuevos servicios a los que el resto de usuarios podrán acceder, pudiéndose usar uno o más sistemas de recomendaciones.
+Si los usuarios simulados quieren consultar algún tipo de información o quieren consultar alguna de las recomendaciones del sistema, lo hará a través de ciertos servicios que implementarán una interfaz para realizar estas consultas. Estos servicios serán ofrecidos por la clase abstracta `User` a modo de atributos, por lo tanto cualquier clase que herede de User, tendrá acceso a estos servicios, que podrán ser usados en todos los métodos. Cómo se inicializan estos servicios se puede observar en la sección \secref{sec:logsim}. Los servicios de los que disponen los usuarios son: 
 
-    Por otro lado el simulador debe ofrecer la posibilidad de implementar usuarios fácilmente, pero además es importante poder depurarlos. Al haber una gran cantidad de usuarios decidí implementar un "logger" que en cada ejecución generase por cada usuario un fichero con las trazas de su ejecución. Para ello simplemente hemos creado una clase llamada `DebugLogger`, la cual ofrece los métodos necesarios para poder escribir automáticamente las acciones del usuario, escribiendo una simple instrucción cuando queramos crear una traza en un archivo log. Podemos escribir un log de dos formas diferentes:
+- `infraestrucutre: InfraestructureManager`: Información acerca del estado de las estaciones, su ubicación, etc.
 
-  - `debugLog()`: Escribe la información del evento, junto con información del Evento y parámetros del usuario.
+- `recomendationSystem: RecomendationSystem`: Sistema de recomendaciones al que el usuario puede consultar.
 
-  - `debugLog("Message to log")`: Igual que `debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
+- `graph: GraphManager`: Gestor de rutas por defecto. Hemos utilizado GraphHopper como veremos en el apartado \secref{sec:logsim}
 
-    Cada usuario tendrá su propio fichero de log. Por ejemplo, el usuario con $id = 5$ tendrá un fichero log llamado `User5.txt`. La implementación de esta clase Logger es una simple clase estática que es llamada en los eventos de la simulación.
+De momento se ha implementado un sistema de recomendaciones muy básico. La idea es crear implementaciones con funcionalidades más complejas para evaluar diferentes modelos de equilibrio del uso de las bicicletas. Estas nuevas implementaciones se podrían añadir como nuevos servicios a los que el resto de usuarios podrán acceder, pudiéndose usar uno o más sistemas de recomendaciones.
+
+Por otro lado el simulador debe ofrecer la posibilidad de implementar usuarios fácilmente, pero además es importante poder depurarlos. Al haber una gran cantidad de usuarios se decidió implementar un "logger" que en cada ejecución generase por cada usuario un fichero con las trazas de su ejecución. Para ello simplemente hemos creado una clase llamada `DebugLogger`, la cual ofrece los métodos necesarios para poder escribir automáticamente las acciones del usuario, escribiendo una simple instrucción cuando queramos crear una traza en un archivo log. Podemos escribir un log de dos formas diferentes:
+
+- `debugLog()`: Escribe la información del evento, junto con información del Evento y parámetros del usuario.
+
+- `debugLog("Message to log")`: Igual que `debugLog` solo que puede añadirse información más precisa con el mensaje introducido como argumento.
+
+Cada usuario tendrá su propio fichero de log. Por ejemplo, el usuario con $id = 5$ tendrá un fichero log llamado `User5.txt`. La implementación de esta clase Logger es una simple clase estática que es llamada en los eventos de la simulación.
 
 ### Inicialización y ejecución del simulador {#sec:inisim}
 
 El simulador tiene dos modos de ejecución principales, uno para la generación de usuarios y otro para ejecutar una simulación. El simulador como tal, no necesita los entry points para empezar a simular, como comentamos en la sección \secref{sec:confusu}, sino que se le pasa un archivo de configuración con todos los usuarios generados. Para crear este fichero de configuración ofrecemos un generador de usuarios que recibe el archivo de configuración de los entry points. Una vez generados los usuarios, se podrá ejecutar el simulador. Las fases por las que pasa el simulador para inicializarse son las siguientes:
 
 1. Lectura de ficheros y deserialización.
-2. Inicialización de las factorías e inyector de dependencias. En esta parte mediante reflexión se descubren y guardan las clases correspondientes a las implementaciones de usuario, gestores de rutas y sistemas de recomendación. Esto se explica con mayor detalle en la sección \secref{sec:reflex}
-3. Inicialización de Servicios. Estos servicios serán posteriormente utilizados por los usuarios.
+2. Inicialización de Servicios. Estos servicios serán posteriormente utilizados por los usuarios. Servicios son los recomendadores y el gestor de rutas.
+3. Inicialización de las entidades mediante factorías e inyección de dependencias. En esta parte mediante reflexión se descubren y guardan las clases correspondientes a las implementaciones, gestores de rutas y sistemas de recomendación. Esta parte se explica con mayor detalle en el siguiente subapartado \secref{sec:reflex}.
 4. Creación de eventos de aparición. Se introducen en la cola del simulador todos los eventos de simulación, incluyendo en estos los usuarios ya inicializados y preparados para ser simulados.
 
 Con respecto al punto 3 utilizamos un patrón de inyección de dependencias que consiste en permitir que al crear un objeto, no sea necesario que ese mismo objeto se encargue de crear o inicializar los objetos de los que hace uso o que posee como atributos. En nuestro caso, por ejemplo, los usuarios pueden hacer uso de un gestor de rutas, de un recomendador, o pueden ver la información actual del sistema de bicis. Cada uno de estos servicios es inicializado al comienzo de la simulación y se pasa como parámetro al constructor de todos los tipos de `User`. La clase principal `User` tiene acceso entonces a este servicio, y los usuarios implementados que heredan de esta clase, pueden acceder a todos los servicios en sus métodos. 
 
-Una vez todo está inicializado, el motor de simulación (implementado en `SimulationEngine`, dentro del módulo `Core`), se encargará de ejecutar todos los eventos que se han introducido en la cola del simulador, que por evento irá generando los históricos hasta que la cola quede vacía.
+Una vez todo está inicializado, el motor de simulación (implementado en `SimulationEngine`, dentro del módulo `Core`), se encargará de ejecutar todos los eventos que se han introducido en la cola de eventos generando los históricos hasta que la cola quede vacía.
 
 ### Aplicando reflexión para una mejor extensibilidad {#sec:reflex}
 
