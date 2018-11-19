@@ -984,6 +984,8 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
     GraphHopper internamente genera unos ficheros a partir del mapa OSM, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En este caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
 
+\pagebreak
+
 ### Interfaz de usuario del simulador(Frontend)
 
 En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. En primer lugar, se explicará brevemente que hará cada ventana del programa y posteriormente se explicará la arquitectura interna del frontend y como se comunica con el backend.
@@ -993,7 +995,7 @@ En este apartado se presentan las distintas partes de la interfaz de usuario y c
 
 - Menú: Las opciones disponibles son: crear configuración, simular, ver simulador y analizar datos.
 
-![Menú principal de la GUI](images/menu.png){#fig:24 .class height=9cm }
+![Menú principal de la GUI](images/menu.png){#fig:24 .class height=11cm }
 
 - Create configuration: Se pueden crear de forma interactiva simulaciones pudiendo crear entry points con radio de una forma intuitiva y delimitar la zona de simulación.
 
@@ -1005,32 +1007,32 @@ Al añadir entidades en el mapa se puede ver en el momento los datos de la confi
 
 Al pulsar el botón *Generate Configuration* si los datos están correctos se generarán los archivos de configuración necesarios en el directorio que se indique.
 
-![Lista de Entry Points en GUI](images/entry_point_list.png){#fig:26 .class width=5cm}
+![Lista de Entry Points en GUI](images/entry_point_list.png){#fig:26 .class width=6cm}
 
 - Simulate configuration: En esta ventana de la GUI se puede realizar simulaciones a partir de un conjunto de ficheros de configuración.
 
-![Simulación ejecutándose desde la GUI](images/Simulation.png){#fig:27 .class width=12cm}
+![Simulación ejecutándose desde la GUI](images/Simulation.png){#fig:27 .class width=13cm}
 
 - View Simulation: En esta opción se abre un visualizador en el que se puede cargar el histórico de una simulación que se desee visualizar. A continuación el sistema representa de forma gráfica todos los eventos de la simulación.
 
-![Visualización de histórico de una simulación](images/visualization.png){#fig:28}
+![Visualización de histórico de una simulación](images/visualization.png){#fig:28 .class width=14cm}
 
 - Analyse Simulation: Al igual que en el visualizador, se carga el histórico de la simulación que se desee, generando un conjunto de archivos csv con información relativa a la simulación (Figura \ref{fig:29}).
 En particular se obtienen métricas del sistema, como el tiempo que un usuario ha tardado en llegar a su destino, intervalos de tiempo en los que las estaciones se han quedado sin bici, etc.
 
-![Analizador de históricos](images/Analyse.png){#fig:29}
+![Analizador de históricos](images/Analyse.png){#fig:29 .class width=14cm}
 
-#### Arquitectura de la interfaz
+>
+
+#### Arquitectura de la interfaz 
 
 En este subapartado se presenta la arquitectura de la parte del frontend a grandes rasgos y como esta funciona para poder utilizar el backend.
 
-En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del frontend.
+En la figura \ref{fig:22} se pueden observar dos procesos principales, el proceso *Main* y el proceso *Renderer*. La ejecución del frontend consiste en ejecutar estos dos procesos, que se comunican entre ellos. El proceso *Renderer* se encargará de toda la parte visual y el proceso *Main* se encargará de comunicarse con el backend y hacer la lógica necesaria para ciertas operaciones de entrada, salida, análisis de datos, etc.
 
-![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22 .class height=19cm}
+![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22 .class height=22cm}
 
-En esta figura se pueden distinguir dos procesos, el proceso *Main* y el proceso *Renderer*. La ejecución del frontend consiste en ejecutar estos dos procesos, que se comunican entre ellos. El proceso *Renderer* se encargará de toda la parte visual y el proceso *Main* se encargará de comunicarse con el backend y hacer la lógica necesaria para ciertas operaciones de entrada, salida, análisis de datos, etc.
-
-Siguiendo la figura \ref{fig:22} podemos ver como interactúan las distintas partes de la arquitectura de la interfaz para realizar una simulación, llamando al backend:
+Siguiendo la figura \ref{fig:22} podemos ver como interactúan las distintas partes de la arquitectura de la interfaz para realizar una simulación, llamando al backend. La ejecución de una simulación conlleva la realización de los siguientes puntos:
 
 1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración y este pasa dicha información al proceso *Main*.
 2. Los datos con las rutas de los ficheros de configuración son recibidos por el proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios ejecutando el simulador (backend) en otro proceso.
@@ -1072,7 +1074,7 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
 ### Formularios dinámicos en las configuraciones {#sec:dinform}
 
-Al tener que introducir datos en la configuración y ser estos variables surgió la necesidad de que la interfaz gráfica fuera capaz de detectar los campos de todos los datos a introducir y generar los formularios de forma dinámica. 
+En la parte de configuración de nuevos usuarios y entry points surgió la necesidad de que la interfaz gráfica fuera capaz de detectar los campos de todos los datos a introducir y generar los formularios de forma dinámica. 
 
 Como ya hemos mencionado, el simulador dispone de dos códigos base principales, el del Backend(Java) y el del Frontend(Typescript, Angular y Electron). Por cada usuario que creemos, tenemos que modificar ambos códigos. Por lo que se dificultaría en gran medida la implementación de nuevos usuarios, ya que habría que modificar el código del Frontend. Con un generador de formularios dinámicos podríamos modificar sólo el código del Backend y los esquemas para crear nuevos usuarios y mantener la interfaz de usuario actualizada con los nuevos usuarios que se pueden crear, facilitando la tarea de añadir o quitar nuevos parámetros en las configuraciones. Por lo tanto se obtienen bastantes ventajas de esta funcionalidad:
 
@@ -1092,12 +1094,9 @@ En el siguiente diagrama se muestra el funcionamiento básico de los formularios
 
 # Evaluación
 
-<!-- TODO explicar la prueba que se va a realizar -->
 En este apartado se presentan los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018[^9]
 
 [^9]: https://www.paams.net/
-
-## Prueba simulador
 
 Se realizaron una serie de pruebas con los siguientes tipos de usuarios implementados:
 
@@ -1105,13 +1104,13 @@ Se realizaron una serie de pruebas con los siguientes tipos de usuarios implemen
 
 - Informed: Este usuario usa información del sistema y sólo va a estaciones con bicis además de escoger la ruta más corta para ir a la estación.
 
-- Obedient: Pide información al sistema de recomendaciones y siempre sigue sus sugerencias. Este recomendador devuelve estaciones en un rango de 600 metros a la posición del usuario, ordenadas por el ratio de bicis o huecos disponibles, dependiendo de si el usuario quiere coger o devolver una bici. 
+- Obedient: Pide información al sistema de recomendaciones y siempre sigue sus sugerencias. El sistema de recomendación empleado en las pruebas devuelve estaciones en un rango de 600 metros a la posición del usuario, ordenadas por el ratio de bicis o huecos disponibles, dependiendo de si el usuario quiere coger o devolver una bici. 
 
 - Informed-R: Es el mismo tipo de usuario que el informado, solo que siempre hace reservas.
 
-- Obedient-R: Es el mismo tipo de usuario que el obediente, solo que siempre reserva.
+- Obedient-R: Es el mismo tipo de usuario que el obediente, solo que realiza una reserva en la estación recomendada (tanto para coger como para devolver una bici).
 
-Con estos usuarios se decide hacer un experimento como el de la figura \ref{fig:28}. Se tienen 20 estaciones repartidas por el centro de Madrid y 4 entry points. Las medidas básicas que provee el simulador son:
+Con estos usuarios se ha realizado un experimento con una configuración de 20 estaciones repartidas por el centro de Madrid y 4 entry points, tal y como se presenta en la figura \ref{fig:28}. Las medidas que se analizan en cada simulación son las siguientes.
 
 - $SH$ (Succesful hires) - Número de bicis alquiladas con éxito.
 
@@ -1123,18 +1122,12 @@ Con estos usuarios se decide hacer un experimento como el de la figura \ref{fig:
 
 - $N$ - Numero total de usuarios.
 
-A partir de estos valores se calculan los siguientes medidas de calidad:
+A partir de estos valores se calculan las siguientes metricas de calidad:
 
 - $DS$ (Demamd satisfaction) - Satisfacción de demanda: Proporción de usuarios que son capaces de alquilar una bici con éxito.
 
 $$
 DS = SH / N
-$$
-
-- $RS$ (Return satisfaction) - Satisfacción de devolución: Proporción de usuarios que son capaces de devolver con éxito por primera vez o en las siguientes.
-
-$$
-RS = SR / SH
 $$
 
 - HE (Hire efficiency)- Eficiencia al alquilar: Proporción de alquileres exitosos entre el número total de intentos de alquiler.
@@ -1143,13 +1136,7 @@ $$
 HE = SH /  (SH + FS)
 $$
 
-- RE (Return efficiency) - Eficiencia de devolución: Proporción de devoluciones exitosas y el número total de intentos de devolución.
-
-$$
-RE = SR / (SH + FR)
-$$
-
-Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31}.
+Se han realizado varios experimentos para evaluar el simulador. Hemos escogido un mapa cuadrado de 3km de lado del centro de Madrid, y hemos hubicado 20 estaciones en localizaciones reales del sistema de BiciMad. Todas las estaciones han sido inicializadas con una capacidad total de 20 bicis. Cada una de ellas comenzará la simulación con 10 bicis. También hemos hubicado 4 entry points para generar los usuarios, la localización de estos entry points se pueden ver en la figura \ref{fig:28} Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo. Para comprobar la eficacia se ha creado un simple recomendador que devuelve estaciones en un rango de 600 metros a la localización del usuario, ordenadas por el ratio de bicis o huecos disponibles en cada estación. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31}.
 
 ![Satisfacción de demanda](images/ds.png){#fig:30}
 
