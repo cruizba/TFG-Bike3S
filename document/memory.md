@@ -867,7 +867,7 @@ En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de
 
 ```
 
-En este código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. Ahora bien, ¿cómo sabe el simulador que clase se corresponde con el tipo de usuario `userType`? Especificando mediante anotaciones que clases son implementaciones de usuario y como se identifica en la configuración.
+En este código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. La factoria de usuarios se encarga de instanciar ek tipo correspondiente al `userType`.
 Por ejemplo si quisiéramos crear un usuario, deberíamos hacerlo de la siguiente forma:
 
 >
@@ -887,7 +887,7 @@ Por ejemplo si quisiéramos crear un usuario, deberíamos hacerlo de la siguient
 ```
 
 En la notación `@UserType` ponemos con que cadena de texto se identifica a este usuario y en `@UserParameters` definimos que parámetros concretos tiene este.
-Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, después se llamará al método `userFactory.createUser('USER_RANDOM', services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoría y la utilización de la API de reflexión se encuentra en el módulo `world-entities` en la clase `UserFactory`.
+Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, después se llamará al método `userFactory.createUser('USER_RANDOM', services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoría y la utilización de la API de reflexión se encuentra en el módulo de entidades e infraestructura en la clase `UserFactory`.
 
 Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos e identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que ira junto con el tipo de entry point. De esta forma si queremos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
 
@@ -905,7 +905,11 @@ public class EntryPointPoisson extends EntryPoint {
 
 Al igual que los usuarios, hemos implementado una factoría de entry points que sigue la misma lógica que la factoría de usuarios. La implementación concreta de este entry point se encuentra en el módulo `usersgenerator` en la clase `EntryPointPoisson` y la implementación de la factoría en `EntryPointFactory`. 
 
-Pero no solo en las factorías va a ser una muy buena herramienta la reflexión computacional. Como hemos mencionado con anterioridad en la parte de Diseño \secref{sec:diseno}, los usuarios harán uso de servicios para consultar información y recomendaciones. Para no hacer dependientes las implementaciones de los usuarios hemos utilizado una inyección de dependencias, dejando responsable de la creación e inicialización de estos servicios a la clase `SimulationServices`. La clase SimulationServices se hará cargo de inicializar el gestor de rutas y el sistema de recomendaciones. Se pueden crear varios tipos de gestores de rutas y sistemas de recomendaciones por lo que hemos decidido emplear la misma lógica de reflexión utilizada para los entry points y los usuarios en estos servicios. En primer lugar se especifica en el archivo de configuración global que gestor de rutas y que sistema de recomendaciones queremos utilizar:
+Pero no solo en las factorías va a ser una muy buena herramienta la reflexión computacional. Como hemos mencionado con anterioridad en la parte de Diseño \secref{sec:diseno}, los usuarios harán uso de servicios para consultar información y recomendaciones. Para no hacer dependientes las implementaciones de los usuarios hemos utilizado una inyección de dependencias que hemos explicado con anterioridad en el subapartado\secref{sec:inisim}, dejando responsable de la creación e inicialización de estos servicios a la clase `SimulationServices`. La clase SimulationServices se hará cargo de inicializar el gestor de rutas y el sistema de recomendaciones. Se pueden crear varios tipos de gestores de rutas y sistemas de recomendaciones por lo que hemos decidido emplear la misma lógica de reflexión utilizada para los entry points y los usuarios en estos servicios. En primer lugar se especifica en el archivo de configuración global que gestor de rutas y que sistema de recomendaciones queremos utilizar:
+
+\pagebreak
+
+
 ```
 
     ...
@@ -918,9 +922,9 @@ Pero no solo en las factorías va a ser una muy buena herramienta la reflexión 
 Las implementaciones de los gestores de rutas deberán tener la anotación `@GraphManagerType()` con el tipo correspondiente y `@GraphManagerParameters` para los parámetros necesarios de inicialización. Por otro lado las implementaciones de sistemas de recomendaciones deberán tener la anotación `@RecommendationSystemType()` con el tipo y `@RecommendationSystemParameters` para los parámetros. La clase `SimulationService` se encargará de, según la configuración, inicializar e inyectar dichas dependencias en los usuarios.
 
 ### Carga de mapas y cálculo de rutas {#sec:maps}
-Una cosa muy importante a implementar es la posibilidad a de crear simulaciones en ciudades reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
+Es importante poder crear simulaciones lo más reales posibles, lo que incluye una simulación del movimiento por rutas reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
 
-Para hacer que el simulador no dependa directamente de dicha librería, decidimos crear una interfaz (`GraphManager`) y un formato de rutas propio (`GeoRoute`), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los métodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase `GeoRoute`. De esta forma si necesitamos nosotros crear nuestra propia utilidad o utilizar otra librería no sería difícil implementarla en el sistema. 
+Para hacer que el simulador no dependa directamente de dicha librería, decidimos crear una interfaz (`GraphManager`) y un formato de rutas propio (`GeoRoute`), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los métodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase `GeoRoute`. De esta forma crear un sistema propio o utilizar otra librería no sería difícil implementarla en el sistema. 
 
 A continuación explicaremos cada una de las clases referentes al gestor de rutas:
 
@@ -948,7 +952,7 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
     [^8]: https://github.com/graphhopper/graphhopper
 
-    GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizándolo a modo de librería. Decidí optar por integrar el motor en el simulador, para que las simulaciones se ejecutaran con mayor rapidez y consumiera menos recursos el simulador. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
+    GraphHopper es una tecnología que se puede utilizar de dos formas. A modo de servidor o integrando el motor de rutas en el código fuente utilizándolo a modo de librería. Se decidió optar por integrar el motor en el simulador, para que las simulaciones se ejecutaran con mayor rapidez y consumiera menos recursos. Hay que tener en cuenta que un servidor de rutas ejecutado en paralelo con el simulador, podría consumir una gran cantidad de memoria.
 
     Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. Posteriormente la librería crea una serie de ficheros con información que utilizará para calcular las rutas. El código del constructor del servicio de rutas es el siguiente:
 
@@ -980,17 +984,65 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
     GraphHopper internamente genera unos ficheros a partir del mapa OSM, el cual utiliza para calcular las rutas, tardando un tiempo considerable en realizar esta tarea. Es por eso que, en el constructor de `GraphHopperIntegration`, comprobamos si el mapa que se está cargando ha sido cargado con anterioridad, evitando así la generación de nuevo de estos ficheros (líneas 3-15). En la línea 16 creamos el objeto que controla el gestor de rutas. Posteriormente le pasamos al objeto la información necesaria para cargar el mapa, como la ruta del mapa osm (línea 17), el directorio en el que generar los ficheros necesarios para el calculo de rutas (línea 18), y que tipos de ruta queremos sacar (línea 19). En este caso queremos sacar rutas a pie y en bici. Finalmente en la línea 19 cargamos el mapa. Los usuarios pues, hacen uso de esta implementación para poder calcular las rutas.
 
-### Interfaz de usuario del simulador y formularios dinámicos(Frontend)
+### Interfaz de usuario del simulador(Frontend)
 
-Crear las configuraciones para cada simulación puede ser algo tedioso, debido a la gran cantidad de datos que hay que introducir y los puntos geográficos de las entidades o los entry points a veces son difíciles de ubicar. Además, una buena forma de ver de primera mano cómo están implementados los usuarios, es tener un visualizador con el que observar toda la simulación. En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. 
+En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. En primer lugar, se explicará brevemente que hará cada ventana del programa y posteriormente se explicará la arquitectura interna del frontend y como se comunica con el backend.
 
-La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUIs. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección \secref{sec:tecno}, vamos a utilizar para la interfaz de usuario Electron, que al ejecutarse crea dos procesos, un proceso que llamaremos *Main* y otro proceso que denominaremos *Renderer*:
+#### Funcionalidades de la interfaz
+En este apartado se presentan las distintas partes de la interfaz de usuario y capturas de cada una de estas.
+
+- Menú: Las opciones disponibles son: crear configuración, simular, ver simulador y analizar datos.
+
+![Menú principal de la GUI](images/menu.png){#fig:24 .class height=9cm }
+
+- Create configuration: Se pueden crear de forma interactiva simulaciones pudiendo crear entry points con radio de una forma intuitiva y delimitar la zona de simulación.
+
+>
+
+![Simulación creada desde la GUI](images/configuration_gui.png){#fig:25 .class width=15cm}
+
+Al añadir entidades en el mapa se puede ver en el momento los datos de la configuración que estamos realizando, como la posición de los Entry Points, el radio, etc. Pudiendo modificarlos desde un editor incorporado. En la figura \ref{fig:26} se puede ver la vista de la lista de Entry Points en la configuración.
+
+Al pulsar el botón *Generate Configuration* si los datos están correctos se generarán los archivos de configuración necesarios en el directorio que se indique.
+
+![Lista de Entry Points en GUI](images/entry_point_list.png){#fig:26 .class width=5cm}
+
+- Simulate configuration: En esta ventana de la GUI se puede realizar simulaciones a partir de un conjunto de ficheros de configuración.
+
+![Simulación ejecutándose desde la GUI](images/Simulation.png){#fig:27 .class width=12cm}
+
+- View Simulation: En esta opción se abre un visualizador en el que se puede cargar el histórico de una simulación que se desee visualizar. A continuación el sistema representa de forma gráfica todos los eventos de la simulación.
+
+![Visualización de histórico de una simulación](images/visualization.png){#fig:28}
+
+- Analyse Simulation: Al igual que en el visualizador, se carga el histórico de la simulación que se desee, generando un conjunto de archivos csv con información relativa a la simulación (Figura \ref{fig:29}).
+En particular se obtienen métricas del sistema, como el tiempo que un usuario ha tardado en llegar a su destino, intervalos de tiempo en los que las estaciones se han quedado sin bici, etc.
+
+![Analizador de históricos](images/Analyse.png){#fig:29}
+
+#### Arquitectura de la interfaz
+
+En este subapartado se presenta la arquitectura de la parte del frontend a grandes rasgos y como esta funciona para poder utilizar el backend.
+
+En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del frontend.
+
+![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22 .class height=19cm}
+
+En esta figura se pueden distinguir dos procesos, el proceso *Main* y el proceso *Renderer*. La ejecución del frontend consiste en ejecutar estos dos procesos, que se comunican entre ellos. El proceso *Renderer* se encargará de toda la parte visual y el proceso *Main* se encargará de comunicarse con el backend y hacer la lógica necesaria para ciertas operaciones de entrada, salida, análisis de datos, etc.
+
+Siguiendo la figura \ref{fig:22} podemos ver como interactúan las distintas partes de la arquitectura de la interfaz para realizar una simulación, llamando al backend:
+
+1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración y este pasa dicha información al proceso *Main*.
+2. Los datos con las rutas de los ficheros de configuración son recibidos por el proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios ejecutando el simulador (backend) en otro proceso.
+3. El simulador se ejecuta y envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
+
+La interfaz de usuario está desacoplada completamente del simulador, por lo que otros desarrolladores podrían crear otras GUIs. Ésta es una de las ventajas que ofrece una arquitectura del tipo Cliente/Servidor. Nosotros hemos decido crear una interfaz de usuario utilizando tecnologías Web para un rápido desarrollo, pero se puede crear esta interfaz con otras tecnologías, si esto fuera necesario. Como se mencionaba en la sección \secref{sec:tecno}, se ha utilizado para la interfaz de usuario Electron, que al ejecutarse crea los dos procesos mencionados anteriormente, el proceso *Main* y el proceso *Renderer*
 
 - *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
 
-  - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos. Esto es explicado en más detalle en el apartado \secref{sec:dinform}
+  - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos que se explica con mayor detalle en el siguiente subapartado\secref{sec:dinform}
 
-  - `Controllers`: Contiene todos las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
+  - `Controllers`: Contiene todas las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
 
   - `DataAnalysis`: Contiene toda la lógica para analizar los históricos[@bib7].
 
@@ -1005,7 +1057,7 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
     En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
 
-- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios pequeños programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formados de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Esta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
+- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formado de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Esta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
 
   - App: Contiene todos los componentes de la aplicación. Los principales son:
 
@@ -1017,14 +1069,6 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
       - `analyse-history-component`: A partir del histórico genera archivos csv con cálculos sobre la simulación.
   - Ajax: Es el módulo encargado de comunicarse con el proceso *Main*, posteriormente hará las peticiones al simulador. El renderer hace las peticiones a modo de cliente, *Main* las recibe con los controladores definidos en el módulo `Controllers` de Main, y dependiendo de la petición, el proceso *Main* hará peticiones al simulador, peticiones de entrada/salida al SO, o otros tipo de peticiones como calculo de datos, generación de csv, etc.
-
-En la figura \ref{fig:22} se muestra la arquitectura a grandes rasgos del frontend. Se puede observar que para iniciar una simulación la comunicación es de 3 niveles:
-
-1. Desde el proceso *Renderer*, se renderiza la interfaz gráfica, con la cual el usuario que va a simular, introduce la ubicación de los ficheros de configuración y este pasa dicha información al proceso *Main*.
-2. Los datos con las rutas de los ficheros de configuración son recibidos por el proceso *Main*, el cual ejecuta el simulador en java con los parámetros necesarios.
-3. El simulador se ejecuta y envía por la salida estándar información que es leída por el proceso *Main* que a su vez envía esta información con formato al proceso *Renderer* que muestra el progreso de la simulación por pantalla, hasta que termina la simulación.
-
-![Arquitectura Frontend](images/frontend_diagram.jpg){#fig:22 .class height=19cm}
 
 ### Formularios dinámicos en las configuraciones {#sec:dinform}
 
@@ -1048,39 +1092,10 @@ En el siguiente diagrama se muestra el funcionamiento básico de los formularios
 
 # Evaluación
 
-En este apartado se presentan las distintas partes de la interfaz de usuario además de los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018[^9]
+<!-- TODO explicar la prueba que se va a realizar -->
+En este apartado se presentan los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018[^9]
 
 [^9]: https://www.paams.net/
-
-A continuación se muestran capturas de las distintas partes del simulador:
-
-- Menú: Las opciones disponibles son: crear configuración, simular, ver simulador y analizar datos.
-
-![Menú principal de la GUI](images/menu.png){#fig:24 .class height=9cm }
-
-- Create configuration: Se pueden crear de forma interactiva simulaciones pudiendo crear entry points con radio de una forma intuitiva y delimitar la zona de simulación. En esta ventana se utilizan los formularios dinámicos.
-
->
-
-![Simulación creada desde la GUI](images/configuration_gui.png){#fig:25 .class width=15cm}
-
-Al añadir entidades en el mapa se puede ver en el momento los datos de la configuración que estamos realizando, como la posición de los Entry Points, el radio... Pudiendo modificarlos desde un editor incorporado. En la figura \ref{fig:26} se puede ver una lista de Entry Points en la configuración.
-
-Al pulsar el botón *Generate Configuration* si los datos están correctos se generarán los archivos de configuración necesarios en el directorio que se indique.
-
-![Lista de Entry Points en GUI](images/entry_point_list.png){#fig:26 .class width=5cm}
-
-- Simulate configuration: En esta ventana de la GUI se pueden generar usuarios individuales (cargando los entry points) y llamar al backend para simular con los archivos de configuración y los usuarios individuales generados.
-
-![Simulación ejecutándose desde la GUI](images/Simulation.png){#fig:27 .class width=12cm}
-
-- View Simulation: Desde este visualizador se puede cargar el histórico de la simulación que se desee y ver como los usuarios actúan dentro del sistema.
-
-![Visualización de histórico de una simulación](images/visualization.png){#fig:28}
-
-- Analyse Simulation: Al igual que en el visualizador, se carga el histórico de la simulación que se desee, generando un conjunto de archivos csv con información relativa a la simulación.
-
-![Analizador de históricos](images/Analyse.png){#fig:29}
 
 ## Prueba simulador
 
@@ -1134,11 +1149,11 @@ $$
 RE = SR / (SH + FR)
 $$
 
-Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo. Los resultados obtenidos se presentan en la figura \ref{fig:29} y en la figura \ref{fig:30}.
+Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31}.
 
-![Satisfacción de demanda](images/ds.png){#fig:29}
+![Satisfacción de demanda](images/ds.png){#fig:30}
 
-![Eficiencia al alquilar](images/he.png){#fig:30}
+![Eficiencia al alquilar](images/he.png){#fig:31}
 
 Como se puede ver el usuario desinformado es el peor de los casos tanto en la satisfacción de demanda como en el alquiler de bicis. Se dan ciertas incongruencias con el usuario Obediente que debería ser el mejor de todos, debido a que al reservar siempre, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas.
 
