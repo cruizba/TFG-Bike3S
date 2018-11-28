@@ -1104,7 +1104,7 @@ Se realizaron una serie de pruebas con los siguientes tipos de usuarios implemen
 
 - Informed: Este usuario usa información del sistema y sólo va a estaciones con bicis además de escoger la ruta más corta para ir a la estación.
 
-- Obedient: Pide información al sistema de recomendaciones y siempre sigue sus sugerencias. El sistema de recomendación empleado en las pruebas devuelve estaciones en un rango de 600 metros a la posición del usuario, ordenadas por el ratio de bicis o huecos disponibles, dependiendo de si el usuario quiere coger o devolver una bici. 
+- Obedient: Pide información al sistema de recomendaciones y siempre sigue sus sugerencias. El sistema de recomendación empleado en las pruebas devuelve estaciones en un rango de 300 metros a la posición del usuario, ordenadas por el ratio de bicis o huecos disponibles, dependiendo de si el usuario quiere coger o devolver una bici. 
 
 - Informed-R: Es el mismo tipo de usuario que el informado, solo que siempre hace reservas.
 
@@ -1130,19 +1130,25 @@ $$
 DS = SH / N
 $$
 
-- HE (Hire efficiency)- Eficiencia al alquilar: Proporción de alquileres exitosos entre el número total de intentos de alquiler.
+- HE (Hire efficiency)- Eficiencia al alquilar: Proporción de alquileres exitosos entre el número total de alquiler de los usuarios que han podido coger bici. Con esta medida podemos calcular que proporción de los usuarios que han alquilado con exito, lo han conseguido al primer intento.
 
 $$
 HE = SH /  (SH + FS)
 $$
 
-Se han realizado varios experimentos para evaluar el simulador. Hemos escogido un mapa cuadrado de 3km de lado del centro de Madrid, y hemos hubicado 20 estaciones en localizaciones reales del sistema de BiciMad. Todas las estaciones han sido inicializadas con una capacidad total de 20 bicis. Cada una de ellas comenzará la simulación con 10 bicis. También hemos hubicado 4 entry points para generar los usuarios, la localización de estos entry points se pueden ver en la figura \ref{fig:28} Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo. Para comprobar la eficacia se ha creado un simple recomendador que devuelve estaciones en un rango de 600 metros a la localización del usuario, ordenadas por el ratio de bicis o huecos disponibles en cada estación. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31}.
+Se han realizado varios experimentos para evaluar el simulador. Hemos escogido un mapa cuadrado de 3km de lado del centro de Madrid, y hemos hubicado 20 estaciones en localizaciones reales del sistema de BiciMad. Todas las estaciones han sido inicializadas con una capacidad total de 20 bicis. Cada una de ellas comenzará la simulación con 10 bicis. También hemos hubicado 4 entry points para generar los usuarios, la localización de estos entry points se pueden ver en la figura \ref{fig:28} Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo (1 día). Para comprobar la eficacia se ha creado un simple recomendador que devuelve estaciones en un rango de 300 metros a la localización del usuario, ordenadas por el ratio de bicis o huecos disponibles en cada estación. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31} donde el eje horizontal representa la cantidad de usuarios simulada y el eje vertical el valor de satisfacción de demanda o eficiencia de alquiler.
 
-![Satisfacción de demanda](images/ds.png){#fig:30}
+![Satisfacción de demanda](images/ds.png){#fig:30 .class width=14cm}
 
-![Eficiencia al alquilar](images/he.png){#fig:31}
+En la satisfacción de demanda podemos observar que el peor usuario hasta los 5000 usuarios es el usuario *Uninformed*, sin embargo, los usuarios que hacen reservas, *Informed-R* y *Obedient-R*, siempre empeoran la situación pasados los 5000 usuarios. Esto se debe a que al realizar reservas, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas.
 
-Como se puede ver el usuario desinformado es el peor de los casos tanto en la satisfacción de demanda como en el alquiler de bicis. Se dan ciertas incongruencias con el usuario Obediente que debería ser el mejor de todos, debido a que al reservar siempre, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas.
+Por otro lado, el usuario *Informed-R* da muy buenos resultado hasta los 4000 usuarios, pero empiezan a empeorar en cuanto el nivel de usuarios supera todas las bicis disponibles en el sistema. Esto se debe a que el usuario *Informed-R* va siempre a la estación más cercana con bici disponible, y además reserva, por lo tanto, en el momento en que todos los recursos están reservados, a medida que se aumenta la cantidad de usuarios la satisfacción de demanda baja drásticamente hasta casi obtener los mismos resultados que el *Uninformed* en simulaciones con 10000 usuarios.
+
+<!-- TODO -->
+
+![Eficiencia al alquilar](images/he.png){#fig:31 .class width=14cm}
+
+<!-- Como se puede ver el usuario desinformado es el peor de los casos tanto en la satisfacción de demanda como en el alquiler de bicis. Se dan ciertas incongruencias con el usuario Obediente que debería ser el mejor de todos, debido a que al reservar siempre, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas. -->
 
 \pagebreak
 &nbsp;
