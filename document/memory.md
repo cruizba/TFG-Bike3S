@@ -1140,15 +1140,11 @@ Se han realizado varios experimentos para evaluar el simulador. Hemos escogido u
 
 ![Satisfacción de demanda](images/ds.png){#fig:30 .class width=14cm}
 
-En la satisfacción de demanda podemos observar que el peor usuario hasta los 5000 usuarios es el usuario *Uninformed*, sin embargo, los usuarios que hacen reservas, *Informed-R* y *Obedient-R*, siempre empeoran la situación pasados los 5000 usuarios. Esto se debe a que al realizar reservas, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas.
-
-Por otro lado, el usuario *Informed-R* da muy buenos resultado hasta los 4000 usuarios, pero empiezan a empeorar en cuanto el nivel de usuarios supera todas las bicis disponibles en el sistema. Esto se debe a que el usuario *Informed-R* va siempre a la estación más cercana con bici disponible, y además reserva, por lo tanto, en el momento en que todos los recursos están reservados, a medida que se aumenta la cantidad de usuarios la satisfacción de demanda baja drásticamente hasta casi obtener los mismos resultados que el *Uninformed* en simulaciones con 10000 usuarios.
-
-<!-- TODO -->
-
 ![Eficiencia al alquilar](images/he.png){#fig:31 .class width=14cm}
 
-<!-- Como se puede ver el usuario desinformado es el peor de los casos tanto en la satisfacción de demanda como en el alquiler de bicis. Se dan ciertas incongruencias con el usuario Obediente que debería ser el mejor de todos, debido a que al reservar siempre, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas. -->
+En la satisfacción de demanda podemos observar que el peor usuario hasta los 5000 usuarios es el usuario *Uninformed*, sin embargo, los usuarios que hacen reservas, *Informed-R* y *Obedient-R*, siempre empeoran la situación pasados los 5000 usuarios. Esto se debe a que al realizar reservas, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas. Por otro lado los usuarios *Informed*, *Obedient* e *Informed+Obedient*, a medida que va aumentando la demanda, va empeorando la satisfacción de esta, pero supera en proporción a los usuarios con reservas y el *Uninformed*. Es muy probable que esto se deba a lo explicado anteriormente, los usuarios que no reservan, tienen la bici menos tiempo ocupada en el sistema por lo que el sistema es capaz de soportar demandas más grandes con una mayor satisfacción. Se puede observar como los usuarios de tipo *Informed* que solo van a las más cercana con bicis, consiguen muy buenos resultados, incluso mejores que los usuarios que solo obedecen recomendaciones. Esto indica que el tiempo que pasa un usuario en el sistema es lo más importante a reducir en este tipo de sistemas, ya que, a menos tiempo esté un usuario en el sistema, mayor disponibilidad tendrán los recursos para nuevos usuarios. Los mejores resultados se obtienen combinando el *Informed* y el *Obedient*.
+
+En la eficiencia al alquilar, como se espara, los usuarios de tipo *Informed-R* y *Obedient-R* dan como resultado $HE = 1$ en todos los casos. Esto se debe a que siempre realizan reserva, y nunca van a fallar una vez hecha la reserva en coger una bici. Por otro lado se puede observar coincidencias de resultados con *Uninformed-R* e *Informed* y también con *Obedient* e *Informed+Obedient*. Vemos que a partir de cierto resultado, el 80% de los usuarios que consiguen coger bici, lo hacen a la primera, pero es importante comparar está gráfica con la de satisfacción de demanda. Vemos que aunque se estabiliza la eficiencia de alquiler, la satisfacción de demanda va empeorando progresivamente por lo que al final, menos usuarios son capaces de utilizar el sistema.
 
 \pagebreak
 &nbsp;
@@ -1156,9 +1152,9 @@ Por otro lado, el usuario *Informed-R* da muy buenos resultado hasta los 4000 us
 
 # Conclusiones
 
-A lo largo de este trabajo hemos aprendido a realizar un simulador, a plantear los archivos necesarios de configuración para llevarla a cabo, planteando su arquitectura e implementación, concluyendo con el alcance de nuestro objetivo. Se ha conseguido implementar un simulador con una configuración adaptable a cambios, extensible, fácil de modificar, con una interfaz de usuario que nos permite realizar simulaciones de una manera sencilla.
+Observando el presente trabajo en retrospectiva, se han conseguido abordar todos los objetivos planteados en un principio. Se ha conseguido implementar un simulador con una configuración adaptable a cambios, extensible, fácil de modificar, con una interfaz de usuario que nos permite realizar simulaciones de una manera sencilla. Se ha conseguido recrear infraestructuras y crear un generador de usuarios capaz de recrear posibles situaciones reales. Se pueden recrear también usuarios reales gracias a el módulo de configuración capaz de recibir una configuración con usuarios individuales. <!-- TOOO Tipos de usuario -->
 
-Cada una de las partes de este proyecto se ha hecho siempre pensando a futuro hacia nuevas implementaciones y cambios.
+<!-- Cada una de las partes de este proyecto se han hecho siempre pensando a futuro hacia nuevas implementaciones y cambios. -->
 
 ## Lecciones aprendidas
 
