@@ -1092,11 +1092,9 @@ En el siguiente diagrama se muestra el funcionamiento básico de los formularios
 &nbsp;
 \newpage
 
-# Evaluación
+# Evaluación {#sec:eva}
 
-En este apartado se presentan los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018[^9]
-
-[^9]: https://www.paams.net/
+En este apartado se presentan los resultados obtenidos tras una serie de simulaciones realizadas para un artículo presentado a la PAAMS international conference del 2018 [@bib11].
 
 Se realizaron una serie de pruebas con los siguientes tipos de usuarios implementados:
 
@@ -1152,9 +1150,12 @@ En la eficiencia al alquilar, como se espara, los usuarios de tipo *Informed-R* 
 
 # Conclusiones
 
-Observando el presente trabajo en retrospectiva, se han conseguido abordar todos los objetivos planteados en un principio. Se ha conseguido implementar un simulador con una configuración adaptable a cambios, extensible, fácil de modificar, con una interfaz de usuario que nos permite realizar simulaciones de una manera sencilla. Se ha conseguido recrear infraestructuras y crear un generador de usuarios capaz de recrear posibles situaciones reales. Se pueden recrear también usuarios reales gracias a el módulo de configuración capaz de recibir una configuración con usuarios individuales. <!-- TOOO Tipos de usuario -->
+Observando el presente trabajo en retrospectiva, se han conseguido abordar todos los objetivos planteados en un principio. Se ha implementado un simulador conseguiendo recrear todos los elementos de la infraestructura de un sistema de bicicleteas públicas (estaciones, bicis y reservas) pudiendo realizar configuraciones con diferente número de estaciones, en distintas ubicaciones y disponibilidad de recursos. Se ha creado un motor de simulación basado en eventos el cual posibilita simular la experiencia de múltiples usuarios en el sistema, y además, se han implementado múltiples modelos de usuario configurables los cuales se pueden generar aleatoriamente conforme a distintas distribuciones matemáticas de probabilidad, proporcionando en nuestro proyecto la posibilidad de crear usuarios siguiendo un proceso de Poisson. Así mismo, se pueden recrear también usuarios sacados de históricos reales gracias a el módulo de configuración capaz de recibir un fichero con usuarios individuales. 
 
-<!-- Cada una de las partes de este proyecto se han hecho siempre pensando a futuro hacia nuevas implementaciones y cambios. -->
+Cabe destacar por otro lado que este software se ha realizado con un diseño que le permite a programadores que quieran modificar o mejora el simulador crear nuevos usuarios y recomendadores de una forma sencilla y extensible. Se han utilizando patrones como la inyeccion de dependencias y reflexión, facilitando en gran medida la creación de nuevas estrategias de balanceo y las pruebas de diferentes comportamiento de usuarios. Cada una de las partes de este proyecto se ha hecho pensando siempre en la modularidad y en futuras mejoras o implementaciones de funcionalidad.
+
+Es importante destacar que ha fecha de entrega de este trabajo se han realizado dos articulos de investigación: "A bike sharing system simulator"[@bib11] y "Balancing Strategies for Bike Sharing Systems"[@bib12]. El primero artículo describe a grandes rasgos el funcionamiento del simulador y describe un conjunto de pruebas realizadas para este artículo, que son las descritas en el apartado\secref{sec:eva}. El segundo artículo es un articulo presentado para la 6th International Conference
+on Agreement Technologies, en el cual se proponen incentivos a los usuarios para persuadirlos a coger (o dejar) bicis de estaciones con el objetivo de mantener el sistema lo más balanceado posible.
 
 ## Lecciones aprendidas
 
