@@ -1089,8 +1089,6 @@ En el siguiente diagrama se muestra el funcionamiento básico de los formularios
 ![Generación dinámica de formularios](images/schema_form_generator.png){#fig:23 .class height=7cm}
 
 \pagebreak
-&nbsp;
-\newpage
 
 # Evaluación {#sec:eva}
 
@@ -1145,47 +1143,45 @@ En la satisfacción de demanda podemos observar que el peor usuario hasta los 50
 En la eficiencia al alquilar, como se espara, los usuarios de tipo *Informed-R* y *Obedient-R* dan como resultado $HE = 1$ en todos los casos. Esto se debe a que siempre realizan reserva, y nunca van a fallar una vez hecha la reserva en coger una bici. Por otro lado se puede observar coincidencias de resultados con *Uninformed-R* e *Informed* y también con *Obedient* e *Informed+Obedient*. Vemos que a partir de cierto resultado, el 80% de los usuarios que consiguen coger bici, lo hacen a la primera, pero es importante comparar está gráfica con la de satisfacción de demanda. Vemos que aunque se estabiliza la eficiencia de alquiler, la satisfacción de demanda va empeorando progresivamente por lo que al final, menos usuarios son capaces de utilizar el sistema.
 
 \pagebreak
-&nbsp;
-\newpage
 
 # Conclusiones
 
 Observando el presente trabajo en retrospectiva, se han conseguido abordar todos los objetivos planteados en un principio. Se ha implementado un simulador conseguiendo recrear todos los elementos de la infraestructura de un sistema de bicicleteas públicas (estaciones, bicis y reservas) pudiendo realizar configuraciones con diferente número de estaciones, en distintas ubicaciones y disponibilidad de recursos. Se ha creado un motor de simulación basado en eventos el cual posibilita simular la experiencia de múltiples usuarios en el sistema, y además, se han implementado múltiples modelos de usuario configurables los cuales se pueden generar aleatoriamente conforme a distintas distribuciones matemáticas de probabilidad, proporcionando en nuestro proyecto la posibilidad de crear usuarios siguiendo un proceso de Poisson. Así mismo, se pueden recrear también usuarios sacados de históricos reales gracias a el módulo de configuración capaz de recibir un fichero con usuarios individuales. 
 
-Cabe destacar por otro lado que este software se ha realizado con un diseño que le permite a programadores que quieran modificar o mejora el simulador crear nuevos usuarios y recomendadores de una forma sencilla y extensible. Se han utilizando patrones como la inyeccion de dependencias y reflexión, facilitando en gran medida la creación de nuevas estrategias de balanceo y las pruebas de diferentes comportamiento de usuarios. Cada una de las partes de este proyecto se ha hecho pensando siempre en la modularidad y en futuras mejoras o implementaciones de funcionalidad.
+Cabe destacar por otro lado que este software se ha realizado con un diseño que le permite a programadores que quieran modificar o mejora el simulador crear nuevos usuarios y recomendadores de una forma sencilla y extensible. Se han utilizando patrones como la inyeccion de dependencias y reflexión, facilitando en gran medida la creación de nuevas estrategias de balanceo y las pruebas de diferentes comportamiento de usuarios. Cada una de las partes de este proyecto se ha hecho pensando siempre en la modularidad y en futuras mejoras o implementaciones de funcionalidad. Las decisiones de arquitectura general del proyecto han permitido por una parte separar la configuración del simulador de la ejecución del simulador, y dar como resultado un histórico para la realización de visualizaciones y análisis. Al estar los archivos de configuración y los históricos separados, estos pueden ser almacenados, y ser compartidos por otros investigadores que estén utilizando el mismo simulador, además de proporcionar un mecanismo por el cual, se puedan crear nuevas herramientas para crear configuraciones y analizar históricos.
 
-Es importante destacar que ha fecha de entrega de este trabajo se han realizado dos articulos de investigación: "A bike sharing system simulator"[@bib11] y "Balancing Strategies for Bike Sharing Systems"[@bib12]. El primero artículo describe a grandes rasgos el funcionamiento del simulador y describe un conjunto de pruebas realizadas para este artículo, que son las descritas en el apartado\secref{sec:eva}. El segundo artículo es un articulo presentado para la 6th International Conference
+Es importante destacar que ha fecha de entrega de este trabajo se han realizado dos articulos de investigación: "A bike sharing system simulator"[@bib11] y "Balancing Strategies for Bike Sharing Systems"[@bib12]. El primer artículo describe a grandes rasgos el funcionamiento del simulador y describe un conjunto de pruebas realizadas para este artículo, que son las descritas en el apartado\secref{sec:eva}. El segundo artículo es un articulo presentado para la 6th International Conference
 on Agreement Technologies, en el cual se proponen incentivos a los usuarios para persuadirlos a coger (o dejar) bicis de estaciones con el objetivo de mantener el sistema lo más balanceado posible.
 
 ## Lecciones aprendidas
 
-No siempre las lecciones aprendidas son debido a malas experiencias. En este caso ha habido más lecciones de buenas experiencias que de errores:
+Algunas lecciones aprendidas han sido resultado de las buenas prácticas aplicadas en el desarrollo del simulador presentado en este trabajo, que además ha sido realizado en grupo:
 
 - Un equipo bien organizado, comunicativo y motivado da como resultado un buen software.
 
-- Los patrones de diseño, bien aplicados, son muy importantes. En nuestro caso hemos aplicado dos factorías, una para los *US* (Usuarios simulados) y otro para los *entry points*.
+- Los patrones de diseño, bien aplicados, son muy importantes. En nuestro caso hemos aplicado dos factorías, una para los usuarios simulados y otro para los *entry points*.
 
-- Es importante verificar las entradas y salidas si son grandes, con herramientas como los esquemas. En nuestro caso la utilización de los schemas para los JSON no sólo han aportado una forma para validar los datos de los archivos de configuración e históricos, si no también un medio para generar formularios en la GUI de forma dinámica.
+- Es importante verificar las entradas y salidas si son grandes ficheros, con herramientas como los esquemas. En nuestro caso la utilización de los schemas para los JSON no sólo han aportado una forma para validar los datos de los archivos de configuración e históricos, si no también un medio para generar formularios en la GUI de forma dinámica.
 
-- Toda librería debe ser usada de la forma más independiente posible. Por ejemplo, el simulador utiliza los mapas a través de una interfaz, lo cual lo hace independiente a como estén implementados dichos mapas y como se calculan las rutas. Podríamos sustituirlo por otra librería o incluso crear una nosotros mismos.
+- Toda librería debe ser usada de la forma más independiente posible. Por ejemplo, el simulador utiliza un servicio de rutas a través de una interfaz, lo cual lo hace independiente a como estén implementados los mapas y como se calculan las rutas. Podríamos sustituirlo por otra librería o incluso crear una nosotros mismos.
 
-Pero no siempre las cosas salen bien, es por eso por lo que tampoco debemos olvidar los pequeños errores de diseño que hayamos podido cometer:
+Otras lecciones aprendidas han surgido de problemas o fallos en el planteamiento de este desarrollo:
 
-- Un evento dentro del simulador nos hubiera ahorrado muchísimos quebraderos de cabeza y cuando nos dimos cuenta ya era demasiado tarde. Este evento es del usuario haciendo reserva de bici o de hueco. Aun así el simulador funciona correctamente.
+- Un análisis detallado incial es muy importante, en nuestro caso, la especificación de "realizar una reserva" como evento al principio en el núcleo, nos hubiera facilitado el trabajo.
 
-- Angular y Electron son demasiado pesados. En un principio, Angular no se pensó como framework multiventana como nosotros lo hemos utilizado, y las ventanas tardaban mucho en cargar de forma individual. Además, Angular tiene mucho código por debajo ejecutando, y esto junto con Electron, suele conllevar a programas algo más lentos y de carga de memoria y disco bastante altos para una aplicación de escritorio. Una alternativa buena hubiera sido utilizar React o Vue.js que son frameworks más ligeros o utilizar una tecnología más sólida para la interfaz de usuario. Pero a pesar de esto, Angular es un framework bastante elegante, ordenado con inyección de dependencias (para utilizar servicios) y muy potente.
+- Angular y Electron son demasiado pesados. En un principio, Angular no se pensó como framework multiventana como nosotros lo hemos utilizado, y las ventanas tardaban mucho en cargar de forma individual. Además, Angular tiene mucho código ejecutando, y esto junto con Electron, suele conllevar a programas algo más lentos y de carga de memoria y disco bastante altos para una aplicación de escritorio. Una alternativa buena hubiera sido utilizar React o Vue.js que son frameworks más ligeros o utilizar una tecnología más sólida para la interfaz de usuario. Pero a pesar de ello, Angular es un framework bastante elegante, ordenado con inyección de dependencias (para utilizar servicios) y muy potente.
 
 ## Líneas futuras
 
-- Una de las ideas que más me llama la atención es la posibilidad de convertir el simulador en un framework que nos permita, por ejemplo, añadir usuarios y entry points, sin necesidad de modificar el propio código del simulador.
+En esta sección se exponen posibles mejoras y cambios que se pueden realizar en el simulador. Es importante destacar que el simulador sigue en desarrollo y evolucionando:
+
+- Una de las ideas que más me llama la atención es la posibilidad de convertir el simulador en un framework que nos permita, por ejemplo, añadir usuarios y entry points, sin necesidad de modificar el código del simulador.
 
     Una de estas posibilidades es la de poder crear usuarios a través de un lenguaje de scripting, como Python o Lua. Imaginemos que el simulador, antes de arrancar, hace un barrido de todos los usuarios implementados en python que haya en una carpeta y los ejecute. Con esto podríamos hacer que la propia interfaz de usuario incluya un pequeño editor de texto con el que se puedan añadir nuevos usuarios sin la necesidad de configurar ningún entorno y de compilar todo el proyecto. Estaríamos facilitando la labor de investigación de una manera muy eficiente. Aun así, los usuarios son bastante fáciles de implementar en el proyecto, por lo que no es algo realmente prioritario. Además contamos con la posibilidad de que los usuarios son parametrizables, y estos pueden comportarse de manera diferente a partir de sus parámetros.
 
 - Extender y mejorar la actual versión y corregir posibles errores.
 
-- Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar al usuario una estación que beneficie a ambos, al sistema y al usuario.
-
-- Experimentos más completos para ver el funcionamiento en casos reales.
+- Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar al usuario una estación que beneficie a ambos, al sistema y al usuario. Un recomendador sencillo sería recomendar en base a la media de demanda esperada en las estaciones segun datos anteriores de días similares. Sería interesante también implementar un sistema de gestión, capaz de gestionar el sistema y cambiar estrategias de recomendación segun el estado del sistema, que represente a la entidad gestora del sistema de bicis que se quiere simular.
 
 # Referencias
 
@@ -1326,6 +1322,8 @@ A continuación se presentan los diferentes archivos de configuración que son n
 - User Type: Es el mismo userType que el utilizado en los puntos de entrada.
 - Time Instant: Instante de tiempo en el que aparece el usuario. (segundos)
 
+\pagebreak
+
 ## Anexo 2 - Manual de configuración del entorno de desarrollo {-}
 
 ### Prerrequisitos {-}
@@ -1388,13 +1386,15 @@ Crear ejecutable e instalador
     npm run distribute
 ```
 
+\pagebreak
+
 ## Anexo 3 - Como añadir un entry point {-}
 
-Para poder simular formas de entrada dentro del sistema, tenemos que crear un entry point. Vamos a crear un entry point de ejemplo a modo de guía. Este entry point creará usuarios de forma secuencial dado unos segundos como parámetro:
+Para poder simular formas de entrada dentro del sistema, tenemos que crear un entry point. Vamos a crear un entry point de ejemplo a modo de guía. Este entry point creará usuarios de forma secuencial con un intervalo constante de tiempo:
 
 ### 1. Creamos una clase para el Entry Point. {-}
 
-Se puede crear en el módulo `backend- bikesurbanfleets-config-usersgenerator` en el paquete `package es.urjc. ia.bikesurbanfleets.usersgenerator.entrypoint.implementations`
+Para crear un nuevo punto de entrada se debe crear en el módulo `backend-bikesurbanfleets- config-usersgenerator` en el paquete `es.urjc.ia.bikesurbanfleets.usersgenerator. entrypoint.implementations` una clase.
 
 La clase debe tener el siguiente aspecto:
 
@@ -1447,7 +1447,7 @@ La clase final quedaría de la siguiente forma:
 
 	}
 ```
-Como se puede ver hemos creado un método denominado `generateUsers()`. Este es un método abstracto heredado de la clase de la que extendemos EntryPoint y debe devolver una lista con los usuarios ya generados. Aquí aplicaremos la lógica necesaria con los atributos que le hayamos atribuido al entry point para generar los usuarios. En este caso caso es un bucle while, el cual en cada iteración creara un usuario cada cierto número de segundos en un rango dado.
+Como se puede ver hemos creado un método denominado `generateUsers()`. Este es un método abstracto heredado de la clase de la que extendemos EntryPoint y debe devolver una lista con los usuarios ya generados. Aquí aplicaremos la lógica necesaria con los atributos que le hayamos atribuido al entry point para generar los usuarios. En este caso es un bucle while, el cual en cada iteración creara un usuario cada cierto número de segundos en un rango dado.
 
 ### 2. Añadir el entry point a los schemas {-}
 
@@ -1490,20 +1490,21 @@ El primer comando compila el backend, el segundo genera los schemas y el tercero
 
 ### 4. Probar el entry point para crear una configuración. {-}
 
-Si creamos un entry point en la parte de configuración veremos lo siguiente:
+Si creamos un entry point en la parte de configuración de la GUI veremos lo siguiente:
 
 ![Entry Point - Menú de selección de tipo](images/new_entry_point_1.png){.class width=9cm}
 
-El frontend nos detecta automáticamente que hay un nuevo tipo de Entry Point. Lo seleccionamos, seleccionamos también el tipo de usuario que queremos y la siguiente ventana que nos aparecerá será la siguiente:
+El frontend nos detecta automáticamente que hay un nuevo tipo de Entry Point. Lo seleccionamos, seleccionamos también el tipo de usuario que queremos y la ventana que nos aparecerá será la siguiente:
 
 ![Entry Point - Parámetros usuarios](images/new_entry_point_2.png){.class width=14cm}
 
 También aparecen automáticamente los formularios para introducir los parámetros que especificamos en el schema. El entry Point ha sido implementado con éxito. Ya sólo es necesario para terminar la prueba crear una configuración con estos entry points, generar los usuarios y simular.
 
+\pagebreak
 
 ## Anexo 4 - Manual para crear implementaciones de usuario {-}
 
-Para crear un nuevo tipo de usuario se recomienda hacerlo en el módulo `backend- bikesurbanfleets-world-entities` en el paquete `es.urjc.ia.bikesurbanfleets. users.types`.
+Para crear un nuevo tipo de usuario se debe crear una clase en el módulo `backend- bikesurbanfleets-world-entities` en el paquete `es.urjc.ia.bikesurbanfleets. users.types`.
 
 Vamos a crear un usuario de ejemplo que elija una estación aleatoriamente y que haga reservas dado un porcentaje parametrizable desde el archivo de configuración.
 
@@ -1531,7 +1532,7 @@ public class UserRandomExtension extends User {
 
 Es necesario que todas las clases de usuarios tengan como anotación `@UserType` para que el simulador sea capaz de detectar esta nueva clase de usuario y utilizarla. También es obligatorio que la clase de usuario implemente una clase interna que tenga como anotacion `@UserParameters`, donde incluiremos todos los parámetros configurables del usuario.
 
-En este caso, queremos que el usuario reserve un porcentaje dado de veces, y que abandone el sistema tras haber intentado coger bici según el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
+En este caso, queremos que el usuario realize reservas un porcentaje de veces, y que abandone el sistema tras haber intentado coger bici según el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
 
 ```{.java .numberLines}
     @UserParameters
@@ -1548,7 +1549,7 @@ El atributo `minReservationPercentage` representa el porcentaje de veces que rea
 
 ### 2. Implementación de métodos {-}
 
-Como este usuario no va a realizar reservas, pondremos todos sus métodos de decisión a `false`:
+Como este usuario no va a realizar reservas, pondremos todos los métodos de decisión respecto a reservas a `false`{.java}:
 
 - `boolean decidesToLeaveSystemAfterTimeout()`{.java}
 - `boolean decidesToLeaveSystemAffterFailedReservation()`{.java}
@@ -1578,7 +1579,7 @@ Podemos utilizar esta información para hacer que el usuario decida que hacer en
     }
 ```
 
-Este método devolverá `true`{.java} si se ha superado el numero mínimo de intentos y abandonará el sistema.
+Este método devolverá `true`{.java} si se ha superado el numero mínimo de intentos y el usuario abandonará el sistema.
 
 También el usuario tiene la posibilidad de dar una vuelta en bici, en vez de ir directamente a la estación. Si no queremos que de una vuelta y vaya directamente a la estación simplemente el método `boolean decidesToReturnBike()`{.java} debe devolver `true`{.java}.
 
