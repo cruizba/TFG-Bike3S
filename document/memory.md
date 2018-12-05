@@ -5,7 +5,7 @@ geometry: "left=2.5cm,right=2.5cm,top=3cm,bottom=3cm"
 date: 29 de Octubre de 2018
 
 ---
-
+\pagenumbering{Roman}
 \pagebreak
 &nbsp;
 \newpage
@@ -40,19 +40,15 @@ Con la llegada de los smartphones, la utilización de estos sistemas es más sen
 
 En ciertas ocasiones, este tipo de sistemas pueden saturarse en estaciones concretas, haciendo que la experiencia de los usuarios que quieran utilizarlo no sea tan satisfactoria, por lo que es necesario aplicar soluciones. Hay que plantear posibles estrategias de balanceo para prever esas situaciones problemáticas. El objetivo es asegurar la disponibilidad tanto de bicis como de huecos en todas las estaciones, para que los usuarios puedan coger y devolver una bici en todas ellas.
 
-Muchas soluciones y estrategias de balanceo son muy difíciles de probar directamente en el sistema real, ya que habría que implementar muchas cosas en un sistema en funcionamiento, y quizás nuestra estrategia de balanceo no sea la más adecuada, ocasionando gastos innecesarios y empeorando la experiencia de los usuarios. Por tanto para probar la viabilidad de las estrategias que se planteen es mejor usar un **simulador** capaz de probar estos sistemas y algoritmos de balanceo propuestos. 
+Muchas soluciones y estrategias de balanceo son muy difíciles de probar directamente en el sistema real, ya que habría que implementar muchas cosas en un sistema en funcionamiento, y quizás nuestra estrategia de balanceo no sea la más adecuada, ocasionando gastos innecesarios y empeorando la experiencia de los usuarios. Por tanto, para probar la viabilidad de las estrategias que se planteen es mejor usar un **simulador** capaz de probar estos sistemas y algoritmos de balanceo propuestos. 
 
 En eso se centra este trabajo, en la implementación de un simulador capaz de recrear de la manera más realista posible, un sistema de bicis compartidas. Este simulador deberá permitir la posibilidad de tener diferentes tipos de usuario, implementar un sistema de recomendaciones, implementar un sistema de incentivos y poder probar cualquier sistema de bicis públicas en cualquier lugar del mundo. En definitiva, crear un simulador que nos permita crear, simular y analizar situaciones reales e implementar sistemas de balanceo para comprobar su viabilidad. Se crearán archivos de configuración para crear situaciones con estaciones y ciudades reales. Posteriormente tras las simulaciones se podrán analizar los datos obtenidos y visualizarlos para comprobar su eficacia.
 
 \pagebreak
 &nbsp;
+\newpage
 
->
-&nbsp;
->
-&nbsp;
->
-    
+\pagenumbering{arabic}   
 # Introducción
 
 En este capítulo se darán a conocer las motivaciones que llevaron a la realización de este proyecto, el contexto del mismo y los objetivos planteados. 
@@ -64,7 +60,7 @@ El proyecto consiste en la realización de un simulador de sistemas de bicis com
 [^1]: BiciMad: [https://bicimad.com/](https://bicimad.com/).
 [^2]: Vèlib: [https://www.velib-metropole.fr/](https://www.velib-metropole.fr/).
 
-La necesidad de alentar a las personas a utilizar vías alternativas de transporte a las comúnmente usadas es cada vez más necesario. El aumento de la población en las grandes ciudades, el aumento de CO<sup>2</sup> son hechos que nos obligan a pensar como cambiar y/o mejorar los medios de transporte público.
+La necesidad de alentar a las personas a utilizar vías alternativas de transporte a las comúnmente usadas es cada vez más necesario. El aumento de la población en las grandes ciudades, el aumento de CO^2^ son hechos que nos obligan a pensar como cambiar y/o mejorar los medios de transporte público.
 
 Los sistemas de bicis compartidas instaladas en las grandes ciudades son una muy buena opción a la hora de buscar alternativas de movilidad. Estos sistemas permiten a los ciudadanos moverse por distintos puntos de la ciudad alquilando una bici de cualquiera de las estaciones disponibles y devolviéndola en otra estación diferente.
 
@@ -133,7 +129,7 @@ En el contexto global del desarrollo, la parte que ha correspondido al trabajo p
 
 - Configuración.
 - Interfaz de usuario.
-- Desarrollo ágil de nuevos usuarios, sistemas de recomendación, generación de usuarios...
+- Desarrollo ágil de nuevos usuarios, sistemas de recomendación, generación de usuarios.
 - Extensibilidad.
 
 ## Metodología
@@ -144,7 +140,7 @@ Este software se ha realizado en un grupo de varias personas, por lo que necesit
 
 En este modelo, primero se realiza un análisis de los requisitos que se van a necesitar para cada iteración. Después del desarrollo de estos, se hacen pruebas y para finalizar se integra con el resto del sistema.
 
-Cada 2 semanas se ha realizado una iteración donde se realizaron todos los pasos comentados anteriormente, donde todo el equipo de desarrollo decidió qué requisitos son más críticos e importantes y que bugs se detectarón. En base a estas decisiones y utilizando herramientas online como Trello[^3], se gestionó que tareas debe realizar cada uno.
+Cada 2 semanas se ha realizado una iteración donde se realizaron todos los pasos comentados anteriormente, donde todo el equipo de desarrollo decidió qué requisitos son más críticos e importantes y que bugs se detectaron. En base a estas decisiones y utilizando herramientas online como Trello[^3], se gestionó que tareas debe realizar cada uno.
 
 [^3]: Es un tablero online donde se pueden crear, asignar y clasificar tareas, de tal modo que todo el equipo tiene una visión global del estado actual de desarrollo que se está creando.
 
@@ -153,6 +149,10 @@ Un desarrollo iterativo e incremental ofrece varias ventajas con respecto a otra
 Cada cierto tiempo se han realizo releases. Utilizamos un formato de versiones semántico[@bib3] del tipo X.Y.Z donde, X, Y y Z son números enteros mayores que 0.
 
 X se corresponde a la versión mayor (cambios grandes que modifican parte o gran parte de la funcionalidad). Y se corresponde a la versión menor(pequeños cambios, corrección de bugs) y Z, que son micro versiones (parches, pequeños bugs críticos...).
+
+\pagebreak
+&nbsp;
+\newpage
 
 # Descripción informática
 
@@ -200,7 +200,7 @@ En las siguientes subsecciones se detallan los requisitos funcionales y no funci
 
 ### Requisitos funcionales
 
-Los requisitos funcionales consisten en una serie de comportamientos o módulos que deben ser integrados en el sistena de simulación y son los siguientes:
+Los requisitos funcionales consisten en una serie de comportamientos o módulos que deben ser integrados en el sistema de simulación y son los siguientes:
 
 **Requisito funcional 1**
 
@@ -228,11 +228,11 @@ _Fichero de configuración de estaciones_. Se podrá mediante un fichero de conf
 
 _Fichero de configuración para los US_: La configuración deberá proporcionar un mecanismo o módulo con el cual se puedan generar usuarios en distintos puntos geográficos. Estos lugares donde los usuarios son generados se denominarán puntos de entrada (entry points). Este módulo deberá ser capaz de generar usuarios de dos formas:
 
-- Con una distribución exponencial siguiendo un proceso de Poisson. Dada una cantidad de usuarios por una unidad de tiempo y un punto geográfico, generarlos como un proceso de Poisson en dicho punto. En este proceso de poisson $\lambda$ será la cantidad de usuarios por segundo. (Véase \secref{sec:genusers}). 
+- Con una distribución exponencial siguiendo un proceso de Poisson. Dada una cantidad de usuarios por una unidad de tiempo y un punto geográfico, generarlos como un proceso de Poisson en dicho punto. En este proceso de Poisson $\lambda$ será la cantidad de usuarios por segundo. (Véase \secref{sec:genusers}). 
 
 - Usuarios individuales: Dado un punto geográfico, generar un único usuario.
 
-Este fichero de configuracion no tendrá limite de puntos de entrada, y podrán definirse más métodos de generación de usuarios.
+Este fichero de configuración no tendrá limite de puntos de entrada, y podrán definirse más métodos de generación de usuarios.
 
 **Requisito funcional 4**
 
@@ -294,7 +294,7 @@ Previamente a la implementación es necesario hacer un análisis del sistema en 
 
 - Interacción de los usuarios con el sistema de recomendaciones: Los usuarios podrán tomar decisiones basándose en información externa proporcionada por aplicaciones móviles y de su entorno. 
 
-- Definición de un estado inicial (configuración): Para poder simular en su totalidad estas acciones y decisiones de los usuarios en el sistema, debemos partir de un estado inicial, que debe ser definido a partir de una configuración. Se hace especial incapié en esta última parte, ya que representa una gran parte del trabajo de este TFG.
+- Definición de un estado inicial (configuración): Para poder simular en su totalidad estas acciones y decisiones de los usuarios en el sistema, debemos partir de un estado inicial, que debe ser definido a partir de una configuración. Se hace especial hincapié en esta última parte, ya que representa una gran parte del trabajo de este TFG.
 
 En los siguientes subapartados se mencionan las distintas partes del simulador que se corresponden con cada punto descrito anteriormente.
 
@@ -342,9 +342,9 @@ En la figura \ref{fig:4} vemos un diagrama en el que se explica cómo los US pod
 
 ![Usuarios simulados utilizando la información del sistema de recomendaciones y la infraestructura](images/How Users use Recomendation System.jpg){#fig:4 .class width=9cm}
 
-El simulador podrá disponer en un futuro de más de un sistema de recomendaciones, pero de momento se ha incluído uno, el cual ha sido implementado por otra desarrolladora del simulador (Sandra Timón [@bib7]).
+El simulador podrá disponer en un futuro de más de un sistema de recomendaciones, pero de momento se ha incluido uno, el cual ha sido implementado por otra desarrolladora del simulador (Sandra Timón [@bib7]).
 
-La diferencia entre una simple interfaz de infraestructura y un sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el segundo aplica unos criterios en la recomendación de una estación (ya sea para coger o dejar una bici) que responden o estan influenciados por los intereses del sistema de balancear la disponibilidad de bicis y huecos.
+La diferencia entre una simple interfaz de infraestructura y un sistema de recomendaciones, es que el primero da información del estado del sistema en ese momento, y el segundo aplica unos criterios en la recomendación de una estación (ya sea para coger o dejar una bici) que responden o están influenciados por los intereses del sistema de balancear la disponibilidad de bicis y huecos.
 
 ### Definición de un estado inicial (configuración)
 
@@ -392,7 +392,7 @@ Para configurar los usuarios es necesario especificar el lugar y el momento en e
 
 Para representar cómo van a aparecer los usuarios sin especificar el momento exacto de tiempo en el que aparecen necesitaremos un conjunto de datos que nos proporcione esta información. Estos datos son los Entry Points. Así pues definimos como **Entry Point** un punto geográfico del cual aparecerán usuarios de una forma determinada a lo largo del tiempo. Un Entry Point puede tener una serie de propiedades que determinan como se generan los usuarios.
 
-En particular nos interesa que los usuarios puedan ser generados en puntos geográficos determinados y siguiendo un proceso de Poisson para determinar el instante de su aparación. Un Entry Point de estas características podría tener las siguientes propiedades:
+En particular nos interesa que los usuarios puedan ser generados en puntos geográficos determinados y siguiendo un proceso de Poisson para determinar el instante de su aparición. Un Entry Point de estas características podría tener las siguientes propiedades:
 
 - Una posición geográfica y un radio, con los que establecer un área de aparición para los usuarios. 
 
@@ -470,7 +470,7 @@ Basado en este análisis se define el algoritmo para la generación de usuarios 
 
 Las variables de entrada de el algoritmo son las siguientes:
 
-- $p$ = Punto geográfica de los entry points.
+- $p$ = Punto geográfico de los entry points.
 
 - $r$ = Radio de aparición de los usuarios.
 
@@ -515,7 +515,7 @@ En el siguiente apartado veremos como implementar la función $RandomPositionInC
 
 Un primer acercamiento a la solución de este problema, sería la generación de puntos aleatorios en un círculo plano bidimensional.
 
-![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:6}
+![Generación de puntos en una circunferencia](images/circle_diagram.jpg){#fig:6 .class width=6cm}
 
 En la figura \ref{fig:6}, R es el radio del círculo, $d$ es un valor aleatorio uniforme entre 0 y R, y $\theta$ es un ángulo cuyo valor es aleatorio uniforme entre 0 y 2$\pi.$ Una posible solución sería generar los puntos en base a las siguientes formulas.
 
@@ -608,7 +608,7 @@ En este desarrollo vamos a utilizar la lógica de un simulador basado en eventos
 
 Para la ejecución de un simulador basado en eventos es necesario una cola de prioridad ordenada en función del instante de tiempo, en la que se irán insertando los eventos que tienen que ejecutarse. El primer elemento será siempre el siguiente cambio de estado en la simulación.
 
-![Simulador basado en eventos](images/event_based_simulator.png){#fig:10}
+![Simulador basado en eventos](images/event_based_simulator.png){#fig:10 .class width=11cm}
 
 En la figura \ref{fig:10} vemos una ejecución básica del motor de el simulador. El primer evento en ejecutarse es el primero de la cola. Cada evento al ejecutarse puede generar nuevos eventos y estos son insertados en la cola ordenados por su instante de aparición.
 
@@ -645,11 +645,11 @@ En la parte lógica del simulador estaría toda la parte relacionada con las int
 
 En la figura \ref{fig:12} se puede ver con más detalle el comportamiento de la lógica del simulador. Como podemos ver lo que hace el cargador de configuración es interpretar los datos de los archivos de configuración para hacer funcionar el simulador basado en eventos. Este se encargará de controlar los diferentes sucesos de la simulación para que los usuarios a su vez actúen en base al evento que les corresponde. Estos usuarios generados(US) interactúan con la infraestructura (cogiendo bicis, dejándolas, reservando…), y también pueden hacer uso del sistema de recomendaciones.
 
-Con respecto a la generación de usuarios surgió la necesidad de generarlos de forma independiente del sistema de simulación. De esta forma, es posible generar usuarios de manera aleatoria (a través de entry points) o usuar datos reales de usuarios disponibles de algún sistema de alquiler de bicis con eventos. Para dar cabida a esta necesidad, se integra un nuevo módulo en la parte de configuración: el generador de usuarios como se presenta en la figura \ref{fig:14}
+Con respecto a la generación de usuarios surgió la necesidad de generarlos de forma independiente del sistema de simulación. De esta forma, es posible generar usuarios de manera aleatoria (a través de entry points) o usar datos reales de usuarios disponibles de algún sistema de alquiler de bicis con eventos. Para dar cabida a esta necesidad, se integra un nuevo módulo en la parte de configuración: el generador de usuarios como se presenta en la figura \ref{fig:14}
 
 ![Cargador de configuración con generador de usuarios](images/configuration_2.png){#fig:14 .class width=11cm}
 
-Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el generador de históricos. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido[@bib10]. En general este módulo se encargará de escuchar cada evento del simulador y escribir el resultado en uno o varios ficheros[@bib10].
+Por otro lado, la generación de los históricos es también importante. El simulador deberá de algún modo escribir en un fichero lo que ha sucedido en cada uno de los eventos. Para ello vamos a añadir un módulo más a nuestra arquitectura, el generador de históricos. Se habla más en profundidad de esta parte en el proyecto final de grado de Tao Cumplido[@bib10]. En general este módulo se encargará de escuchar cada evento del simulador y escribir el resultado en uno o varios ficheros.
 
 Necesitamos también disponer de una interfaz de usuario que nos permita crear simulaciones de una forma interactiva sin necesidad de escribir los archivos de configuración en un archivo de texto.
 
@@ -683,13 +683,13 @@ Uno de los requisitos del proyecto es que sea multiplataforma. Es por ello por l
 
 Por un lado, Java es un lenguaje ya muy maduro que lleva muchos años en la cúspide de los mejores lenguajes empresariales. Un lenguaje muy conocido, potente y multiplataforma. Su comunidad es muy grande y hay una gran cantidad de librerías y frameworks disponibles.
 
-Por otro lado, en el frontend hemos utilizado Electron, una tecnología que permite desarrollar aplicaciones de escritorio con tecnologías web. Teniendo en cuenta la cantidad de herramienta de visualizaciones que hay para visualizar datos, mapas, crear interfaces de usuario atractivas, pensamos que esta era la mejor opción.
+Por otro lado, en el frontend hemos utilizado Electron, una tecnología que permite desarrollar aplicaciones de escritorio con tecnologías web. Teniendo en cuenta la cantidad de herramienta de visualizaciones que hay para visualizar datos, mapas, crear interfaces de usuario atractivas, se pensó que esta era la mejor opción.
 
 Electron es una combinación de HTML5, CSS y JavaScript para aplicaciones de escritorio. Es bien sabido que JavaScript no escala muy bien y debido a su naturaleza dinámica, a veces es complicado mantener un orden y estándar que otros desarrolladores puedan entender. Con el fin de crear un proyecto maduro y escalable decidimos utilizar TypeScript, que utilizado de la forma correcta tiene un aspecto similar a Java por lo que no es difícil incorporar a desarrolladores nuevos en el proyecto si tienen conocimiento de Java.
 
 TypeScript no deja de ser JavaScript, solo que añadiéndole tipado estático y la posibilidad de crear clases y objetos. Como framework para la visualización hemos decidido utilizar Angular (no confundir con AngularJS), que es una tecnología bastante conocida para la creación de aplicaciones web.
 
-A esta arquitectura hay que añadir dos herramientas más. Un generador de esquemas y un validador de archivos JSON. Con el generador de esquemas definiremos la estructura de los datos. Los esquemas son utilizados para la validación de los archivos JSON de configuración y los JSON de los historicos antes de realizar cualquier simulación.
+A esta arquitectura hay que añadir dos herramientas más. Un generador de esquemas y un validador de archivos JSON. Con el generador de esquemas definiremos la estructura de los datos. Los esquemas son utilizados para la validación de los archivos JSON de configuración y los JSON de los históricos antes de realizar cualquier simulación.
 
 Estos dos módulos son difíciles de representar en la arquitectura presentada, ya que son muy independientes del proyecto. El validador de archivos JSON es utilizado por el backend y el simulador de usuarios.
 
@@ -699,15 +699,11 @@ En cuanto a control de versiones hemos utilizado Git y la plataforma GitHub como
 
 ### Implementación del Backend {#sec:logsim}
 
-En un principio, enfocamos el proyecto con una estructura monolítica, donde cada módulo era un paquete. Pensamos que este punto de partida era el correcto, pero a lo largo del desarrollo se decidió implementar el proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en el código. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
+En un principio, enfocamos el proyecto con una estructura monolítica, donde cada módulo era un paquete. Se pensó que este punto de partida era el correcto, pero a lo largo del desarrollo se decidió implementar el proyecto en módulos, para facilitar la adición de nueva funcionalidad y tener menos dependencias en el código. Como gestor de dependencias y herramienta de empaquetado hemos utilizado Maven, el cual permite crear proyectos modulares.
 
-En la figura \ref{fig:17} se pueden ver los diferentes módulos en detalle.
+![Módulos backend-simulator](images/module_system.png){#fig:17 .class width=12.8cm}
 
-![Módulos backend-simulator](images/module_system.png){#fig:17}
-
-A primera vista puede parecer muy diferente con lo definido en la arquitectura de la figura \ref{fig:16}, pero eso se debe a que está arquitectura solo define como se organizan y comunican las partes de el simulador.
-
-A continuación, vamos a explicar todos los módulos de uno en uno:
+A primera vista la figura \ref{fig:17} puede parecer muy diferente con lo definido en la arquitectura de la figura \ref{fig:16}, pero eso se debe a que está arquitectura solo define como se organizan y comunican las partes de el simulador. A continuación se explican todos los módulos de uno en uno:
 
 - Común: Este módulo incluye todas las utilidades e interfaces necesarias para la comunicación entre los módulos. Algunas de las utilidades interesantes implementadas que merece la pena mencionar son las siguientes:
 
@@ -867,29 +863,27 @@ En el simulador se va a disponer de muchos tipos de usuarios a implementar, y de
 
 ```
 
-En este código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. La factoria de usuarios se encarga de instanciar ek tipo correspondiente al `userType`.
+En este código, `userType` es el tipo de usuario y `services` son todos los servicios inicializados del sistema. La factoría de usuarios se encarga de instanciar el tipo correspondiente al `userType`.
 Por ejemplo si quisiéramos crear un usuario, deberíamos hacerlo de la siguiente forma:
-
->
 
 ```{.java .numberLines}
     @UserType("USER_RANDOM")
     public class UserRandom extends User {
 
-    @UserParameters
-    public class Parameters {
-        private int parameter1;
-        private double parameter2;
-        ...
-    }
-
+        @UserParameters
+        public class Parameters {
+            private int parameter1;
+            private double parameter2;
+            ...
+        }
     ...
+    }
 ```
 
 En la notación `@UserType` ponemos con que cadena de texto se identifica a este usuario y en `@UserParameters` definimos que parámetros concretos tiene este.
 Imaginemos que queremos instanciar un usuario de tipo `USER_RANDOM`. La factoría al inicializarse lo que hará es guardar en una lista todas las clases que tengan la interfaz `@UserType`, después se llamará al método `userFactory.createUser('USER_RANDOM', services)` que utilizando la API de reflexión de Java conseguirá identificar en la lista de clases que implementan `@UserType` cual se corresponde con el tipo `USER_RANDOM`. Posteriormente conseguimos el constructor de la clase que implementa `USER_RANDOM`, y instanciamos el usuario. La implementación de la factoría y la utilización de la API de reflexión se encuentra en el módulo de entidades e infraestructura en la clase `UserFactory`.
 
-Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos e identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que ira junto con el tipo de entry point. De esta forma si queremos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
+Con los entry points sucede exactamente lo mismo. Necesitamos diferenciar diferentes tipos de entry point en los archivos de configuración y además necesitamos añadirlos e identificarlos mediante anotaciones. La diferencia radica en que en vez de usar la anotación `@UserType`, utilizaremos la anotación `@EntryPointType` que irá junto con el tipo de entry point. De esta forma si queremos por ejemplo crear el tipo de entry point que siga un proceso de poisson tendríamos que hacerlo de esta forma: 
 
 ```{.java .numberLines}
 @EntryPointType("POISSON")
@@ -924,7 +918,7 @@ Las implementaciones de los gestores de rutas deberán tener la anotación `@Gra
 ### Carga de mapas y cálculo de rutas {#sec:maps}
 Es importante poder crear simulaciones lo más reales posibles, lo que incluye una simulación del movimiento por rutas reales. Implementar toda esta lógica y crear una estructura de datos eficiente para la carga y cálculo de las rutas nos podría llevar incluso más tiempo que el propio simulador. Es por eso que decidimos utilizar una librería externa, GraphHopper[^6]. GraphHopper utiliza Open Street Maps, lo cual nos da cierta libertad al no depender de Google Maps que es una tecnología cerrada.
 
-Para hacer que el simulador no dependa directamente de dicha librería, decidimos crear una interfaz (`GraphManager`) y un formato de rutas propio (`GeoRoute`), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los métodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase `GeoRoute`. De esta forma crear un sistema propio o utilizar otra librería no sería difícil implementarla en el sistema. 
+Para hacer que el simulador no dependa directamente de dicha librería, decidimos crear una interfaz (`GraphManager`) y un formato de rutas propio (`GeoRoute`), aunque el implementador puede crear cualquier gestor de rutas, simplemente deberá hacer que al calcularse las rutas en los métodos correspondientes del usuario, devuelva una ruta que sea una instancia de la clase `GeoRoute`. De esta forma crear un sistema propio o utilizar otra librería no sería difícil de implementar en el sistema. 
 
 A continuación explicaremos cada una de las clases referentes al gestor de rutas:
 
@@ -956,8 +950,6 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
     Para calcular las rutas es necesario descargar el mapa de Open Street Maps y pasarlo como argumento al instanciar el objeto que se encarga de utilizar GraphHopper. Posteriormente la librería crea una serie de ficheros con información que utilizará para calcular las rutas. El código del constructor del servicio de rutas es el siguiente:
 
-   \pagebreak
-
     ```{.java .numberLines}
     public GraphHopperIntegration(GraphProperties properties) throws IOException {
         //Check the last map loaded
@@ -988,7 +980,7 @@ A continuación explicaremos cada una de las clases referentes al gestor de ruta
 
 ### Interfaz de usuario del simulador(Frontend)
 
-En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. En primer lugar, se explicará brevemente que hará cada ventana del programa y posteriormente se explicará la arquitectura interna del frontend y como se comunica con el backend.
+En esta sección explicaremos las diferentes partes de la parte gráfica de el simulador que se encargará de ofrecer una GUI capaz de realizar todo lo antes mencionado. En primer lugar, se explicará brevemente qué hará cada ventana del programa y posteriormente se explicará la arquitectura interna del frontend y como se comunica con el backend.
 
 #### Funcionalidades de la interfaz
 En este apartado se presentan las distintas partes de la interfaz de usuario y capturas de cada una de estas.
@@ -1042,7 +1034,7 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
 - *Main*: Este proceso puede comunicarse con el SO y hacer operaciones de entrada salida. Está implementado en TypeScript. En esta parte hemos definido toda la lógica que no tiene que ver con la interfaz de usuario. Los módulos que hay implementados son los siguientes
 
-  - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas para generar formularios dinámicos que se explica con mayor detalle en el siguiente subapartado\secref{sec:dinform}
+  - `Configuration`: Todos los archivos de configuración son validados a través de unos ficheros que determinan la estructura que debe tener la configuración. En este módulo se encuentra el parseador que convierte los esquemas de los datos en esquemas válidos para generar formularios dinámicos que se explica con mayor detalle en el siguiente subapartado\secref{sec:dinform}
 
   - `Controllers`: Contiene todas las clases que definen la interfaz de comunicación entre el *Main* y el *Renderer*. Sigue una lógica tipo API REST en el que si el proceso *Renderer* pide algún dato o recurso, el *Main* recibirá este dato a modo de servidor y devolverá una respuesta a *Renderer*.
 
@@ -1052,14 +1044,14 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
   - `Util`: Utilidades necesarias por otros módulos, que pueden ser de utilidad general. 
 
-    Al ejecutar el frontend, éste debe ejecutar los módulos en Java del backend tanto para crear usuarios como para simular. Estos dos módulos son dos ejecutables java con extensión ".jar" disponibles en la ruta de la aplicación cuando es compilada. Simplemente hay que crear un proceso hijo que los ejecute. El proceso *Main* tendrá que poder ejecutar estos dos procesos, que se corresponden con los archivos jar compilados del backend:
+    Al ejecutar el frontend, este debe ejecutar los módulos en Java del backend tanto para crear usuarios como para simular. Estos dos módulos son dos ejecutables java con extensión ".jar" disponibles en la ruta de la aplicación cuando es compilada. Simplemente hay que crear un proceso hijo que los ejecute. El proceso *Main* tendrá que poder ejecutar estos dos procesos, que se corresponden con los archivos jar compilados del backend:
 
     - `java -jar bikesurbanfleets-config-usersgenerator-1.0.jar <parameters>`
     - `java -jar bikesurbanfleets-core-1.0.jar <parameters>`
 
     En estos dos comandos, `<parameters>` son las rutas a los archivos de configuración para comenzar el proceso de generar o de simular respectivamente.
 
-- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada componente puede estar formado de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Esta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
+- *Renderer*: Este proceso contiene toda la parte visual. Está programado en TypeScript y Angular. Está dividido en varios programas que forman parte de la misma interfaz de usuario.  Angular está basado en componentes. Los componentes son los bloques de código más básicos de una interfaz de usuario en una aplicación Angular. Una aplicación Angular es un árbol de componentes y cada uno de ellos puede estar formado de otros componentes. Estos se podrán comunicar con el proceso *Main* si necesitan de algún recurso o tienen que hacer llamadas al simulador. Esta aproximación basada en componentes se utiliza para una mayor reutilización de código, ya que un mismo componente puede ser reutilizado en otros. Los distintos módulos son:
 
   - App: Contiene todos los componentes de la aplicación. Los principales son:
 
@@ -1074,7 +1066,7 @@ La interfaz de usuario está desacoplada completamente del simulador, por lo que
 
 ### Formularios dinámicos en las configuraciones {#sec:dinform}
 
-En la parte de configuración de nuevos usuarios y entry points surgió la necesidad de que la interfaz gráfica fuera capaz de detectar los campos de todos los datos a introducir y generar los formularios de forma dinámica. 
+En la parte de configuración de nuevos usuarios y entry points surgió la necesidad de crear una interfaz gráfica que fuera capaz de detectar los campos de todos los datos a introducir y generar los formularios de forma dinámica. 
 
 Como ya hemos mencionado, el simulador dispone de dos códigos base principales, el del Backend(Java) y el del Frontend(Typescript, Angular y Electron). Por cada usuario que creemos, tenemos que modificar ambos códigos. Por lo que se dificultaría en gran medida la implementación de nuevos usuarios, ya que habría que modificar el código del Frontend. Con un generador de formularios dinámicos podríamos modificar sólo el código del Backend y los esquemas para crear nuevos usuarios y mantener la interfaz de usuario actualizada con los nuevos usuarios que se pueden crear, facilitando la tarea de añadir o quitar nuevos parámetros en las configuraciones. Por lo tanto se obtienen bastantes ventajas de esta funcionalidad:
 
@@ -1112,6 +1104,8 @@ Con estos usuarios se ha realizado un experimento con una configuración de 20 e
 
 - $FH$ (Failed hires) - Número de intentos de alquilar que no se han realizado con éxito.
 
+- $FS$ (Failed hires of Succesful users) - Numero de intentos de alquiler de los usuarios que han conseguido alquilar una bici
+
 - $SR$ (Succesful returns) - Devoluciones exitosas.
 
 - $FR$ (Failed returns) - Devoluciones fallidas.
@@ -1126,36 +1120,38 @@ $$
 DS = SH / N
 $$
 
-- HE (Hire efficiency)- Eficiencia al alquilar: Proporción de alquileres exitosos entre el número total de alquiler de los usuarios que han podido coger bici. Con esta medida podemos calcular que proporción de los usuarios que han alquilado con exito, lo han conseguido al primer intento.
+- HE (Hire efficiency)- Eficiencia al alquilar: Proporción de alquileres exitosos entre el número total de alquiler de los usuarios que han podido coger bici. Con esta medida podemos calcular que proporción de los usuarios que han alquilado con exito.
 
 $$
 HE = SH /  (SH + FS)
 $$
 
-Se han realizado varios experimentos para evaluar el simulador. Hemos escogido un mapa cuadrado de 3km de lado del centro de Madrid, y hemos hubicado 20 estaciones en localizaciones reales del sistema de BiciMad. Todas las estaciones han sido inicializadas con una capacidad total de 20 bicis. Cada una de ellas comenzará la simulación con 10 bicis. También hemos hubicado 4 entry points para generar los usuarios, la localización de estos entry points se pueden ver en la figura \ref{fig:28} Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo (1 día). Para comprobar la eficacia se ha creado un simple recomendador que devuelve estaciones en un rango de 300 metros a la localización del usuario, ordenadas por el ratio de bicis o huecos disponibles en cada estación. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31} donde el eje horizontal representa la cantidad de usuarios simulada y el eje vertical el valor de satisfacción de demanda o eficiencia de alquiler.
+Se han realizado varios experimentos para evaluar el simulador. Hemos escogido un mapa cuadrado de 3km de lado del centro de Madrid, y hemos ubicado 20 estaciones en localizaciones reales del sistema de BiciMad. Todas las estaciones han sido inicializadas con una capacidad total de 20 bicis. Cada una de ellas comenzará la simulación con 10 bicis. También hemos hubicado 4 entry points para generar los usuarios, la localización de estos entry points se pueden ver en la figura \ref{fig:28}. Se realizaron experimentos en los que se aumenta progresivamente el número de usuarios en un mismo espacio de tiempo (1 día). Para comprobar la eficacia se ha creado un simple recomendador que devuelve estaciones en un rango de 300 metros a la localización del usuario, ordenadas por el ratio de bicis o huecos disponibles en cada estación. Los resultados obtenidos se presentan en la figura \ref{fig:30} y en la figura \ref{fig:31} donde el eje horizontal representa la cantidad de usuarios simulada y el eje vertical el valor de satisfacción de demanda o eficiencia de alquiler.
 
 ![Satisfacción de demanda](images/ds.png){#fig:30 .class width=14cm}
 
 ![Eficiencia al alquilar](images/he.png){#fig:31 .class width=14cm}
 
-En la satisfacción de demanda podemos observar que el peor usuario hasta los 5000 usuarios es el usuario *Uninformed*, sin embargo, los usuarios que hacen reservas, *Informed-R* y *Obedient-R*, siempre empeoran la situación pasados los 5000 usuarios. Esto se debe a que al realizar reservas, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas. Por otro lado los usuarios *Informed*, *Obedient* e *Informed+Obedient*, a medida que va aumentando la demanda, va empeorando la satisfacción de esta, pero supera en proporción a los usuarios con reservas y el *Uninformed*. Es muy probable que esto se deba a lo explicado anteriormente, los usuarios que no reservan, tienen la bici menos tiempo ocupada en el sistema por lo que el sistema es capaz de soportar demandas más grandes con una mayor satisfacción. Se puede observar como los usuarios de tipo *Informed* que solo van a las más cercana con bicis, consiguen muy buenos resultados, incluso mejores que los usuarios que solo obedecen recomendaciones. Esto indica que el tiempo que pasa un usuario en el sistema es lo más importante a reducir en este tipo de sistemas, ya que, a menos tiempo esté un usuario en el sistema, mayor disponibilidad tendrán los recursos para nuevos usuarios. Los mejores resultados se obtienen combinando el *Informed* y el *Obedient*.
+En la satisfacción de demanda podemos observar que el peor usuario hasta los 5000 usuarios es el usuario *Uninformed*, sin embargo, los usuarios que hacen reservas, *Informed-R* y *Obedient-R*, siempre empeoran la situación pasados los 5000 usuarios. Esto se debe a que al realizar reservas, a medida que se aumenta el número de usuarios, el resultado es peor ya que tienen la bici reservada durante más tiempo, imposibilitando a otros usuarios el poder coger dichas bicis reservadas. Por otro lado los usuarios *Informed*, *Obedient* e *Informed+Obedient*, a medida que va aumentando la demanda, va empeorando la satisfacción de esta, pero supera en satisfacción a los usuarios con reservas y el *Uninformed*. Es muy probable que esto se deba a lo explicado anteriormente, los usuarios que no reservan, tienen la bici menos tiempo ocupada en el sistema por lo que el sistema es capaz de soportar demandas más grandes con una mayor satisfacción. Se puede observar como los usuarios de tipo *Informed* que solo van a las más cercana con bicis, consiguen muy buenos resultados, incluso mejores que los usuarios que solo obedecen recomendaciones. Esto indica que el tiempo que pasa un usuario en el sistema es lo más importante a reducir en este tipo de sistemas, ya que, a menos tiempo esté un usuario en el sistema, mayor disponibilidad tendrán los recursos para nuevos usuarios. Los mejores resultados se obtienen combinando el *Informed* y el *Obedient*.
 
-En la eficiencia al alquilar, como se espara, los usuarios de tipo *Informed-R* y *Obedient-R* dan como resultado $HE = 1$ en todos los casos. Esto se debe a que siempre realizan reserva, y nunca van a fallar una vez hecha la reserva en coger una bici. Por otro lado se puede observar coincidencias de resultados con *Uninformed-R* e *Informed* y también con *Obedient* e *Informed+Obedient*. Vemos que a partir de cierto resultado, el 80% de los usuarios que consiguen coger bici, lo hacen a la primera, pero es importante comparar está gráfica con la de satisfacción de demanda. Vemos que aunque se estabiliza la eficiencia de alquiler, la satisfacción de demanda va empeorando progresivamente por lo que al final, menos usuarios son capaces de utilizar el sistema.
+En la eficiencia al alquilar, como se esperaba, los usuarios de tipo *Informed-R* y *Obedient-R* dan como resultado $HE = 1$ en todos los casos. Esto se debe a que siempre realizan reserva, y nunca van a fallar una vez hecha la reserva en coger una bici. Por otro lado se puede observar coincidencias de resultados con *Uninformed-R* e *Informed* y también con *Obedient* e *Informed+Obedient*. Vemos que a partir de cierto resultado, el 80% de los usuarios que consiguen coger bici, lo hacen a la primera, pero es importante comparar está gráfica con la de satisfacción de demanda. Vemos que aunque se estabiliza la eficiencia de alquiler, la satisfacción de demanda va empeorando progresivamente por lo que al final, menos usuarios son capaces de utilizar el sistema.
 
 \pagebreak
+&nbsp;
+\newpage
 
 # Conclusiones
 
-Observando el presente trabajo en retrospectiva, se han conseguido abordar todos los objetivos planteados en un principio. Se ha implementado un simulador conseguiendo recrear todos los elementos de la infraestructura de un sistema de bicicleteas públicas (estaciones, bicis y reservas) pudiendo realizar configuraciones con diferente número de estaciones, en distintas ubicaciones y disponibilidad de recursos. Se ha creado un motor de simulación basado en eventos el cual posibilita simular la experiencia de múltiples usuarios en el sistema, y además, se han implementado múltiples modelos de usuario configurables los cuales se pueden generar aleatoriamente conforme a distintas distribuciones matemáticas de probabilidad, proporcionando en nuestro proyecto la posibilidad de crear usuarios siguiendo un proceso de Poisson. Así mismo, se pueden recrear también usuarios sacados de históricos reales gracias a el módulo de configuración capaz de recibir un fichero con usuarios individuales. 
+Observando el presente trabajo en retrospectiva, se han conseguido abordar todos los objetivos planteados en un principio. Se ha implementado un simulador conseguiendo, recrear todos los elementos de la infraestructura de un sistema de bicicleteas públicas (estaciones, bicis y reservas) pudiendo realizar configuraciones con diferente número de estaciones, en distintas ubicaciones y disponibilidad de recursos. Se ha creado un motor de simulación basado en eventos el cual posibilita simular la experiencia de múltiples usuarios en el sistema, y además, se han implementado múltiples modelos de usuario configurables los cuales se pueden generar aleatoriamente conforme a distintas distribuciones matemáticas de probabilidad, proporcionando en nuestro proyecto la posibilidad de crear usuarios siguiendo un proceso de Poisson. Así mismo, se pueden recrear también usuarios sacados de históricos reales gracias a el módulo de configuración capaz de recibir un fichero con usuarios individuales. 
 
-Cabe destacar por otro lado que este software se ha realizado con un diseño que le permite a programadores que quieran modificar o mejora el simulador crear nuevos usuarios y recomendadores de una forma sencilla y extensible. Se han utilizando patrones como la inyeccion de dependencias y reflexión, facilitando en gran medida la creación de nuevas estrategias de balanceo y las pruebas de diferentes comportamiento de usuarios. Cada una de las partes de este proyecto se ha hecho pensando siempre en la modularidad y en futuras mejoras o implementaciones de funcionalidad. Las decisiones de arquitectura general del proyecto han permitido por una parte separar la configuración del simulador de la ejecución del simulador, y dar como resultado un histórico para la realización de visualizaciones y análisis. Al estar los archivos de configuración y los históricos separados, estos pueden ser almacenados, y ser compartidos por otros investigadores que estén utilizando el mismo simulador, además de proporcionar un mecanismo por el cual, se puedan crear nuevas herramientas para crear configuraciones y analizar históricos.
+Cabe destacar por otro lado que este software se ha realizado con un diseño que le permite a programadores que quieran modificar o mejorar el simulador crear nuevos usuarios y recomendadores de una forma sencilla y extensible. Se han utilizando patrones como la inyección de dependencias y reflexión, facilitando en gran medida la creación de nuevas estrategias de balanceo y las pruebas de diferentes comportamiento de usuarios. Cada una de las partes de este proyecto se ha hecho pensando siempre en la modularidad y en futuras mejoras o implementaciones de funcionalidad. Las decisiones de arquitectura general del proyecto han permitido por una parte separar la configuración del simulador de su ejecución, y dar como resultado un histórico para la realización de visualizaciones y análisis. Al estar los archivos de configuración y los históricos separados, estos pueden ser almacenados, y ser compartidos por otros investigadores que estén utilizando el mismo simulador, además de proporcionar un mecanismo por el cual, se puedan crear nuevas herramientas para crear configuraciones y analizar históricos.
 
-Es importante destacar que ha fecha de entrega de este trabajo se han realizado dos articulos de investigación: "A bike sharing system simulator"[@bib11] y "Balancing Strategies for Bike Sharing Systems"[@bib12]. El primer artículo describe a grandes rasgos el funcionamiento del simulador y describe un conjunto de pruebas realizadas para este artículo, que son las descritas en el apartado\secref{sec:eva}. El segundo artículo es un articulo presentado para la 6th International Conference
+Es importante destacar que ha fecha de entrega de este trabajo se han realizado dos artículos de investigación: "A bike sharing system simulator"[@bib11] y "Balancing Strategies for Bike Sharing Systems"[@bib12]. El primer artículo describe a grandes rasgos el funcionamiento del simulador y describe un conjunto de pruebas realizadas para este artículo, que son las descritas en el apartado\secref{sec:eva}. El segundo artículo es un articulo presentado para la 6th International Conference
 on Agreement Technologies, en el cual se proponen incentivos a los usuarios para persuadirlos a coger (o dejar) bicis de estaciones con el objetivo de mantener el sistema lo más balanceado posible.
 
 ## Lecciones aprendidas
 
-Algunas lecciones aprendidas han sido resultado de las buenas prácticas aplicadas en el desarrollo del simulador presentado en este trabajo, que además ha sido realizado en grupo:
+Algunas lecciones aprendidas han sido resultado de las buenas prácticas aplicadas en el desarrollo del simulador presentado en este trabajo:
 
 - Un equipo bien organizado, comunicativo y motivado da como resultado un buen software.
 
@@ -1167,7 +1163,7 @@ Algunas lecciones aprendidas han sido resultado de las buenas prácticas aplicad
 
 Otras lecciones aprendidas han surgido de problemas o fallos en el planteamiento de este desarrollo:
 
-- Un análisis detallado incial es muy importante, en nuestro caso, la especificación de "realizar una reserva" como evento al principio en el núcleo, nos hubiera facilitado el trabajo.
+- Un análisis detallado inicial es muy importante, en nuestro caso, la especificación de "realizar una reserva" como evento al principio en el núcleo, nos hubiera facilitado el trabajo.
 
 - Angular y Electron son demasiado pesados. En un principio, Angular no se pensó como framework multiventana como nosotros lo hemos utilizado, y las ventanas tardaban mucho en cargar de forma individual. Además, Angular tiene mucho código ejecutando, y esto junto con Electron, suele conllevar a programas algo más lentos y de carga de memoria y disco bastante altos para una aplicación de escritorio. Una alternativa buena hubiera sido utilizar React o Vue.js que son frameworks más ligeros o utilizar una tecnología más sólida para la interfaz de usuario. Pero a pesar de ello, Angular es un framework bastante elegante, ordenado con inyección de dependencias (para utilizar servicios) y muy potente.
 
@@ -1181,7 +1177,7 @@ En esta sección se exponen posibles mejoras y cambios que se pueden realizar en
 
 - Extender y mejorar la actual versión y corregir posibles errores.
 
-- Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar al usuario una estación que beneficie a ambos, al sistema y al usuario. Un recomendador sencillo sería recomendar en base a la media de demanda esperada en las estaciones segun datos anteriores de días similares. Sería interesante también implementar un sistema de gestión, capaz de gestionar el sistema y cambiar estrategias de recomendación segun el estado del sistema, que represente a la entidad gestora del sistema de bicis que se quiere simular.
+- Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar al usuario una estación que beneficie a ambos, al sistema y al usuario. Un recomendador sencillo sería recomendar en base a la media de demanda esperada en las estaciones según datos anteriores de días similares. Sería interesante también implementar un sistema de gestión, capaz de gestionar el sistema y cambiar estrategias de recomendación según el estado del sistema, que represente a la entidad gestora del sistema de bicis que se quiere simular.
 
 # Referencias
 
@@ -1323,6 +1319,8 @@ A continuación se presentan los diferentes archivos de configuración que son n
 - Time Instant: Instante de tiempo en el que aparece el usuario. (segundos)
 
 \pagebreak
+&nbsp;
+\newpage
 
 ## Anexo 2 - Manual de configuración del entorno de desarrollo {-}
 
@@ -1465,7 +1463,7 @@ En el directorio raíz del proyecto, en la carpeta `schemas/schemas-and-form-def
 	}),
 ```
 
-Este fragmento de código ira a continuación de la línea:
+Este fragmento de código irá a continuación de la línea:
 
 ```
 	export const EntryPoint = sAnyOf(
@@ -1530,9 +1528,9 @@ public class UserRandomExtension extends User {
 }
 ```
 
-Es necesario que todas las clases de usuarios tengan como anotación `@UserType` para que el simulador sea capaz de detectar esta nueva clase de usuario y utilizarla. También es obligatorio que la clase de usuario implemente una clase interna que tenga como anotacion `@UserParameters`, donde incluiremos todos los parámetros configurables del usuario.
+Es necesario que todas las clases de usuarios tengan como anotación `@UserType` para que el simulador sea capaz de detectar esta nueva clase de usuario y utilizarla. También es obligatorio que la clase de usuario implemente una clase interna que tenga como anotación `@UserParameters`, donde incluiremos todos los parámetros configurables del usuario.
 
-En este caso, queremos que el usuario realize reservas un porcentaje de veces, y que abandone el sistema tras haber intentado coger bici según el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
+En este caso, queremos que el usuario realice reservas un porcentaje de veces, y que abandone el sistema tras haber intentado coger bici según el parámetro que se le especifique. Para ello añadiremos atributos para representar esta característica a la clase con la anotación `@UserParameters`
 
 ```{.java .numberLines}
     @UserParameters
