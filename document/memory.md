@@ -1179,11 +1179,19 @@ En esta sección se exponen posibles mejoras y cambios que se pueden realizar en
 
 - Crear un sistema de recomendaciones externo, basado en datos reales, que pueda predecir la demanda de una estación y recomendar al usuario una estación que beneficie a ambos, al sistema y al usuario. Un recomendador sencillo sería recomendar en base a la media de demanda esperada en las estaciones según datos anteriores de días similares. Sería interesante también implementar un sistema de gestión, capaz de gestionar el sistema y cambiar estrategias de recomendación según el estado del sistema, que represente a la entidad gestora del sistema de bicis que se quiere simular.
 
+\pagebreak
+&nbsp;
+\newpage
+
 # Referencias
 
 <div id="refs"></div>
 
 \thispagestyle{plain}
+
+\pagebreak
+&nbsp;
+\newpage
 
 # Anexos
 ## Anexo 1 - Archivos de configuración {-}
